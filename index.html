@@ -39,7 +39,7 @@
 
         /* ===== LAYOUT CONTAINER ===== */
         .container-vermelho {
-            max-width: 1200px;
+            max-width: 800px;
             width: 100%;
         }
 
@@ -56,32 +56,6 @@
             font-size: 28px;
             margin-bottom: 10px;
             letter-spacing: 1px;
-        }
-
-        /* ===== NAVEGAÇÃO ===== */
-        .navegacao-vermelho {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            overflow: hidden;
-        }
-
-        .nav-link-vermelho {
-            padding: 15px 25px;
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 600;
-            transition: var(--transition);
-            border-bottom: 3px solid transparent;
-        }
-
-        .nav-link-vermelho:hover, .nav-link-vermelho.ativo {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-            background-color: var(--secondary-color);
         }
 
         /* ===== CARDS ===== */
@@ -245,21 +219,6 @@
             .card-vermelho {
                 padding: 20px;
             }
-            
-            .navegacao-vermelho {
-                flex-direction: column;
-            }
-            
-            .nav-link-vermelho {
-                text-align: center;
-                border-bottom: 1px solid #eee;
-                border-left: 3px solid transparent;
-            }
-            
-            .nav-link-vermelho:hover, .nav-link-vermelho.ativo {
-                border-bottom: 1px solid #eee;
-                border-left: 3px solid var(--primary-color);
-            }
         }
 
         /* ===== ESTILOS PARA VISUALIZAÇÃO DE EMAIL ===== */
@@ -313,35 +272,10 @@
             gap: 10px;
         }
 
-        /* ===== ESTILOS PARA HISTÓRICO ===== */
-        .tabela-container {
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-
-        .tabela-vermelho {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
-        }
-
-        .tabela-vermelho th, .tabela-vermelho td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .tabela-vermelho th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-        }
-
-        .tabela-vermelho tr:hover {
-            background-color: var(--secondary-color);
+        /* Campo personalizado para "Outros" */
+        .campo-outros {
+            margin-top: 10px;
+            display: none;
         }
     </style>
 </head>
@@ -355,26 +289,24 @@
             </h1>
         </header>
 
-        <!-- Navegação -->
-        <nav class="navegacao-vermelho">
-            <a href="#" class="nav-link-vermelho ativo" data-pagina="relatorio">
-                <i class="fas fa-file-alt btn-icone"></i>Novo Relatório
-            </a>
-            <a href="#" class="nav-link-vermelho" data-pagina="historico">
-                <i class="fas fa-history btn-icone"></i>Histórico
-            </a>
-        </nav>
-
         <!-- Novo Relatório -->
         <section id="relatorio" class="pagina">
             <div class="card-vermelho">
                 <h2 class="titulo-secao">Relatório de Falha</h2>
                 <p>Preencha os dados da falha para gerar um email formatado</p>
                 
-                <div class="linha-formulario">
-                    <div class="form-group-vermelho" style="flex: 1;">
-                        <label class="label-vermelho" for="titulo-falha">Título da Falha</label>
-                        <input type="text" id="titulo-falha" class="input-vermelho" placeholder="Descreva brevemente a falha...">
+                <div class="form-group-vermelho">
+                    <label class="label-vermelho" for="titulo-falha">Título da Falha</label>
+                    <select id="titulo-falha" class="select-vermelho">
+                        <option value="">Selecione um tipo de falha</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Falha no escalonamento">[PORTAL DE RELATÓRIO DE FALHAS] - Falha no escalonamento</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Falha na atualização">[PORTAL DE RELATÓRIO DE FALHAS] - Falha na atualização</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Ocorrência não encerrada">[PORTAL DE RELATÓRIO DE FALHAS] - Ocorrência não encerrada</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Falhas sistêmicas">[PORTAL DE RELATÓRIO DE FALHAS] - Falhas sistêmicas</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Outros">[PORTAL DE RELATÓRIO DE FALHAS] - Outros</option>
+                    </select>
+                    <div id="campo-outros" class="campo-outros">
+                        <input type="text" id="outro-titulo" class="input-vermelho" placeholder="Especifique o tipo de falha...">
                     </div>
                 </div>
                 
@@ -437,47 +369,6 @@
             </div>
         </section>
 
-        <!-- Histórico -->
-        <section id="historico" class="pagina oculto">
-            <div class="card-vermelho">
-                <h2 class="titulo-secao">Histórico de Relatórios</h2>
-                <p>Relatórios de falha enviados anteriormente</p>
-                
-                <div class="linha-formulario">
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="filtro-data">Filtrar por Data</label>
-                        <input type="date" id="filtro-data" class="input-vermelho">
-                    </div>
-                    
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="filtro-sistema">Filtrar por Sistema</label>
-                        <input type="text" id="filtro-sistema" class="input-vermelho" placeholder="Nome do sistema...">
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card-vermelho">
-                <h3 class="titulo-secao">Relatórios Anteriores</h3>
-                
-                <div class="tabela-container">
-                    <table class="tabela-vermelho">
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Título</th>
-                                <th>Sistema</th>
-                                <th>Status</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpo-tabela-historico">
-                            <!-- Dados serão preenchidos via JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
         <!-- Rodapé -->
         <footer class="footer-vermelho">
             <div class="assinatura">
@@ -487,31 +378,15 @@
     </div>
 
     <script>
-        // Dados de exemplo para o histórico
-        const historicoFalhas = [
-            { id: 1, data: "2023-10-15", titulo: "Falha no sistema de autenticação", sistema: "Login API", status: "Resolvido", descricao: "Usuários não conseguem fazer login no sistema entre 14h e 15h.", impacto: "Impossibilidade de acesso ao sistema por parte dos usuários." },
-            { id: 2, data: "2023-10-10", titulo: "Lentidão no carregamento de relatórios", sistema: "Módulo de Relatórios", status: "Em Andamento", descricao: "Relatórios complexos estão demorando mais de 2 minutos para carregar.", impacto: "Produtividade da equipe de análise afetada." },
-            { id: 3, data: "2023-10-05", titulo: "Erro na exportação de dados para Excel", sistema: "Exportação", status: "Resolvido", descricao: "Caracteres especiais aparecem incorretamente em arquivos Excel exportados.", impacto: "Necessidade de ajuste manual nos arquivos exportados." },
-            { id: 4, data: "2023-10-01", titulo: "Indisponibilidade do servidor de banco de dados", sistema: "Banco de Dados", status: "Resolvido", descricao: "Servidor principal de BD ficou indisponível por 15 minutos devido a falha de hardware.", impacto: "Sistema completamente indisponível durante o período." }
-        ];
-
-        // Navegação entre páginas
-        document.querySelectorAll('.nav-link-vermelho').forEach(elemento => {
-            elemento.addEventListener('click', function() {
-                const paginaId = this.getAttribute('data-pagina');
-                
-                // Atualizar navegação
-                document.querySelectorAll('.nav-link-vermelho').forEach(link => {
-                    link.classList.remove('ativo');
-                });
-                this.classList.add('ativo');
-                
-                // Mostrar página selecionada
-                document.querySelectorAll('.pagina').forEach(pagina => {
-                    pagina.classList.add('oculto');
-                });
-                document.getElementById(paginaId).classList.remove('oculto');
-            });
+        // Mostrar campo personalizado quando selecionar "Outros"
+        document.getElementById('titulo-falha').addEventListener('change', function() {
+            const campoOutros = document.getElementById('campo-outros');
+            if (this.value === '[PORTAL DE RELATÓRIO DE FALHAS] - Outros') {
+                campoOutros.style.display = 'block';
+            } else {
+                campoOutros.style.display = 'none';
+                document.getElementById('outro-titulo').value = '';
+            }
         });
 
         // Gerar Email
@@ -520,6 +395,8 @@
         // Limpar formulário
         document.getElementById('botao-limpar-formulario').addEventListener('click', function() {
             document.getElementById('titulo-falha').value = '';
+            document.getElementById('campo-outros').style.display = 'none';
+            document.getElementById('outro-titulo').value = '';
             document.getElementById('descricao-falha').value = '';
             document.getElementById('sistema-afetado').value = '';
             document.getElementById('data-ocorrencia').value = '';
@@ -531,7 +408,19 @@
         });
 
         function gerarEmail() {
-            const titulo = document.getElementById('titulo-falha').value;
+            let titulo = document.getElementById('titulo-falha').value;
+            
+            // Se selecionou "Outros", usar o valor do campo personalizado
+            if (titulo === '[PORTAL DE RELATÓRIO DE FALHAS] - Outros') {
+                const outroTitulo = document.getElementById('outro-titulo').value;
+                if (outroTitulo) {
+                    titulo = `[PORTAL DE RELATÓRIO DE FALHAS] - ${outroTitulo}`;
+                } else {
+                    alert('Por favor, especifique o tipo de falha no campo "Outros".');
+                    return;
+                }
+            }
+            
             const descricao = document.getElementById('descricao-falha').value;
             const sistema = document.getElementById('sistema-afetado').value;
             const data = document.getElementById('data-ocorrencia').value;
@@ -551,7 +440,7 @@
 
             // Gerar conteúdo do email
             const emailContent = `
-Assunto: RELATÓRIO DE FALHA - ${titulo}
+Assunto: ${titulo}
 
 Data da Ocorrência: ${dataFormatada}
 Hora da Ocorrência: ${horaFormatada}
@@ -569,20 +458,6 @@ Este é um email automático gerado pelo Sistema de Relatórios de Falhas.
             // Exibir visualização do email
             document.getElementById('visualizacao-email').textContent = emailContent;
             document.getElementById('visualizacao-email-container').classList.remove('oculto');
-            
-            // Adicionar ao histórico
-            const novaFalha = {
-                id: historicoFalhas.length + 1,
-                data: data || new Date().toISOString().split('T')[0],
-                titulo: titulo,
-                sistema: sistema,
-                status: "Reportado",
-                descricao: descricao,
-                impacto: impacto
-            };
-            
-            historicoFalhas.unshift(novaFalha);
-            preencherTabelaHistorico();
         }
 
         // Copiar Email
@@ -609,75 +484,8 @@ Este é um email automático gerado pelo Sistema de Relatórios de Falhas.
             window.location.href = mailtoLink;
         });
 
-        // Preencher tabela de histórico
-        function preencherTabelaHistorico(dados = historicoFalhas) {
-            const corpoTabela = document.getElementById('corpo-tabela-historico');
-            corpoTabela.innerHTML = '';
-            
-            dados.forEach(item => {
-                const tr = document.createElement('tr');
-                
-                tr.innerHTML = `
-                    <td>${new Date(item.data).toLocaleDateString('pt-BR')}</td>
-                    <td>${item.titulo}</td>
-                    <td>${item.sistema}</td>
-                    <td>${item.status}</td>
-                    <td>
-                        <button class="btn-secundario" onclick="visualizarRelatorio(${item.id})" style="padding: 5px 10px; font-size: 12px;">
-                            <i class="fas fa-eye btn-icone"></i>Ver
-                        </button>
-                    </td>
-                `;
-                corpoTabela.appendChild(tr);
-            });
-        }
-
-        // Visualizar relatório específico
-        function visualizarRelatorio(id) {
-            const falha = historicoFalhas.find(item => item.id === id);
-            if (falha) {
-                // Preencher formulário com os dados
-                document.getElementById('titulo-falha').value = falha.titulo;
-                document.getElementById('descricao-falha').value = falha.descricao;
-                document.getElementById('sistema-afetado').value = falha.sistema;
-                document.getElementById('impacto-falha').value = falha.impacto || '';
-                
-                // Navegar para a página de relatório
-                document.querySelectorAll('.nav-link-vermelho').forEach(link => {
-                    link.classList.remove('ativo');
-                });
-                document.querySelector('.nav-link-vermelho[data-pagina="relatorio"]').classList.add('ativo');
-                
-                document.querySelectorAll('.pagina').forEach(pagina => {
-                    pagina.classList.add('oculto');
-                });
-                document.getElementById('relatorio').classList.remove('oculto');
-                
-                // Gerar email automaticamente
-                setTimeout(gerarEmail, 500);
-            }
-        }
-
-        // Filtros do histórico
-        document.getElementById('filtro-data').addEventListener('change', aplicarFiltrosHistorico);
-        document.getElementById('filtro-sistema').addEventListener('input', aplicarFiltrosHistorico);
-
-        function aplicarFiltrosHistorico() {
-            const dataFiltro = document.getElementById('filtro-data').value;
-            const sistemaFiltro = document.getElementById('filtro-sistema').value.toLowerCase();
-            
-            const dadosFiltrados = historicoFalhas.filter(item => {
-                return (!dataFiltro || item.data === dataFiltro) &&
-                       (!sistemaFiltro || item.sistema.toLowerCase().includes(sistemaFiltro));
-            });
-            
-            preencherTabelaHistorico(dadosFiltrados);
-        }
-
         // Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            preencherTabelaHistorico();
-            
             // Definir data atual como padrão
             const hoje = new Date().toISOString().split('T')[0];
             document.getElementById('data-ocorrencia').value = hoje;
