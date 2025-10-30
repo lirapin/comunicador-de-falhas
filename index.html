@@ -310,6 +310,7 @@
                     </div>
                 </div>
                 
+                <!-- Cluster, Incidente e Sistema Afetado na mesma linha -->
                 <div class="linha-formulario">
                     <div class="form-group-vermelho">
                         <label class="label-vermelho" for="cluster">Cluster</label>
@@ -325,23 +326,28 @@
                     </div>
                     
                     <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="inc">INC</label>
-                        <input type="text" id="inc" class="input-vermelho" placeholder="Número da ocorrência...">
+                        <label class="label-vermelho" for="incidente">Incidente</label>
+                        <input type="text" id="incidente" class="input-vermelho">
+                    </div>
+                    
+                    <div class="form-group-vermelho">
+                        <label class="label-vermelho" for="sistema-afetado">Sistema Afetado</label>
+                        <select id="sistema-afetado" class="select-vermelho">
+                            <option value="">Selecione o sistema</option>
+                            <option value="TOA">TOA</option>
+                            <option value="SIR">SIR</option>
+                            <option value="SGO">SGO</option>
+                            <option value="OSS">OSS</option>
+                            <option value="OUTROS">OUTROS</option>
+                        </select>
                     </div>
                 </div>
                 
-                <div class="form-group-vermelho">
-                    <label class="label-vermelho" for="sistema-afetado">Sistema Afetado</label>
-                    <select id="sistema-afetado" class="select-vermelho">
-                        <option value="">Selecione o sistema</option>
-                        <option value="TOA">TOA</option>
-                        <option value="SIR">SIR</option>
-                        <option value="SGO">SGO</option>
-                        <option value="OSS">OSS</option>
-                        <option value="OUTROS">OUTROS</option>
-                    </select>
-                    <div id="campo-outros-sistema" class="campo-personalizado">
-                        <input type="text" id="outro-sistema" class="input-vermelho" placeholder="Especifique o sistema afetado...">
+                <!-- Campo personalizado para Sistema Afetado quando selecionar OUTROS -->
+                <div id="campo-outros-sistema" class="campo-personalizado">
+                    <div class="form-group-vermelho">
+                        <label class="label-vermelho" for="outro-sistema">Especificar Sistema</label>
+                        <input type="text" id="outro-sistema" class="input-vermelho" placeholder="Nome do sistema">
                     </div>
                 </div>
                 
@@ -364,7 +370,7 @@
                 
                 <div class="form-group-vermelho">
                     <label class="label-vermelho" for="impacto-falha">Impacto da Falha</label>
-                    <textarea id="impacto-falha" class="textarea-vermelho" rows="3" placeholder="Descreva o impacto dessa falha nos usuários, processos ou negócios..."></textarea>
+                    <textarea id="impacto-falha" class="textarea-vermelho" rows="3" placeholder="Descreva o impacto da falha nos usuários ou processos..."></textarea>
                 </div>
                 
                 <div class="form-group-vermelho">
@@ -439,7 +445,7 @@
             document.getElementById('campo-outros-titulo').style.display = 'none';
             document.getElementById('outro-titulo').value = '';
             document.getElementById('cluster').value = '';
-            document.getElementById('inc').value = '';
+            document.getElementById('incidente').value = '';
             document.getElementById('sistema-afetado').value = '';
             document.getElementById('campo-outros-sistema').style.display = 'none';
             document.getElementById('outro-sistema').value = '';
@@ -467,7 +473,7 @@
             }
             
             const cluster = document.getElementById('cluster').value;
-            const inc = document.getElementById('inc').value;
+            const incidente = document.getElementById('incidente').value;
             let sistema = document.getElementById('sistema-afetado').value;
             
             // Se selecionou "OUTROS" no sistema, usar o valor do campo personalizado
@@ -502,7 +508,7 @@
 Assunto: ${titulo}
 
 Cluster: ${cluster}
-INC: ${inc || 'Não informado'}
+Incidente: ${incidente || 'Não informado'}
 Data da Ocorrência: ${dataFormatada}
 Hora da Ocorrência: ${horaFormatada}
 Sistema Afetado: ${sistema}
