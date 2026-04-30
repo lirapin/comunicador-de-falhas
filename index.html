@@ -25,7 +25,6 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
         * {
             margin: 0;
             padding: 0;
@@ -44,14 +43,12 @@
             align-items: center;
         }
 
-        /* ===== LAYOUT CONTAINER - Largura de dois celulares ===== */
         .container-moderno {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             margin: 0 auto;
         }
 
-        /* ===== HEADER COM BOTÕES ===== */
         .header-moderno {
             display: flex;
             justify-content: space-between;
@@ -103,7 +100,6 @@
             color: white;
         }
 
-        /* ===== CARDS COM PROFUNDIDADE ===== */
         .card-moderno {
             background: var(--bg-card);
             border-radius: var(--border-radius);
@@ -117,7 +113,6 @@
             box-shadow: var(--box-shadow-hover);
         }
 
-        /* ===== TABS ===== */
         .tabs-container {
             display: flex;
             justify-content: space-between;
@@ -145,11 +140,6 @@
             transition: var(--transition);
             color: var(--text-light);
             border-radius: 30px;
-            text-transform: lowercase;
-        }
-
-        .tab::first-letter {
-            text-transform: uppercase;
         }
 
         .tab.active {
@@ -199,7 +189,6 @@
             }
         }
 
-        /* ===== FORMULÁRIOS CENTRALIZADOS ===== */
         .form-group-moderno {
             margin-bottom: 18px;
         }
@@ -210,11 +199,6 @@
             font-weight: 500;
             color: var(--primary-dark);
             font-size: 12px;
-            text-transform: lowercase;
-        }
-
-        .label-moderno::first-letter {
-            text-transform: uppercase;
         }
 
         .input-moderno, .select-moderno, .textarea-moderno {
@@ -239,7 +223,6 @@
             resize: vertical;
         }
 
-        /* ===== ABAS DINÂMICAS ===== */
         .indicadores-container {
             display: flex;
             gap: 20px;
@@ -264,11 +247,6 @@
             font-weight: 500;
             color: var(--primary-dark);
             margin-bottom: 12px;
-            text-transform: lowercase;
-        }
-
-        .indicador-titulo::first-letter {
-            text-transform: uppercase;
         }
 
         .opcoes-container {
@@ -311,20 +289,14 @@
             flex: 1;
             font-weight: normal;
             font-size: 13px;
-            text-transform: lowercase;
         }
 
-        .opcao-radio label::first-letter {
-            text-transform: uppercase;
-        }
-
-        /* ===== BOTÕES ===== */
         .btn-primario {
             background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 14px;
-            padding: 12px 20px;
+            padding: 12px 24px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
@@ -333,7 +305,6 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            width: 100%;
         }
 
         .btn-primario:hover {
@@ -372,53 +343,47 @@
         }
 
         .btn-icon-only {
-            padding: 8px 12px;
+            padding: 10px 14px;
             background: #e8eaef;
             color: var(--text-color);
         }
 
         .btn-icon-only:hover {
-            background: #e74c3c;
+            background: var(--primary-color);
             color: white;
         }
 
-        /* ===== LINHA DO CHAMADO ===== */
         .linha-chamado {
             display: flex;
             gap: 15px;
             align-items: flex-end;
             margin-bottom: 25px;
+            flex-wrap: wrap;
         }
 
         .linha-chamado .form-group-moderno {
             flex: 1;
             margin-bottom: 0;
+            min-width: 150px;
         }
 
-        .linha-chamado .btn-primario {
-            width: auto;
-            padding: 12px 24px;
-            margin-bottom: 0;
-        }
-
-        /* ===== LAYOUT EM GRID ===== */
         .linha-formulario {
             display: flex;
             gap: 15px;
             margin-bottom: 18px;
+            flex-wrap: wrap;
         }
 
         .linha-formulario .form-group-moderno {
             flex: 1;
             margin-bottom: 0;
+            min-width: 120px;
         }
 
-        /* ===== ESTADOS E UTILITÁRIOS ===== */
         .oculto {
             display: none;
         }
 
-        /* ===== TABELAS ===== */
         .tabela-container {
             overflow-x: auto;
             border-radius: 14px;
@@ -436,11 +401,6 @@
             padding: 10px 12px;
             text-align: left;
             font-weight: 500;
-            text-transform: lowercase;
-        }
-
-        .tabela-historico th::first-letter {
-            text-transform: uppercase;
         }
 
         .tabela-historico td {
@@ -452,7 +412,6 @@
             background: var(--secondary-color);
         }
 
-        /* ===== TOAST NOTIFICATION ===== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -481,7 +440,6 @@
             }
         }
 
-        /* ===== MODAL ===== */
         .modal {
             display: none;
             position: fixed;
@@ -520,10 +478,9 @@
             cursor: pointer;
         }
 
-        /* ===== FILTROS ===== */
         .filtros-container {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -531,7 +488,7 @@
 
         .filtro-group {
             flex: 1;
-            min-width: 140px;
+            min-width: 130px;
         }
 
         .filtro-group label {
@@ -539,41 +496,36 @@
             color: var(--text-light);
             margin-bottom: 4px;
             display: block;
-            text-transform: lowercase;
-        }
-
-        .filtro-group label::first-letter {
-            text-transform: uppercase;
         }
 
         .btn-filtro {
-            padding: 10px 16px;
+            padding: 10px 14px;
             background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .btn-filtro:hover {
             background: var(--primary-strong);
         }
 
-        /* ===== RESPONSIVIDADE ===== */
-        @media (max-width: 700px) {
+        @media (max-width: 768px) {
             body {
                 padding: 15px;
             }
             
             .linha-formulario {
                 flex-direction: column;
-                gap: 15px;
             }
             
             .linha-chamado {
                 flex-direction: column;
-                gap: 15px;
             }
             
             .linha-chamado .btn-primario {
@@ -609,16 +561,11 @@
             .filtro-group {
                 width: 100%;
             }
-            
-            .btn-filtro {
-                width: 100%;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container-moderno">
-        <!-- Header com botões de modo -->
         <div class="header-moderno">
             <h1 class="titulo-principal">
                 <i class="fas fa-bug"></i>
@@ -637,13 +584,11 @@
             </div>
         </div>
 
-        <!-- Card Principal -->
         <div class="card-moderno">
-            <!-- Tabs com Data/Hora no canto -->
             <div class="tabs-container">
                 <div class="tabs">
                     <button class="tab active" onclick="mudarTab('registro')">
-                        <i class="fas fa-pen-alt"></i> Novo registro
+                        <i class="fas fa-pen-alt"></i> Novo Registro
                     </button>
                     <button class="tab" onclick="mudarTab('chamados')">
                         <i class="fas fa-ticket-alt"></i> Chamados
@@ -664,47 +609,46 @@
                     <label class="label-moderno" for="titulo-falha">Título da falha</label>
                     <select id="titulo-falha" class="select-moderno">
                         <option value="">Selecione um tipo de falha</option>
-                        <option value="[Portal de relatório de falhas] - Ocorrência não encerrada">[Portal de relatório de falhas] - Ocorrência não encerrada</option>
-                        <option value="[Portal de relatório de falhas] - Falha no escalonamento">[Portal de relatório de falhas] - Falha no escalonamento</option>
-                        <option value="[Portal de relatório de falhas] - Falha na atualização">[Portal de relatório de falhas] - Falha na atualização</option>
-                        <option value="[Portal de relatório de falhas] - Falhas sistêmicas">[Portal de relatório de falhas] - Falhas sistêmicas</option>
-                        <option value="[Portal de relatório de falhas] - Abrangência">[Portal de relatório de falhas] - Abrangência</option>
-                        <option value="[Portal de relatório de falhas] - Rec em dp">[Portal de relatório de falhas] - Rec em dp</option>
-                        <option value="[Portal de relatório de falhas] - Outros">[Portal de relatório de falhas] - Outros</option>
-                        <option value="[Portal de relatório de falhas] - Indicadores">[Portal de relatório de falhas] - Indicadores</option>
+                        <option value="Ocorrência não encerrada">Ocorrência não encerrada</option>
+                        <option value="Falha no escalonamento">Falha no escalonamento</option>
+                        <option value="Falha na atualização">Falha na atualização</option>
+                        <option value="Falha sistêmica">Falha sistêmica</option>
+                        <option value="Abrangência">Abrangência</option>
+                        <option value="Rec em dp">Rec em dp</option>
+                        <option value="Outros">Outros</option>
+                        <option value="Indicadores">Indicadores</option>
                     </select>
                     <div id="campo-outros-titulo" class="oculto" style="margin-top:10px;">
                         <input type="text" id="outro-titulo" class="input-moderno" placeholder="Especifique o tipo de falha...">
                     </div>
                 </div>
 
-                <!-- Container para abas dinâmicas de Indicadores -->
                 <div id="container-aba-dinamica"></div>
 
-                <!-- Cluster, Incidente e Task/Sistema -->
                 <div class="linha-formulario">
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="cluster">Cluster</label>
                         <select id="cluster" class="select-moderno">
                             <option value="">Selecione o cluster</option>
-                            <option value="N/A">N/A</option>
-                            <option value="MG">MG</option>
-                            <option value="CO">CO</option>
-                            <option value="NO">NO</option>
-                            <option value="NE">NE</option>
-                            <option value="ES">ES</option>
                             <option value="RJ">RJ</option>
+                            <option value="ES">ES</option>
+                            <option value="BA">BA</option>
+                            <option value="NE">NE</option>
+                            <option value="NO">NO</option>
+                            <option value="CO">CO</option>
+                            <option value="MG">MG</option>
+                            <option value="N/A">N/A</option>
                         </select>
                     </div>
                     
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="incidente">Incidente</label>
-                        <input type="text" id="incidente" class="input-moderno" placeholder="Número do incidente">
+                        <input type="text" id="incidente" class="input-moderno" placeholder="Número do incidente" value="">
                     </div>
                     
                     <div class="form-group-moderno" id="campo-task-container">
-                        <label class="label-moderno" for="task">Task</label>
-                        <input type="text" id="task" class="input-moderno" placeholder="Número da task">
+                        <label class="label-moderno" id="task-label" for="task">Task</label>
+                        <input type="text" id="task" class="input-moderno" placeholder="Número da task" value="">
                     </div>
 
                     <div class="form-group-moderno oculto" id="campo-sistema-container">
@@ -726,12 +670,14 @@
                 
                 <div class="form-group-moderno">
                     <label class="label-moderno" for="descricao-falha">Descrição da falha</label>
-                    <textarea id="descricao-falha" class="textarea-moderno" rows="4" placeholder="Descreva a falha em detalhes..."></textarea>
+                    <textarea id="descricao-falha" class="textarea-moderno" rows="4" placeholder="Descreva a falha."></textarea>
                 </div>
                 
-                <button id="botao-registrar-falha" class="btn-primario">
-                    <i class="fas fa-save"></i> Registrar falha
-                </button>
+                <div style="display: flex; justify-content: flex-start;">
+                    <button id="botao-registrar-falha" class="btn-primario">
+                        <i class="fas fa-save"></i> Registrar falha
+                    </button>
+                </div>
             </div>
 
             <!-- Aba de Chamados -->
@@ -739,7 +685,7 @@
                 <div class="linha-chamado">
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="numero-chamado">Número do chamado</label>
-                        <input type="text" id="numero-chamado" class="input-moderno" placeholder="Ex: INC-2024-001">
+                        <input type="text" id="numero-chamado" class="input-moderno" value="">
                     </div>
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="motivo-chamado">Motivo</label>
@@ -752,18 +698,17 @@
                             <option value="SGO">SGO</option>
                             <option value="OUTROS">Outros</option>
                         </select>
-                        <div id="campo-outros-motivo" class="oculto" style="margin-top:10px;">
-                            <input type="text" id="outro-motivo" class="input-moderno" placeholder="Especifique o motivo">
-                        </div>
                     </div>
                     <button id="botao-registrar-chamado" class="btn-primario" style="width: auto; white-space: nowrap;">
                         <i class="fas fa-plus-circle"></i> Registrar
                     </button>
                 </div>
+                <div id="campo-outros-motivo" class="oculto" style="margin-bottom: 20px;">
+                    <input type="text" id="outro-motivo" class="input-moderno" placeholder="Especifique o motivo">
+                </div>
 
-                <!-- Lista de Chamados -->
                 <div style="margin-top: 25px;">
-                    <h3 style="font-size: 14px; margin-bottom: 12px; font-weight: 500; text-transform: lowercase;">Chamados registrados</h3>
+                    <h3 style="font-size: 14px; margin-bottom: 12px; font-weight: 500;">Chamados registrados</h3>
                     <div class="tabela-container">
                         <table class="tabela-historico">
                             <thead>
@@ -786,7 +731,6 @@
 
             <!-- Aba de Histórico -->
             <div id="tab-historico" class="tab-content">
-                <!-- Filtros -->
                 <div class="filtros-container">
                     <div class="filtro-group">
                         <label>Filtrar por título</label>
@@ -798,24 +742,39 @@
                         <label>Filtrar por cluster</label>
                         <select id="filtro-cluster" class="select-moderno" style="padding: 8px;">
                             <option value="">Todos</option>
-                            <option value="N/A">N/A</option>
-                            <option value="MG">MG</option>
-                            <option value="CO">CO</option>
-                            <option value="NO">NO</option>
-                            <option value="NE">NE</option>
-                            <option value="ES">ES</option>
                             <option value="RJ">RJ</option>
+                            <option value="ES">ES</option>
+                            <option value="BA">BA</option>
+                            <option value="NE">NE</option>
+                            <option value="NO">NO</option>
+                            <option value="CO">CO</option>
+                            <option value="MG">MG</option>
+                            <option value="N/A">N/A</option>
                         </select>
                     </div>
                     <div class="filtro-group">
-                        <label>Filtrar por task/sistema</label>
-                        <input type="text" id="filtro-sistema" class="input-moderno" placeholder="Buscar..." style="padding: 8px;">
+                        <label>Filtrar por incidente</label>
+                        <input type="text" id="filtro-incidente" class="input-moderno" placeholder="Número do incidente" style="padding: 8px;">
                     </div>
-                    <button id="aplicar-filtros" class="btn-filtro">
-                        <i class="fas fa-search"></i> Filtrar
-                    </button>
                     <button id="limpar-filtros" class="btn-secundario btn-icon-only" title="Limpar filtros">
                         <i class="fas fa-eraser"></i>
+                    </button>
+                </div>
+                <div class="filtros-container">
+                    <div class="filtro-group">
+                        <label>Filtrar por task</label>
+                        <input type="text" id="filtro-task" class="input-moderno" placeholder="Número da task" style="padding: 8px;">
+                    </div>
+                    <div class="filtro-group">
+                        <label>Filtrar por sistema</label>
+                        <input type="text" id="filtro-sistema" class="input-moderno" placeholder="Nome do sistema" style="padding: 8px;">
+                    </div>
+                    <div class="filtro-group">
+                        <label>Filtrar por rec</label>
+                        <input type="text" id="filtro-rec" class="input-moderno" placeholder="Número do rec" style="padding: 8px;">
+                    </div>
+                    <button id="aplicar-filtros" class="btn-filtro" title="Filtrar">
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
 
@@ -823,11 +782,11 @@
                     <table class="tabela-historico">
                         <thead>
                             <tr>
-                                <th>Data/hora</th>
+                                <th>Data | hora</th>
                                 <th>Título</th>
                                 <th>Cluster</th>
                                 <th>Incidente</th>
-                                <th>Task/sistema</th>
+                                <th>Task | Rec | Sistema</th>
                                 <th id="coluna-acao-historico" class="oculto">Ações</th>
                             </tr>
                         </thead>
@@ -846,7 +805,6 @@
         </footer>
     </div>
 
-    <!-- Modal de Login -->
     <div id="modal-login" class="modal">
         <div class="modal-content">
             <i class="fas fa-lock" style="font-size: 40px; color: var(--primary-color);"></i>
@@ -859,7 +817,6 @@
     </div>
 
     <script>
-        // Variáveis globais
         let historicoFalhas = [];
         let chamados = [];
         let opcaoIndicadoresSelecionada = null;
@@ -867,16 +824,8 @@
         let modoAtual = 'visualizador';
         let usuarioLogado = false;
 
-        // Função para capitalizar apenas primeira letra
-        function capitalizarPrimeira(texto) {
-            if (!texto) return '';
-            return texto.charAt(0).toUpperCase() + texto.slice(1).toLowerCase();
-        }
-
-        // Função para limpar e formatar texto
         function formatarTexto(texto) {
             if (!texto) return '';
-            
             let formatado = texto.trim();
             formatado = formatado.replace(/\s+/g, ' ');
             formatado = formatado.replace(/\s+([.,!?;:])/g, '$1');
@@ -884,34 +833,24 @@
             formatado = formatado.replace(/(\.){2,}/g, '$1');
             formatado = formatado.replace(/,{2,}/g, ',');
             formatado = formatado.toUpperCase();
-            
             return formatado;
         }
 
-        // Salvar dados
         function salvarDados() {
             localStorage.setItem('historicoFalhas', JSON.stringify(historicoFalhas));
             localStorage.setItem('chamados', JSON.stringify(chamados));
         }
 
-        // Carregar dados
         function carregarDados() {
             const savedHistorico = localStorage.getItem('historicoFalhas');
             const savedChamados = localStorage.getItem('chamados');
-            
-            if (savedHistorico) {
-                historicoFalhas = JSON.parse(savedHistorico);
-            }
-            if (savedChamados) {
-                chamados = JSON.parse(savedChamados);
-            }
-            
+            if (savedHistorico) historicoFalhas = JSON.parse(savedHistorico);
+            if (savedChamados) chamados = JSON.parse(savedChamados);
             atualizarTabelaHistorico();
             atualizarTabelaChamados();
             atualizarFiltros();
         }
 
-        // Atualizar opções de filtro
         function atualizarFiltros() {
             const titulosUnicos = [...new Set(historicoFalhas.map(f => f.titulo))];
             const selectFiltro = document.getElementById('filtro-titulo');
@@ -919,34 +858,33 @@
                 titulosUnicos.map(t => `<option value="${t}">${t.length > 50 ? t.substring(0, 50) + '...' : t}</option>`).join('');
         }
 
-        // Aplicar filtros
         function aplicarFiltros() {
             const filtroTitulo = document.getElementById('filtro-titulo').value;
             const filtroCluster = document.getElementById('filtro-cluster').value;
+            const filtroIncidente = document.getElementById('filtro-incidente').value.toLowerCase();
+            const filtroTask = document.getElementById('filtro-task').value.toLowerCase();
+            const filtroRec = document.getElementById('filtro-rec').value.toLowerCase();
             const filtroSistema = document.getElementById('filtro-sistema').value.toLowerCase();
             
             let filtrados = [...historicoFalhas];
             
-            if (filtroTitulo) {
-                filtrados = filtrados.filter(f => f.titulo === filtroTitulo);
-            }
-            if (filtroCluster) {
-                filtrados = filtrados.filter(f => f.cluster === filtroCluster);
-            }
-            if (filtroSistema) {
-                filtrados = filtrados.filter(f => f.taskOuSistema.toLowerCase().includes(filtroSistema));
-            }
+            if (filtroTitulo) filtrados = filtrados.filter(f => f.titulo === filtroTitulo);
+            if (filtroCluster) filtrados = filtrados.filter(f => f.cluster === filtroCluster);
+            if (filtroIncidente) filtrados = filtrados.filter(f => f.incidente.toLowerCase().includes(filtroIncidente));
+            if (filtroTask) filtrados = filtrados.filter(f => f.taskOuSistema.toLowerCase().includes(filtroTask));
+            if (filtroRec) filtrados = filtrados.filter(f => f.taskOuSistema.toLowerCase().includes('rec') && f.taskOuSistema.toLowerCase().includes(filtroRec));
+            if (filtroSistema) filtrados = filtrados.filter(f => f.taskOuSistema.toLowerCase().includes(filtroSistema));
             
             const corpo = document.getElementById('corpo-historico');
             if (filtrados.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td>' + '</tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td></tr>';
                 return;
             }
             
-            corpo.innerHTML = filtrados.map((falha, index) => `
+            corpo.innerHTML = filtrados.map((falha) => `
                 <tr>
                     <td>${falha.dataHora}</td>
-                    <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
+                    <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
                     <td>${falha.cluster}</td>
                     <td>${falha.incidente || 'N/A'}</td>
                     <td>${falha.taskOuSistema}</td>
@@ -955,26 +893,21 @@
             `).join('');
         }
 
-        // Atualizar tabela de histórico
         function atualizarTabelaHistorico() {
             const corpo = document.getElementById('corpo-historico');
             const colunaAcao = document.getElementById('coluna-acao-historico');
-            
-            if (modoAtual === 'admin') {
-                colunaAcao.classList.remove('oculto');
-            } else {
-                colunaAcao.classList.add('oculto');
-            }
+            if (modoAtual === 'admin') colunaAcao.classList.remove('oculto');
+            else colunaAcao.classList.add('oculto');
             
             if (historicoFalhas.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td>' + '</tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td></tr>';
                 return;
             }
             
             corpo.innerHTML = historicoFalhas.map(falha => `
                 <tr>
                     <td>${falha.dataHora}</td>
-                    <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
+                    <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
                     <td>${falha.cluster}</td>
                     <td>${falha.incidente || 'N/A'}</td>
                     <td>${falha.taskOuSistema}</td>
@@ -983,7 +916,6 @@
             `).join('');
         }
 
-        // Deletar registro
         function deletarRegistro(id) {
             if (confirm('Tem certeza que deseja excluir este registro?')) {
                 historicoFalhas = historicoFalhas.filter(f => f.id !== id);
@@ -994,19 +926,14 @@
             }
         }
 
-        // Atualizar tabela de chamados
         function atualizarTabelaChamados() {
             const corpo = document.getElementById('corpo-chamados');
             const colunaAcao = document.getElementById('coluna-acao-chamados');
-            
-            if (modoAtual === 'admin') {
-                colunaAcao.classList.remove('oculto');
-            } else {
-                colunaAcao.classList.add('oculto');
-            }
+            if (modoAtual === 'admin') colunaAcao.classList.remove('oculto');
+            else colunaAcao.classList.add('oculto');
             
             if (chamados.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '4' : '3') + '" style="text-align: center;">Nenhum chamado registrado</td>' + '</tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '4' : '3') + '" style="text-align: center;">Nenhum chamado registrado</td></tr>';
                 return;
             }
             
@@ -1020,7 +947,6 @@
             `).join('');
         }
 
-        // Deletar chamado
         function deletarChamado(id) {
             if (confirm('Tem certeza que deseja excluir este chamado?')) {
                 chamados = chamados.filter(c => c.id !== id);
@@ -1030,25 +956,19 @@
             }
         }
 
-        // Mostrar toast
         function mostrarToast(mensagem) {
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.innerHTML = `<i class="fas fa-check-circle"></i> ${mensagem}`;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // Mudar tab
         function mudarTab(tab) {
             const tabs = document.querySelectorAll('.tab');
             const contents = document.querySelectorAll('.tab-content');
-            
             tabs.forEach(t => t.classList.remove('active'));
             contents.forEach(c => c.classList.remove('active'));
-            
             if (tab === 'registro') {
                 tabs[0].classList.add('active');
                 document.getElementById('tab-registro').classList.add('active');
@@ -1062,13 +982,11 @@
             }
         }
 
-        // Criar interface de Indicadores
         function criarAbaDinamica() {
             const container = document.getElementById('container-aba-dinamica');
             container.innerHTML = '';
             opcaoIndicadoresSelecionada = null;
             opcaoDetalheSelecionada = null;
-
             container.innerHTML = `
                 <div class="indicadores-container">
                     <div class="indicador-coluna" id="coluna-indicador">
@@ -1076,16 +994,13 @@
                             <div class="indicador-titulo">Tipo de indicador</div>
                             <div class="opcoes-container">
                                 <div class="opcao-radio" onclick="selecionarIndicador(this, 'Etit')">
-                                    <input type="radio" name="indicador" value="Etit">
-                                    <label>Etit</label>
+                                    <input type="radio" name="indicador" value="Etit"><label>Etit</label>
                                 </div>
                                 <div class="opcao-radio" onclick="selecionarIndicador(this, 'Chat')">
-                                    <input type="radio" name="indicador" value="Chat">
-                                    <label>Chat</label>
+                                    <input type="radio" name="indicador" value="Chat"><label>Chat</label>
                                 </div>
                                 <div class="opcao-radio" onclick="selecionarIndicador(this, 'Tarefa cancelada')">
-                                    <input type="radio" name="indicador" value="Tarefa cancelada">
-                                    <label>Tarefa cancelada</label>
+                                    <input type="radio" name="indicador" value="Tarefa cancelada"><label>Tarefa cancelada</label>
                                 </div>
                             </div>
                         </div>
@@ -1094,9 +1009,7 @@
                         <div class="indicador-card" style="background: #f0f0f0;">
                             <div class="indicador-titulo">Selecione o detalhamento</div>
                             <div class="opcoes-container" id="opcoes-detalhe-container">
-                                <div style="padding: 10px; text-align: center; color: var(--text-light); font-size: 12px;">
-                                    Selecione um tipo de indicador primeiro
-                                </div>
+                                <div style="padding: 10px; text-align: center; color: var(--text-light); font-size: 12px;">Selecione um tipo de indicador primeiro</div>
                             </div>
                         </div>
                     </div>
@@ -1111,36 +1024,24 @@
                 radio.parentElement.style.background = 'white';
                 radio.parentElement.classList.remove('selected');
             });
-            
             const radio = element.querySelector('input');
             radio.checked = true;
             element.style.background = 'var(--secondary-color)';
             element.classList.add('selected');
-            
             opcaoIndicadoresSelecionada = valor;
             
             let opcoesDetalhe = [];
             if (valor === 'Tarefa cancelada') {
-                opcoesDetalhe = [
-                    'Erro de abertura',
-                    'Alarme improcedente',
-                    'Agrupamento de incidente',
-                    'Normalizado sem intervenção'
-                ];
+                opcoesDetalhe = ['Erro de abertura', 'Alarme improcedente', 'Agrupamento de incidente', 'Normalizado sem intervenção'];
             } else if (valor === 'Chat' || valor === 'Etit') {
-                opcoesDetalhe = [
-                    'Alta demanda',
-                    'Ferramenta inoperante',
-                    'Falta de energia/internet na residência'
-                ];
+                opcoesDetalhe = ['Alta demanda', 'Ferramenta inoperante', 'Falta de energia/internet na residência'];
             }
             
             const containerDetalhe = document.getElementById('opcoes-detalhe-container');
             if (opcoesDetalhe.length > 0) {
                 containerDetalhe.innerHTML = opcoesDetalhe.map(op => `
                     <div class="opcao-radio" onclick="selecionarDetalhe(this, '${op}')">
-                        <input type="radio" name="detalhe" value="${op}">
-                        <label>${capitalizarPrimeira(op)}</label>
+                        <input type="radio" name="detalhe" value="${op}"><label>${op}</label>
                     </div>
                 `).join('');
                 opcaoDetalheSelecionada = null;
@@ -1156,57 +1057,55 @@
                 radio.parentElement.style.background = 'white';
                 radio.parentElement.classList.remove('selected');
             });
-            
             const radio = element.querySelector('input');
             radio.checked = true;
             element.style.background = 'var(--secondary-color)';
             element.classList.add('selected');
-            
             opcaoDetalheSelecionada = valor;
         }
 
-        // Alternar entre Task e Sistema Afetado
         function alternarTaskSistema(tituloSelecionado) {
             const taskContainer = document.getElementById('campo-task-container');
             const sistemaContainer = document.getElementById('campo-sistema-container');
+            const taskLabel = document.getElementById('task-label');
             
-            if (tituloSelecionado === '[Portal de relatório de falhas] - Falhas sistêmicas') {
+            if (tituloSelecionado === 'Falha sistêmica') {
                 taskContainer.classList.add('oculto');
                 sistemaContainer.classList.remove('oculto');
+            } else if (tituloSelecionado === 'Rec em dp') {
+                taskContainer.classList.remove('oculto');
+                sistemaContainer.classList.add('oculto');
+                taskLabel.textContent = 'Rec';
+                document.getElementById('task').placeholder = 'Número do rec';
             } else {
                 taskContainer.classList.remove('oculto');
                 sistemaContainer.classList.add('oculto');
+                taskLabel.textContent = 'Task';
+                document.getElementById('task').placeholder = 'Número da task';
             }
         }
 
-        // Eventos
         document.getElementById('titulo-falha').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-titulo');
             const containerAba = document.getElementById('container-aba-dinamica');
-            
-            if (this.value === '[Portal de relatório de falhas] - Outros') {
-                campoOutros.classList.remove('oculto');
-            } else {
+            if (this.value === 'Outros') campoOutros.classList.remove('oculto');
+            else {
                 campoOutros.classList.add('oculto');
                 document.getElementById('outro-titulo').value = '';
             }
-            
-            if (this.value === '[Portal de relatório de falhas] - Indicadores') {
-                criarAbaDinamica();
-            } else {
+            if (this.value === 'Indicadores') criarAbaDinamica();
+            else {
                 containerAba.innerHTML = '';
                 opcaoIndicadoresSelecionada = null;
                 opcaoDetalheSelecionada = null;
             }
-            
             alternarTaskSistema(this.value);
         });
 
         document.getElementById('sistema-afetado').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-sistema');
-            if (this.value === 'OUTROS') {
-                campoOutros.classList.remove('oculto');
-            } else {
+            if (this.value === 'OUTROS') campoOutros.classList.remove('oculto');
+            else {
                 campoOutros.classList.add('oculto');
                 document.getElementById('outro-sistema').value = '';
             }
@@ -1214,12 +1113,8 @@
 
         document.getElementById('motivo-chamado').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-motivo');
-            if (this.value === 'OUTROS') {
-                campoOutros.classList.remove('oculto');
-            } else {
-                campoOutros.classList.add('oculto');
-                document.getElementById('outro-motivo').value = '';
-            }
+            if (this.value === 'OUTROS') campoOutros.classList.remove('oculto');
+            else campoOutros.classList.add('oculto');
         });
 
         document.getElementById('descricao-falha').addEventListener('input', function() {
@@ -1231,87 +1126,53 @@
             }
         });
 
-        // Registrar falha
         document.getElementById('botao-registrar-falha').addEventListener('click', function() {
             let titulo = document.getElementById('titulo-falha').value;
-            
-            if (!titulo) {
-                mostrarToast('Por favor, selecione o título da falha!');
-                return;
-            }
-            
-            if (titulo === '[Portal de relatório de falhas] - Outros') {
+            if (!titulo) { mostrarToast('Por favor, selecione o título da falha!'); return; }
+            if (titulo === 'Outros') {
                 const outroTitulo = document.getElementById('outro-titulo').value;
-                if (!outroTitulo) {
-                    mostrarToast('Por favor, especifique o tipo de falha!');
-                    return;
-                }
-                titulo = `[Portal de relatório de falhas] - ${outroTitulo}`;
+                if (!outroTitulo) { mostrarToast('Por favor, especifique o tipo de falha!'); return; }
+                titulo = outroTitulo;
             }
-            
-            if (document.getElementById('titulo-falha').value === '[Portal de relatório de falhas] - Indicadores') {
-                if (!opcaoIndicadoresSelecionada) {
-                    mostrarToast('Por favor, selecione uma opção de indicador!');
-                    return;
-                }
-                if (!opcaoDetalheSelecionada) {
-                    mostrarToast('Por favor, selecione o detalhamento da falha!');
-                    return;
-                }
-                titulo = `[Portal de relatório de falhas] - Indicadores - ${opcaoIndicadoresSelecionada} - ${opcaoDetalheSelecionada}`;
+            if (document.getElementById('titulo-falha').value === 'Indicadores') {
+                if (!opcaoIndicadoresSelecionada) { mostrarToast('Por favor, selecione uma opção de indicador!'); return; }
+                if (!opcaoDetalheSelecionada) { mostrarToast('Por favor, selecione o detalhamento da falha!'); return; }
+                titulo = `Indicadores - ${opcaoIndicadoresSelecionada} - ${opcaoDetalheSelecionada}`;
             }
             
             const cluster = document.getElementById('cluster').value;
             const incidente = document.getElementById('incidente').value;
-            
             let taskOuSistema = '';
-            const isFalhasSistemicas = document.getElementById('titulo-falha').value === '[Portal de relatório de falhas] - Falhas sistêmicas';
+            const isFalhasSistemicas = document.getElementById('titulo-falha').value === 'Falha sistêmica';
+            const isRecEmDp = document.getElementById('titulo-falha').value === 'Rec em dp';
             
             if (isFalhasSistemicas) {
                 let sistema = document.getElementById('sistema-afetado').value;
-                if (!sistema) {
-                    mostrarToast('Por favor, selecione o sistema afetado!');
-                    return;
-                }
+                if (!sistema) { mostrarToast('Por favor, selecione o sistema afetado!'); return; }
                 if (sistema === 'OUTROS') {
                     const outroSistema = document.getElementById('outro-sistema').value;
-                    if (!outroSistema) {
-                        mostrarToast('Por favor, especifique o sistema afetado!');
-                        return;
-                    }
+                    if (!outroSistema) { mostrarToast('Por favor, especifique o sistema afetado!'); return; }
                     sistema = outroSistema;
                 }
                 taskOuSistema = `Sistema: ${sistema}`;
+            } else if (isRecEmDp) {
+                const rec = document.getElementById('task').value;
+                if (!rec) { mostrarToast('Por favor, informe o número do rec!'); return; }
+                taskOuSistema = `Rec: ${rec}`;
             } else {
                 const task = document.getElementById('task').value;
-                if (!task) {
-                    mostrarToast('Por favor, informe o número da task!');
-                    return;
-                }
+                if (!task) { mostrarToast('Por favor, informe o número da task!'); return; }
                 taskOuSistema = `Task: ${task}`;
             }
             
-            if (!cluster) {
-                mostrarToast('Por favor, selecione o cluster!');
-                return;
-            }
-            
+            if (!cluster) { mostrarToast('Por favor, selecione o cluster!'); return; }
             let descricao = document.getElementById('descricao-falha').value;
-            if (!descricao) {
-                mostrarToast('Por favor, preencha a descrição da falha!');
-                return;
-            }
-            
+            if (!descricao) { mostrarToast('Por favor, preencha a descrição da falha!'); return; }
             descricao = formatarTexto(descricao);
             
             const data = document.getElementById('data-ocorrencia').value;
             const hora = document.getElementById('hora-ocorrencia').value;
-            
-            if (!data || !hora) {
-                mostrarToast('Por favor, preencha data e hora da ocorrência!');
-                return;
-            }
-            
+            if (!data || !hora) { mostrarToast('Por favor, preencha data e hora da ocorrência!'); return; }
             const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
             const dataHora = `${dataFormatada} ${hora}`;
             
@@ -1324,7 +1185,6 @@
                 taskOuSistema: taskOuSistema,
                 descricao: descricao
             };
-            
             historicoFalhas.unshift(novaFalha);
             salvarDados();
             
@@ -1339,7 +1199,8 @@
             document.getElementById('campo-outros-sistema').classList.add('oculto');
             document.getElementById('campo-task-container').classList.remove('oculto');
             document.getElementById('campo-sistema-container').classList.add('oculto');
-            
+            document.getElementById('task-label').textContent = 'Task';
+            document.getElementById('task').placeholder = 'Número da task';
             opcaoIndicadoresSelecionada = null;
             opcaoDetalheSelecionada = null;
             
@@ -1349,55 +1210,31 @@
             mudarTab('historico');
         });
 
-        // Registrar chamado
         document.getElementById('botao-registrar-chamado').addEventListener('click', function() {
             const numero = document.getElementById('numero-chamado').value;
             let motivo = document.getElementById('motivo-chamado').value;
-            
-            if (!numero) {
-                mostrarToast('Por favor, informe o número do chamado!');
-                return;
-            }
-            
-            if (!motivo) {
-                mostrarToast('Por favor, selecione o motivo!');
-                return;
-            }
-            
+            if (!numero) { mostrarToast('Por favor, informe o número do chamado!'); return; }
+            if (!motivo) { mostrarToast('Por favor, selecione o motivo!'); return; }
             if (motivo === 'OUTROS') {
                 const outroMotivo = document.getElementById('outro-motivo').value;
-                if (!outroMotivo) {
-                    mostrarToast('Por favor, especifique o motivo!');
-                    return;
-                }
+                if (!outroMotivo) { mostrarToast('Por favor, especifique o motivo!'); return; }
                 motivo = outroMotivo;
             }
-            
             const data = document.getElementById('data-ocorrencia').value;
             const hora = document.getElementById('hora-ocorrencia').value;
             const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
             const dataHora = `${dataFormatada} ${hora}`;
-            
-            const novoChamado = {
-                id: Date.now(),
-                dataHora: dataHora,
-                numero: numero,
-                motivo: motivo
-            };
-            
+            const novoChamado = { id: Date.now(), dataHora: dataHora, numero: numero, motivo: motivo };
             chamados.unshift(novoChamado);
             salvarDados();
-            
             document.getElementById('numero-chamado').value = '';
             document.getElementById('motivo-chamado').value = '';
             document.getElementById('campo-outros-motivo').classList.add('oculto');
             document.getElementById('outro-motivo').value = '';
-            
             mostrarToast('Chamado registrado! ✓');
             atualizarTabelaChamados();
         });
 
-        // Modo Visualizador
         document.getElementById('btn-modo-visualizador').addEventListener('click', function() {
             modoAtual = 'visualizador';
             usuarioLogado = false;
@@ -1409,23 +1246,12 @@
             mostrarToast('Modo visualizador ativado');
         });
 
-        // Modal Admin
         const modal = document.getElementById('modal-login');
-        
-        document.getElementById('btn-modo-adm').addEventListener('click', function() {
-            modal.style.display = 'flex';
-        });
-        
-        document.getElementById('btn-fechar-modal').addEventListener('click', function() {
-            modal.style.display = 'none';
-            document.getElementById('login-usuario').value = '';
-            document.getElementById('login-senha').value = '';
-        });
-        
+        document.getElementById('btn-modo-adm').addEventListener('click', () => modal.style.display = 'flex');
+        document.getElementById('btn-fechar-modal').addEventListener('click', () => modal.style.display = 'none');
         document.getElementById('btn-login').addEventListener('click', function() {
             const usuario = document.getElementById('login-usuario').value;
             const senha = document.getElementById('login-senha').value;
-            
             if (usuario === 'claro123' && senha === 'claro123') {
                 modal.style.display = 'none';
                 modoAtual = 'admin';
@@ -1436,13 +1262,8 @@
                 atualizarTabelaHistorico();
                 atualizarTabelaChamados();
                 mostrarToast('Modo administrador ativado');
-                document.getElementById('login-usuario').value = '';
-                document.getElementById('login-senha').value = '';
-            } else {
-                alert('Usuário ou senha incorretos!');
-            }
+            } else alert('Usuário ou senha incorretos!');
         });
-        
         document.getElementById('btn-logout').addEventListener('click', function() {
             modoAtual = 'visualizador';
             usuarioLogado = false;
@@ -1453,30 +1274,29 @@
             atualizarTabelaChamados();
             mostrarToast('Logout realizado com sucesso!');
         });
-        
         document.getElementById('aplicar-filtros').addEventListener('click', aplicarFiltros);
         document.getElementById('limpar-filtros').addEventListener('click', function() {
             document.getElementById('filtro-titulo').value = '';
             document.getElementById('filtro-cluster').value = '';
+            document.getElementById('filtro-incidente').value = '';
+            document.getElementById('filtro-task').value = '';
             document.getElementById('filtro-sistema').value = '';
-            atualizarTabelaHistorico();
+            document.getElementById('filtro-rec').value = '';
+            aplicarFiltros();
             mostrarToast('Filtros limpos');
         });
 
-        // Inicializar
         function inicializarDataHora() {
             const hoje = new Date().toISOString().split('T')[0];
             const agora = new Date();
             const horas = agora.getHours().toString().padStart(2, '0');
             const minutos = agora.getMinutes().toString().padStart(2, '0');
-            
             document.getElementById('data-ocorrencia').value = hoje;
             document.getElementById('hora-ocorrencia').value = `${horas}:${minutos}`;
         }
         
         inicializarDataHora();
         carregarDados();
-        
         document.getElementById('btn-modo-visualizador').classList.add('ativo');
     </script>
 </body>
