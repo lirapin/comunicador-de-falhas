@@ -15,39 +15,56 @@
             --accent-color: #ef9a9a;
             --text-color: #333;
             --text-light: #666;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(255, 255, 255, 0.95);
         }
 
         /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
-        .vermelho-profissional * {
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        .vermelho-profissional {
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #fff5f5, #ffebee);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: var(--text-color);
             line-height: 1.6;
             padding: 20px;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         /* ===== LAYOUT CONTAINER ===== */
-        .container-vermelho {
-            max-width: 800px;
-            width: 100%;
+        .container-moderno {
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         /* ===== HEADER ===== */
-        .header-vermelho {
+        .header-moderno {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--box-shadow);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .titulo-principal {
@@ -55,111 +72,210 @@
             text-transform: uppercase;
             font-size: 28px;
             margin-bottom: 10px;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .subtitulo {
+            color: var(--text-light);
+            font-size: 14px;
         }
 
         /* ===== CARDS ===== */
-        .card-vermelho {
-            background: white;
-            border-radius: var(--border-radius);
+        .card-moderno {
+            background: var(--glass-bg);
+            border-radius: 20px;
             box-shadow: var(--box-shadow);
-            padding: 25px;
+            padding: 30px;
             margin-bottom: 25px;
             transition: var(--transition);
-            width: 100%;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 0.5s ease;
         }
 
-        .card-vermelho:hover {
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-moderno:hover {
+            box-shadow: var(--box-shadow-hover);
+            transform: translateY(-2px);
         }
 
         .titulo-secao {
             color: var(--primary-color);
             border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            padding-bottom: 12px;
+            margin-bottom: 25px;
             font-size: 22px;
+            font-weight: 600;
+        }
+
+        /* ===== LINHA TOPO COM DATA/HORA DISCRETAS ===== */
+        .linha-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-tempo {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .info-tempo span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
         /* ===== FORMULÁRIOS ===== */
-        .form-group-vermelho {
+        .form-group-moderno {
             margin-bottom: 20px;
         }
 
-        .label-vermelho {
+        .label-moderno {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--primary-dark);
+            font-size: 14px;
         }
 
-        .input-vermelho, .select-vermelho, .textarea-vermelho {
+        .input-moderno, .select-moderno, .textarea-moderno {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 2px solid #e0e0e0;
             border-radius: var(--border-radius);
-            font-size: 16px;
+            font-size: 14px;
             transition: var(--transition);
-            background-color: #f9f9f9;
+            background-color: #fafafa;
         }
 
-        .input-vermelho:focus, .select-vermelho:focus, .textarea-vermelho:focus {
+        .input-moderno:focus, .select-moderno:focus, .textarea-moderno:focus {
             outline: none;
             border-color: var(--primary-light);
-            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
             background-color: white;
+        }
+
+        /* ===== ABAS DINÂMICAS ===== */
+        .aba-dinamica {
+            background: #f5f5f5;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-color);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .opcoes-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .opcao-radio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .opcao-radio:hover {
+            background: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .opcao-radio input[type="radio"] {
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        .opcao-radio label {
+            cursor: pointer;
+            flex: 1;
+            font-weight: 500;
         }
 
         /* ===== BOTÕES ===== */
         .btn-primario {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .btn-primario:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-primario:active {
+            transform: translateY(0);
+        }
+
+        .btn-secundario {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             border-radius: var(--border-radius);
             padding: 12px 25px;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-top: 10px;
-        }
-
-        .btn-primario:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-secundario {
-            background: var(--accent-color);
-            color: var(--primary-dark);
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 12px 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 10px;
+            gap: 8px;
         }
 
         .btn-secundario:hover {
-            background: #e57373;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
 
-        .btn-icone {
-            margin-right: 8px;
-        }
-
-        .grupo-botoes {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
+        .btn-danger {
+            background: linear-gradient(135deg, #757575, #616161);
         }
 
         /* ===== LAYOUT EM GRID ===== */
@@ -169,7 +285,7 @@
             margin-bottom: 20px;
         }
 
-        .linha-formulario .form-group-vermelho {
+        .linha-formulario .form-group-moderno {
             flex: 1;
             margin-bottom: 0;
         }
@@ -179,143 +295,209 @@
             display: none;
         }
 
-        /* ===== FOOTER ===== */
-        .footer-vermelho {
-            text-align: center;
-            margin-top: 40px;
-            color: var(--text-light);
-            font-size: 14px;
-            width: 100%;
+        /* ===== HISTÓRICO ===== */
+        .historico-container {
+            margin-top: 30px;
         }
 
-        .assinatura {
-            text-align: center;
-            margin-top: 20px;
+        .historico-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .tabela-historico {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tabela-historico th {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .tabela-historico td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tabela-historico tr:hover {
+            background: var(--secondary-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-sucesso {
+            background: #4caf50;
+            color: white;
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
             color: var(--text-light);
-            border-top: 1px solid var(--accent-color);
-            padding-top: 10px;
-            font-style: normal;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: -2px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 768px) {
             .linha-formulario {
                 flex-direction: column;
-                gap: 0;
-            }
-            
-            .grupo-botoes {
-                flex-direction: column;
+                gap: 15px;
             }
             
             .btn-primario, .btn-secundario {
                 width: 100%;
             }
             
-            .container-vermelho {
+            .container-moderno {
                 padding: 10px;
             }
             
-            .card-vermelho {
+            .card-moderno {
                 padding: 20px;
             }
-        }
-
-        /* ===== ESTILOS PARA VISUALIZAÇÃO DE EMAIL ===== */
-        .visualizacao-email {
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
-            font-family: Arial, sans-serif;
-            white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .email-header {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .email-subject {
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--primary-dark);
-            margin-bottom: 5px;
-        }
-
-        .email-meta {
-            font-size: 14px;
-            color: var(--text-light);
-        }
-
-        .email-body {
-            line-height: 1.5;
-        }
-
-        .email-section {
-            margin-bottom: 15px;
-        }
-
-        .email-section-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--primary-dark);
-        }
-
-        .email-actions {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        /* Campos personalizados */
-        .campo-personalizado {
-            margin-top: 10px;
-            display: none;
+            
+            .linha-topo {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .tabela-historico {
+                font-size: 12px;
+            }
+            
+            .tabela-historico th, .tabela-historico td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
-<body class="vermelho-profissional">
-    <div class="container-vermelho">
+<body>
+    <div class="container-moderno">
         <!-- Cabeçalho -->
-        <header class="header-vermelho">
+        <header class="header-moderno">
             <h1 class="titulo-principal">
-                <i class="fas fa-bug btn-icone"></i>
+                <i class="fas fa-bug"></i>
                 Portal de Relatórios de Falhas
             </h1>
+            <p class="subtitulo">Sistema rápido e eficiente para registro de ocorrências</p>
         </header>
 
-        <!-- Novo Relatório -->
-        <section id="relatorio" class="pagina">
-            <div class="card-vermelho">
-                <h2 class="titulo-secao">Relatório de Falha</h2>
-                <p>Preencha os dados da falha para gerar um email formatado</p>
-                
-                <div class="form-group-vermelho">
-                    <label class="label-vermelho" for="titulo-falha">Título da Falha</label>
-                    <select id="titulo-falha" class="select-vermelho">
+        <!-- Tabs -->
+        <div class="card-moderno">
+            <div class="tabs">
+                <button class="tab active" onclick="mudarTab('registro')">
+                    <i class="fas fa-pen-alt"></i> Novo Registro
+                </button>
+                <button class="tab" onclick="mudarTab('historico')">
+                    <i class="fas fa-history"></i> Histórico 
+                    <span id="contador-historico" class="badge" style="background:var(--primary-color); color:white; margin-left:5px;">0</span>
+                </button>
+            </div>
+
+            <!-- Aba de Registro -->
+            <div id="tab-registro" class="tab-content active">
+                <!-- Linha topo com data/hora discretas -->
+                <div class="linha-topo">
+                    <div class="info-tempo">
+                        <span><i class="far fa-calendar-alt"></i> <span id="data-atual"></span></span>
+                        <span><i class="far fa-clock"></i> <span id="hora-atual"></span></span>
+                    </div>
+                </div>
+
+                <div class="form-group-moderno">
+                    <label class="label-moderno" for="titulo-falha">Título da Falha</label>
+                    <select id="titulo-falha" class="select-moderno">
                         <option value="">Selecione um tipo de falha</option>
                         <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Ocorrência não encerrada">[PORTAL DE RELATÓRIO DE FALHAS] - Ocorrência não encerrada</option>
                         <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Falha no escalonamento">[PORTAL DE RELATÓRIO DE FALHAS] - Falha no escalonamento</option>
                         <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Falha na atualização">[PORTAL DE RELATÓRIO DE FALHAS] - Falha na atualização</option>
                         <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Falhas sistêmicas">[PORTAL DE RELATÓRIO DE FALHAS] - Falhas sistêmicas</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Abrangência">[PORTAL DE RELATÓRIO DE FALHAS] - Abrangência</option>
                         <option value="[PORTAL DE RELATÓRIO DE FALHAS] - REC em DP">[PORTAL DE RELATÓRIO DE FALHAS] - REC em DP</option>
                         <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Outros">[PORTAL DE RELATÓRIO DE FALHAS] - Outros</option>
+                        <option value="[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores">[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores</option>
                     </select>
-                    <div id="campo-outros-titulo" class="campo-personalizado">
-                        <input type="text" id="outro-titulo" class="input-vermelho" placeholder="Especifique o tipo de falha...">
+                    <div id="campo-outros-titulo" class="oculto" style="margin-top:10px;">
+                        <input type="text" id="outro-titulo" class="input-moderno" placeholder="Especifique o tipo de falha...">
                     </div>
                 </div>
-                
-                <!-- Cluster, Incidente e Sistema Afetado na mesma linha -->
+
+                <!-- Container para abas dinâmicas -->
+                <div id="container-aba-dinamica"></div>
+
+                <!-- Cluster, Incidente e Task/Sistema -->
                 <div class="linha-formulario">
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="cluster">Cluster</label>
-                        <select id="cluster" class="select-vermelho">
+                    <div class="form-group-moderno">
+                        <label class="label-moderno" for="cluster">Cluster</label>
+                        <select id="cluster" class="select-moderno">
                             <option value="">Selecione o cluster</option>
                             <option value="N/A">N/A</option>
                             <option value="MG">MG</option>
@@ -327,14 +509,19 @@
                         </select>
                     </div>
                     
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="incidente">Incidente</label>
-                        <input type="text" id="incidente" class="input-vermelho">
+                    <div class="form-group-moderno">
+                        <label class="label-moderno" for="incidente">Incidente</label>
+                        <input type="text" id="incidente" class="input-moderno" placeholder="Número do incidente">
                     </div>
                     
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="sistema-afetado">Sistema Afetado</label>
-                        <select id="sistema-afetado" class="select-vermelho">
+                    <div class="form-group-moderno" id="campo-task-container">
+                        <label class="label-moderno" for="task">Task</label>
+                        <input type="text" id="task" class="input-moderno" placeholder="Número da task">
+                    </div>
+
+                    <div class="form-group-moderno oculto" id="campo-sistema-container">
+                        <label class="label-moderno" for="sistema-afetado">Sistema Afetado</label>
+                        <select id="sistema-afetado" class="select-moderno">
                             <option value="">Selecione o sistema</option>
                             <option value="TOA">TOA</option>
                             <option value="SIR">SIR</option>
@@ -342,221 +529,417 @@
                             <option value="OSS">OSS</option>
                             <option value="OUTROS">OUTROS</option>
                         </select>
+                        <div id="campo-outros-sistema" class="oculto" style="margin-top:10px;">
+                            <input type="text" id="outro-sistema" class="input-moderno" placeholder="Especifique o sistema">
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Campo personalizado para Sistema Afetado quando selecionar OUTROS -->
-                <div id="campo-outros-sistema" class="campo-personalizado">
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="outro-sistema">Especificar Sistema</label>
-                        <input type="text" id="outro-sistema" class="input-vermelho" placeholder="Nome do sistema">
-                    </div>
+                <div class="form-group-moderno">
+                    <label class="label-moderno" for="descricao-falha">Descrição da Falha</label>
+                    <textarea id="descricao-falha" class="textarea-moderno" rows="4" placeholder="Descreva a falha em detalhes..."></textarea>
                 </div>
                 
-                <div class="form-group-vermelho">
-                    <label class="label-vermelho" for="descricao-falha">Descrição da Falha</label>
-                    <textarea id="descricao-falha" class="textarea-vermelho" rows="5" placeholder="Descreva a falha em detalhes, incluindo o que aconteceu, quando e onde..."></textarea>
-                </div>
-                
-                <div class="linha-formulario">
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="data-ocorrencia">Data da Ocorrência</label>
-                        <input type="date" id="data-ocorrencia" class="input-vermelho">
-                    </div>
-                    
-                    <div class="form-group-vermelho">
-                        <label class="label-vermelho" for="hora-ocorrencia">Hora da Ocorrência</label>
-                        <input type="time" id="hora-ocorrencia" class="input-vermelho">
-                    </div>
-                </div>
-                
-                <div class="form-group-vermelho">
-                    <label class="label-vermelho" for="destinatarios-email">Destinatários do Email</label>
-                    <input type="text" id="destinatarios-email" class="input-vermelho" value="kelly.lira@claro.com.br, marley.ribeiro@claro.com.br" placeholder="Lista de emails separados por vírgula...">
-                </div>
-                
-                <div class="grupo-botoes">
-                    <button id="botao-gerar-email" class="btn-primario">
-                        <i class="fas fa-envelope btn-icone"></i>Gerar Email
-                    </button>
-                    <button id="botao-limpar-formulario" class="btn-secundario">
-                        <i class="fas fa-eraser btn-icone"></i>Limpar
-                    </button>
-                </div>
+                <button id="botao-registrar-falha" class="btn-primario">
+                    <i class="fas fa-save btn-icone"></i>Registrar Falha
+                </button>
             </div>
-            
-            <!-- Visualização do Email -->
-            <div id="visualizacao-email-container" class="card-vermelho oculto">
-                <h3 class="titulo-secao">Visualização do Email</h3>
-                <div class="visualizacao-email" id="visualizacao-email">
-                    <!-- Conteúdo do email será inserido aqui via JavaScript -->
-                </div>
-                <div class="email-actions">
-                    <button id="botao-copiar-email" class="btn-primario">
-                        <i class="fas fa-copy btn-icone"></i>Copiar Email
-                    </button>
-                    <button id="botao-abrir-cliente-email" class="btn-secundario">
-                        <i class="fas fa-envelope-open btn-icone"></i>Abrir no Cliente de Email
-                    </button>
-                </div>
-            </div>
-        </section>
 
-        <!-- Rodapé -->
-        <footer class="footer-vermelho">
-            <div class="assinatura">
-                Desenvolvido por N5923221.
+            <!-- Aba de Histórico -->
+            <div id="tab-historico" class="tab-content">
+                <div class="historico-header">
+                    <h3><i class="fas fa-list"></i> Histórico de Falhas</h3>
+                    <button id="limpar-historico" class="btn-secundario btn-danger">
+                        <i class="fas fa-trash-alt"></i> Limpar Histórico
+                    </button>
+                </div>
+                <div id="lista-historico">
+                    <table class="tabela-historico">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Título</th>
+                                <th>Cluster</th>
+                                <th>Incidente</th>
+                                <th>Task/Sistema</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-historico">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Nenhum registro encontrado</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 30px; color: white; opacity: 0.8;">
+            <div>Desenvolvido por N5923221</div>
         </footer>
     </div>
 
     <script>
-        // Mostrar campo personalizado quando selecionar "Outros" no título
-        document.getElementById('titulo-falha').addEventListener('change', function() {
-            const campoOutros = document.getElementById('campo-outros-titulo');
-            if (this.value === '[PORTAL DE RELATÓRIO DE FALHAS] - Outros') {
-                campoOutros.style.display = 'block';
+        // Armazenamento
+        let historicoFalhas = [];
+
+        // Carregar histórico do localStorage
+        function carregarHistorico() {
+            const saved = localStorage.getItem('historicoFalhas');
+            if (saved) {
+                historicoFalhas = JSON.parse(saved);
+                atualizarTabelaHistorico();
+            }
+        }
+
+        // Salvar histórico no localStorage
+        function salvarHistorico() {
+            localStorage.setItem('historicoFalhas', JSON.stringify(historicoFalhas));
+            atualizarTabelaHistorico();
+        }
+
+        // Atualizar tabela
+        function atualizarTabelaHistorico() {
+            const corpo = document.getElementById('corpo-historico');
+            const contador = document.getElementById('contador-historico');
+            
+            if (historicoFalhas.length === 0) {
+                corpo.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum registro encontrado</td></tr>';
+                contador.textContent = '0';
+                return;
+            }
+
+            contador.textContent = historicoFalhas.length;
+            corpo.innerHTML = historicoFalhas.map(falha => `
+                <tr>
+                    <td>${falha.dataHora}</td>
+                    <td>${falha.titulo}</td>
+                    <td>${falha.cluster}</td>
+                    <td>${falha.incidente || 'N/A'}</td>
+                    <td>${falha.taskOuSistema}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Mostrar toast
+        function mostrarToast(mensagem) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-check-circle"></i> ${mensagem}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Mudar tab
+        function mudarTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            
+            if (tab === 'registro') {
+                tabs[0].classList.add('active');
+                document.getElementById('tab-registro').classList.add('active');
             } else {
-                campoOutros.style.display = 'none';
-                document.getElementById('outro-titulo').value = '';
+                tabs[1].classList.add('active');
+                document.getElementById('tab-historico').classList.add('active');
+                atualizarTabelaHistorico();
+            }
+        }
+
+        // Limpar histórico
+        document.getElementById('limpar-historico').addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+                historicoFalhas = [];
+                salvarHistorico();
+                mostrarToast('Histórico limpo com sucesso!');
             }
         });
 
-        // Mostrar campo personalizado quando selecionar "OUTROS" no sistema
+        // Abas dinâmicas para Indicadores
+        let opcaoIndicadoresSelecionada = null;
+        let opcaoDetalheSelecionada = null;
+
+        function criarAbaDinamica(tipo) {
+            const container = document.getElementById('container-aba-dinamica');
+            container.innerHTML = '';
+            opcaoIndicadoresSelecionada = null;
+            opcaoDetalheSelecionada = null;
+
+            if (tipo === 'Indicadores') {
+                // Aba 1 - Opções de Indicadores
+                const aba1 = document.createElement('div');
+                aba1.className = 'aba-dinamica';
+                aba1.innerHTML = `
+                    <h4 style="margin-bottom: 15px; color: var(--primary-dark);">
+                        <i class="fas fa-chart-line"></i> Selecione o tipo de indicador:
+                    </h4>
+                    <div class="opcoes-container">
+                        <div class="opcao-radio" onclick="selecionarOpcaoIndicador(this, '[INDICADORES] - Tarefa cancelada')">
+                            <input type="radio" name="indicador" value="[INDICADORES] - Tarefa cancelada">
+                            <label>[INDICADORES] - Tarefa cancelada</label>
+                        </div>
+                        <div class="opcao-radio" onclick="selecionarOpcaoIndicador(this, '[INDICADORES] - Chat')">
+                            <input type="radio" name="indicador" value="[INDICADORES] - Chat">
+                            <label>[INDICADORES] - Chat</label>
+                        </div>
+                        <div class="opcao-radio" onclick="selecionarOpcaoIndicador(this, '[INDICADORES] - Etit')">
+                            <input type="radio" name="indicador" value="[INDICADORES] - Etit">
+                            <label>[INDICADORES] - Etit</label>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(aba1);
+            }
+        }
+
+        function selecionarOpcaoIndicador(element, valor) {
+            const radios = document.querySelectorAll('#container-aba-dinamica input[name="indicador"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+                radio.parentElement.style.background = 'white';
+            });
+            
+            const radio = element.querySelector('input');
+            radio.checked = true;
+            element.style.background = 'var(--secondary-color)';
+            
+            opcaoIndicadoresSelecionada = valor;
+            
+            // Aba 2 baseada na escolha
+            let opcoesDetalhe = [];
+            if (valor === '[INDICADORES] - Tarefa cancelada') {
+                opcoesDetalhe = [
+                    'Erro de abertura',
+                    'Alarme improcedente',
+                    'Agrupamento de incidente',
+                    'Normalizado sem intervenção'
+                ];
+            } else if (valor === '[INDICADORES] - Chat' || valor === '[INDICADORES] - Etit') {
+                opcoesDetalhe = [
+                    'Alta demanda',
+                    'Ferramenta inoperante',
+                    'Falta de energia/internet na residência'
+                ];
+            }
+            
+            // Remove aba2 se existir
+            const aba2Existente = document.getElementById('aba-detalhe');
+            if (aba2Existente) aba2Existente.remove();
+            
+            if (opcoesDetalhe.length > 0) {
+                const aba2 = document.createElement('div');
+                aba2.id = 'aba-detalhe';
+                aba2.className = 'aba-dinamica';
+                aba2.innerHTML = `
+                    <h4 style="margin-bottom: 15px; color: var(--primary-dark);">
+                        <i class="fas fa-info-circle"></i> Selecione o detalhamento:
+                    </h4>
+                    <div class="opcoes-container" id="opcoes-detalhe">
+                        ${opcoesDetalhe.map(op => `
+                            <div class="opcao-radio" onclick="selecionarOpcaoDetalhe(this, '${op}')">
+                                <input type="radio" name="detalhe" value="${op}">
+                                <label>${op}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                document.getElementById('container-aba-dinamica').appendChild(aba2);
+            }
+        }
+
+        function selecionarOpcaoDetalhe(element, valor) {
+            const radios = document.querySelectorAll('#opcoes-detalhe input[name="detalhe"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+                radio.parentElement.style.background = 'white';
+            });
+            
+            const radio = element.querySelector('input');
+            radio.checked = true;
+            element.style.background = 'var(--secondary-color)';
+            
+            opcaoDetalheSelecionada = valor;
+        }
+
+        // Alternar entre Task e Sistema Afetado
+        function alternarTaskSistema(tituloSelecionado) {
+            const taskContainer = document.getElementById('campo-task-container');
+            const sistemaContainer = document.getElementById('campo-sistema-container');
+            
+            if (tituloSelecionado === '[PORTAL DE RELATÓRIO DE FALHAS] - Falhas sistêmicas') {
+                taskContainer.classList.add('oculto');
+                sistemaContainer.classList.remove('oculto');
+            } else {
+                taskContainer.classList.remove('oculto');
+                sistemaContainer.classList.add('oculto');
+            }
+        }
+
+        // Mostrar campo "Outros" no título
+        document.getElementById('titulo-falha').addEventListener('change', function() {
+            const campoOutros = document.getElementById('campo-outros-titulo');
+            const containerAba = document.getElementById('container-aba-dinamica');
+            
+            if (this.value === '[PORTAL DE RELATÓRIO DE FALHAS] - Outros') {
+                campoOutros.classList.remove('oculto');
+            } else {
+                campoOutros.classList.add('oculto');
+                document.getElementById('outro-titulo').value = '';
+            }
+            
+            // Para Indicadores
+            if (this.value === '[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores') {
+                criarAbaDinamica('Indicadores');
+            } else {
+                containerAba.innerHTML = '';
+                opcaoIndicadoresSelecionada = null;
+                opcaoDetalheSelecionada = null;
+            }
+            
+            // Alternar Task/Sistema
+            alternarTaskSistema(this.value);
+        });
+
+        // Sistema afetado - campo OUTROS
         document.getElementById('sistema-afetado').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-sistema');
             if (this.value === 'OUTROS') {
-                campoOutros.style.display = 'block';
+                campoOutros.classList.remove('oculto');
             } else {
-                campoOutros.style.display = 'none';
+                campoOutros.classList.add('oculto');
                 document.getElementById('outro-sistema').value = '';
             }
         });
 
-        // Gerar Email
-        document.getElementById('botao-gerar-email').addEventListener('click', gerarEmail);
-        
-        // Limpar formulário
-        document.getElementById('botao-limpar-formulario').addEventListener('click', function() {
-            document.getElementById('titulo-falha').value = '';
-            document.getElementById('campo-outros-titulo').style.display = 'none';
-            document.getElementById('outro-titulo').value = '';
-            document.getElementById('cluster').value = '';
-            document.getElementById('incidente').value = '';
-            document.getElementById('sistema-afetado').value = '';
-            document.getElementById('campo-outros-sistema').style.display = 'none';
-            document.getElementById('outro-sistema').value = '';
-            document.getElementById('descricao-falha').value = '';
-            document.getElementById('data-ocorrencia').value = '';
-            document.getElementById('hora-ocorrencia').value = '';
-            document.getElementById('destinatarios-email').value = 'kelly.lira@claro.com.br, marley.ribeiro@claro.com.br';
-            
-            document.getElementById('visualizacao-email-container').classList.add('oculto');
-        });
-
-        function gerarEmail() {
+        // Registrar falha
+        document.getElementById('botao-registrar-falha').addEventListener('click', function() {
             let titulo = document.getElementById('titulo-falha').value;
             
-            // Se selecionou "Outros", usar o valor do campo personalizado
+            if (!titulo) {
+                mostrarToast('Por favor, selecione o título da falha!');
+                return;
+            }
+            
+            // Verificar "Outros"
             if (titulo === '[PORTAL DE RELATÓRIO DE FALHAS] - Outros') {
                 const outroTitulo = document.getElementById('outro-titulo').value;
-                if (outroTitulo) {
-                    titulo = `[PORTAL DE RELATÓRIO DE FALHAS] - ${outroTitulo}`;
-                } else {
-                    alert('Por favor, especifique o tipo de falha no campo "Outros".');
+                if (!outroTitulo) {
+                    mostrarToast('Por favor, especifique o tipo de falha!');
                     return;
                 }
+                titulo = `[PORTAL DE RELATÓRIO DE FALHAS] - ${outroTitulo}`;
+            }
+            
+            // Adicionar detalhes dos indicadores
+            if (document.getElementById('titulo-falha').value === '[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores') {
+                if (!opcaoIndicadoresSelecionada) {
+                    mostrarToast('Por favor, selecione uma opção de indicador!');
+                    return;
+                }
+                if (!opcaoDetalheSelecionada) {
+                    mostrarToast('Por favor, selecione o detalhamento da falha!');
+                    return;
+                }
+                titulo = `${titulo} - ${opcaoIndicadoresSelecionada} - ${opcaoDetalheSelecionada}`;
             }
             
             const cluster = document.getElementById('cluster').value;
             const incidente = document.getElementById('incidente').value;
-            let sistema = document.getElementById('sistema-afetado').value;
             
-            // Se selecionou "OUTROS" no sistema, usar o valor do campo personalizado
-            if (sistema === 'OUTROS') {
-                const outroSistema = document.getElementById('outro-sistema').value;
-                if (outroSistema) {
-                    sistema = outroSistema;
-                } else {
-                    alert('Por favor, especifique o sistema afetado no campo "OUTROS".');
+            let taskOuSistema = '';
+            const isFalhasSistemicas = document.getElementById('titulo-falha').value === '[PORTAL DE RELATÓRIO DE FALHAS] - Falhas sistêmicas';
+            
+            if (isFalhasSistemicas) {
+                let sistema = document.getElementById('sistema-afetado').value;
+                if (!sistema) {
+                    mostrarToast('Por favor, selecione o sistema afetado!');
                     return;
                 }
+                if (sistema === 'OUTROS') {
+                    const outroSistema = document.getElementById('outro-sistema').value;
+                    if (!outroSistema) {
+                        mostrarToast('Por favor, especifique o sistema afetado!');
+                        return;
+                    }
+                    sistema = outroSistema;
+                }
+                taskOuSistema = `Sistema: ${sistema}`;
+            } else {
+                const task = document.getElementById('task').value;
+                if (!task) {
+                    mostrarToast('Por favor, informe o número da task!');
+                    return;
+                }
+                taskOuSistema = `Task: ${task}`;
+            }
+            
+            if (!cluster) {
+                mostrarToast('Por favor, selecione o cluster!');
+                return;
             }
             
             const descricao = document.getElementById('descricao-falha').value;
-            const data = document.getElementById('data-ocorrencia').value;
-            const hora = document.getElementById('hora-ocorrencia').value;
-            const destinatarios = document.getElementById('destinatarios-email').value;
-
-            // Validação básica
-            if (!titulo || !descricao || !sistema || !cluster) {
-                alert('Por favor, preencha pelo menos o título, descrição, sistema afetado e cluster.');
+            if (!descricao) {
+                mostrarToast('Por favor, preencha a descrição da falha!');
                 return;
             }
-
-            // Formatar data
-            const dataFormatada = data ? new Date(data).toLocaleDateString('pt-BR') : 'Não informada';
-            const horaFormatada = hora || 'Não informada';
-
-            // Gerar conteúdo do email
-            let emailContent = `
-Assunto: ${titulo}
-
-Cluster: ${cluster}
-Incidente: ${incidente || 'Não informado'}
-Data da Ocorrência: ${dataFormatada}
-Hora da Ocorrência: ${horaFormatada}
-Sistema Afetado: ${sistema}
-
-DESCRIÇÃO DA FALHA:
-${descricao}
-
-Este é um email automático gerado pelo Sistema de Relatórios de Falhas.`;
-
-            // Exibir visualização do email
-            document.getElementById('visualizacao-email').textContent = emailContent.trim();
-            document.getElementById('visualizacao-email-container').classList.remove('oculto');
-        }
-
-        // Copiar Email
-        document.getElementById('botao-copiar-email').addEventListener('click', function() {
-            const emailContent = document.getElementById('visualizacao-email').textContent;
-            navigator.clipboard.writeText(emailContent).then(function() {
-                alert('Email copiado para a área de transferência!');
-            }, function(err) {
-                console.error('Erro ao copiar: ', err);
-                alert('Erro ao copiar o email. Tente novamente.');
-            });
+            
+            const dataHora = `${document.getElementById('data-atual').textContent} ${document.getElementById('hora-atual').textContent}`;
+            
+            // Registrar no histórico
+            const novaFalha = {
+                id: Date.now(),
+                dataHora: dataHora,
+                titulo: titulo,
+                cluster: cluster,
+                incidente: incidente || 'N/A',
+                taskOuSistema: taskOuSistema,
+                descricao: descricao
+            };
+            
+            historicoFalhas.unshift(novaFalha);
+            salvarHistorico();
+            
+            // Limpar formulário
+            document.getElementById('titulo-falha').value = '';
+            document.getElementById('cluster').value = '';
+            document.getElementById('incidente').value = '';
+            document.getElementById('task').value = '';
+            document.getElementById('sistema-afetado').value = '';
+            document.getElementById('descricao-falha').value = '';
+            document.getElementById('container-aba-dinamica').innerHTML = '';
+            document.getElementById('campo-outros-titulo').classList.add('oculto');
+            document.getElementById('campo-outros-sistema').classList.add('oculto');
+            document.getElementById('campo-task-container').classList.remove('oculto');
+            document.getElementById('campo-sistema-container').classList.add('oculto');
+            
+            opcaoIndicadoresSelecionada = null;
+            opcaoDetalheSelecionada = null;
+            
+            mostrarToast('Registro concluído! ✓');
+            
+            // Ir para aba de histórico
+            mudarTab('historico');
         });
 
-        // Abrir no cliente de email
-        document.getElementById('botao-abrir-cliente-email').addEventListener('click', function() {
-            const emailContent = document.getElementById('visualizacao-email').textContent;
-            const lines = emailContent.split('\n');
-            const subject = lines[0].replace('Assunto: ', '');
-            const body = lines.slice(1).join('\n');
-            
-            const destinatarios = document.getElementById('destinatarios-email').value;
-            
-            const mailtoLink = `mailto:${destinatarios}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;
-        });
-
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            // Definir data atual como padrão
-            const hoje = new Date().toISOString().split('T')[0];
-            document.getElementById('data-ocorrencia').value = hoje;
-            
-            // Definir hora atual como padrão
+        // Atualizar data/hora
+        function atualizarDataHora() {
             const agora = new Date();
-            const horas = agora.getHours().toString().padStart(2, '0');
-            const minutos = agora.getMinutes().toString().padStart(2, '0');
-            document.getElementById('hora-ocorrencia').value = `${horas}:${minutos}`;
-            
-            // Pré-setar os emails
-            document.getElementById('destinatarios-email').value = 'kelly.lira@claro.com.br, marley.ribeiro@claro.com.br';
-        });
+            const data = agora.toLocaleDateString('pt-BR');
+            const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('data-atual').textContent = data;
+            document.getElementById('hora-atual').textContent = hora;
+        }
+        
+        atualizarDataHora();
+        setInterval(atualizarDataHora, 60000);
+        
+        // Inicializar
+        carregarHistorico();
     </script>
 </body>
 </html>
