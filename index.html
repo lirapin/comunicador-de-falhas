@@ -413,6 +413,12 @@
             min-width: 250px;
         }
 
+        /* Campo outros ocupando 2 colunas */
+        .campo-outros-duas-colunas {
+            flex: 2;
+            min-width: 250px;
+        }
+
         .oculto {
             display: none;
         }
@@ -537,6 +543,7 @@
             gap: 10px;
             align-items: flex-end;
             flex-wrap: wrap;
+            margin-bottom: 20px;
         }
 
         .filtro-botao-group {
@@ -589,6 +596,12 @@
             background: var(--primary-strong);
         }
 
+        .botoes-filtro-acao {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
         /* Botão registrar falha estilizado como botão primário */
         .btn-registrar-falha {
             background: var(--primary-color);
@@ -610,6 +623,17 @@
             background: var(--primary-strong);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
+        }
+
+        /* Estilo para campo outros motivo */
+        .campo-outros-motivo {
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+
+        .campo-outros-motivo input {
+            width: calc(33.333% - 10px);
+            min-width: 200px;
         }
 
         @media (max-width: 768px) {
@@ -664,6 +688,10 @@
             }
             
             .filtro-botao-group {
+                width: 100%;
+            }
+            
+            .campo-outros-motivo input {
                 width: 100%;
             }
         }
@@ -728,6 +756,7 @@
                             <input type="text" id="outro-titulo" class="input-moderno" placeholder="Descreva o tipo de falha.">
                         </div>
                     </div>
+                    <div class="form-group-moderno oculto" id="espacador"></div>
                 </div>
 
                 <div id="container-aba-dinamica"></div>
@@ -813,8 +842,8 @@
                         <i class="fas fa-plus-circle"></i> Registrar
                     </button>
                 </div>
-                <div id="campo-outros-motivo" class="oculto" style="margin-bottom: 20px;">
-                    <input type="text" id="outro-motivo" class="input-moderno" placeholder="Especifique o motivo">
+                <div id="campo-outros-motivo" class="campo-outros-motivo oculto">
+                    <input type="text" id="outro-motivo" class="input-moderno" placeholder="Descreva o motivo.">
                 </div>
 
                 <div style="margin-top: 25px;">
@@ -862,12 +891,17 @@
                             <option value="N/A">N/A</option>
                         </select>
                     </div>
-                    <button id="limpar-filtros" class="btn-secundario btn-icon-only" title="Limpar filtros">
-                        <i class="fas fa-eraser"></i>
-                    </button>
-                    <button id="aplicar-filtros" class="btn-filtro" title="Filtrar">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <div class="botoes-filtro-acao">
+                        <button id="aplicar-filtros" class="btn-filtro" title="Filtrar">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button id="limpar-filtros" class="btn-secundario btn-icon-only" title="Limpar filtros">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                        <button id="btn-relatorio" class="btn-secundario btn-icon-only" title="Ver relatório em gráfico">
+                            <i class="fas fa-chart-bar"></i>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="filtros-linha-botoes">
@@ -988,7 +1022,7 @@
             
             const corpo = document.getElementById('corpo-historico');
             if (filtrados.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td></tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
                 return;
             }
             
@@ -1003,7 +1037,6 @@
                 </tr>
             `).join('');
             
-            // Atualizar visibilidade da coluna de ações
             const colunaAcao = document.getElementById('coluna-acao-historico');
             if (modoAtual === 'admin') colunaAcao.classList.remove('oculto');
             else colunaAcao.classList.add('oculto');
@@ -1016,7 +1049,7 @@
             else colunaAcao.classList.add('oculto');
             
             if (historicoFalhas.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td></tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
                 return;
             }
             
@@ -1049,7 +1082,7 @@
             else colunaAcao.classList.add('oculto');
             
             if (chamados.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '4' : '3') + '" style="text-align: center;">Nenhum chamado registrado</td></tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '4' : '3') + '" style="text-align: center;">Nenhum chamado registrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
                 return;
             }
             
@@ -1204,11 +1237,19 @@
         document.getElementById('titulo-falha').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-titulo');
             const containerAba = document.getElementById('container-aba-dinamica');
-            if (this.value === 'Outros') campoOutros.classList.remove('oculto');
-            else {
+            const espacador = document.getElementById('espacador');
+            
+            if (this.value === 'Outros') {
+                campoOutros.classList.remove('oculto');
+                campoOutros.classList.add('campo-outros-duas-colunas');
+                espacador.classList.remove('oculto');
+            } else {
                 campoOutros.classList.add('oculto');
+                campoOutros.classList.remove('campo-outros-duas-colunas');
                 document.getElementById('outro-titulo').value = '';
+                espacador.classList.add('oculto');
             }
+            
             if (this.value === 'Indicadores') criarAbaDinamica();
             else {
                 containerAba.innerHTML = '';
@@ -1229,8 +1270,12 @@
 
         document.getElementById('motivo-chamado').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-motivo');
-            if (this.value === 'OUTROS') campoOutros.classList.remove('oculto');
-            else campoOutros.classList.add('oculto');
+            if (this.value === 'OUTROS') {
+                campoOutros.classList.remove('oculto');
+            } else {
+                campoOutros.classList.add('oculto');
+                document.getElementById('outro-motivo').value = '';
+            }
         });
 
         document.getElementById('descricao-falha').addEventListener('input', function() {
@@ -1380,6 +1425,7 @@
                 mostrarToast('Modo administrador ativado');
             } else alert('Usuário ou senha incorretos!');
         });
+        
         document.getElementById('btn-logout').addEventListener('click', function() {
             modoAtual = 'visualizador';
             usuarioLogado = false;
@@ -1390,7 +1436,9 @@
             atualizarTabelaChamados();
             mostrarToast('Logout realizado com sucesso!');
         });
+        
         document.getElementById('aplicar-filtros').addEventListener('click', aplicarFiltros);
+        
         document.getElementById('limpar-filtros').addEventListener('click', function() {
             document.getElementById('filtro-titulo').value = '';
             document.getElementById('filtro-cluster').value = '';
@@ -1400,6 +1448,10 @@
             document.getElementById('filtro-rec').value = '';
             aplicarFiltros();
             mostrarToast('Filtros limpos');
+        });
+        
+        document.getElementById('btn-relatorio').addEventListener('click', function() {
+            mostrarToast('Funcionalidade de gráfico em desenvolvimento!');
         });
 
         function inicializarDataHora() {
