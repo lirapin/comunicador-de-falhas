@@ -15,11 +15,12 @@
             --accent-color: #ffcdd2;
             --text-color: #2c3e50;
             --text-light: #7f8c8d;
-            --bg-body: #f0f2f5;
+            --bg-body: #e0e4e8;
             --bg-card: #ffffff;
-            --border-radius: 12px;
-            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            --box-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --border-radius: 16px;
+            --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --box-shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+            --box-shadow-deep: 0 4px 15px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
         }
 
@@ -41,22 +42,68 @@
 
         /* ===== LAYOUT CONTAINER ===== */
         .container-moderno {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER COM BOTÕES ===== */
         .header-moderno {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 25px;
-            padding: 20px;
+            padding: 15px 25px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .titulo-principal {
             color: var(--primary-dark);
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 600;
             letter-spacing: 1px;
+        }
+
+        .botoes-acao {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-acao {
+            background: var(--bg-body);
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 18px;
+            color: var(--text-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-acao:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn-acao.ativo {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .usuario-info {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* ===== CARDS ===== */
@@ -87,19 +134,20 @@
 
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .tab {
             padding: 8px 20px;
             background: none;
             border: none;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
             color: var(--text-light);
-            border-radius: 20px;
+            border-radius: 30px;
         }
 
         .tab.active {
@@ -116,7 +164,7 @@
         .data-hora-editable input {
             padding: 6px 10px;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 13px;
             font-family: monospace;
             background: var(--bg-card);
@@ -159,14 +207,14 @@
             margin-bottom: 8px;
             font-weight: 500;
             color: var(--primary-dark);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .input-moderno, .select-moderno, .textarea-moderno {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 14px;
             transition: var(--transition);
             background-color: #fafafa;
@@ -176,13 +224,12 @@
         .input-moderno:focus, .select-moderno:focus, .textarea-moderno:focus {
             outline: none;
             border-color: var(--primary-light);
-            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
             background-color: white;
         }
 
         .textarea-moderno {
             resize: vertical;
-            text-transform: uppercase;
         }
 
         /* ===== ABAS DINÂMICAS ===== */
@@ -196,22 +243,17 @@
         .indicador-coluna {
             flex: 1;
             min-width: 200px;
-            transition: var(--transition);
-        }
-
-        .indicador-coluna.claro {
-            opacity: 0.6;
         }
 
         .indicador-card {
             background: #f8f9fa;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 15px;
             border-left: 3px solid var(--primary-color);
         }
 
         .indicador-titulo {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--primary-dark);
             margin-bottom: 12px;
@@ -231,7 +273,7 @@
             gap: 10px;
             padding: 8px 12px;
             background: white;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: var(--transition);
             font-size: 13px;
@@ -261,7 +303,7 @@
             background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 12px 24px;
             font-size: 14px;
             font-weight: 500;
@@ -276,15 +318,15 @@
 
         .btn-primario:hover {
             background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(211, 47, 47, 0.25);
         }
 
         .btn-secundario {
             background: #e0e0e0;
             color: var(--text-color);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 8px 16px;
             font-size: 13px;
             font-weight: 500;
@@ -297,6 +339,7 @@
 
         .btn-secundario:hover {
             background: #d0d0d0;
+            transform: translateY(-1px);
         }
 
         .btn-danger {
@@ -325,14 +368,10 @@
             display: none;
         }
 
-        /* ===== HISTÓRICO ===== */
-        .historico-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
+        /* ===== TABELAS ===== */
+        .tabela-container {
+            overflow-x: auto;
+            border-radius: 12px;
         }
 
         .tabela-historico {
@@ -344,13 +383,13 @@
         .tabela-historico th {
             background: var(--primary-color);
             color: white;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
             font-weight: 500;
         }
 
         .tabela-historico td {
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid #e0e0e0;
         }
 
@@ -361,7 +400,7 @@
         .badge {
             display: inline-block;
             padding: 2px 8px;
-            border-radius: 12px;
+            border-radius: 20px;
             font-size: 11px;
             font-weight: 500;
             background: var(--primary-light);
@@ -377,8 +416,8 @@
             background: #27ae60;
             color: white;
             padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -396,6 +435,75 @@
                 opacity: 1;
                 transform: translateX(0);
             }
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 300px;
+            text-align: center;
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .modal-content button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* ===== FILTROS ===== */
+        .filtros-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filtro-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filtro-group label {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .btn-filtro {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
         }
 
         /* ===== RESPONSIVIDADE ===== */
@@ -418,25 +526,42 @@
                 align-self: flex-end;
             }
             
+            .header-moderno {
+                flex-direction: column;
+                text-align: center;
+            }
+            
             .tabela-historico {
                 font-size: 11px;
             }
             
             .tabela-historico th, .tabela-historico td {
-                padding: 6px;
+                padding: 8px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container-moderno">
-        <!-- Cabeçalho -->
-        <header class="header-moderno">
+        <!-- Header com botões de modo -->
+        <div class="header-moderno">
             <h1 class="titulo-principal">
                 <i class="fas fa-bug"></i>
                 Portal de Relatórios de Falhas
             </h1>
-        </header>
+            <div class="botoes-acao">
+                <button id="btn-modo-visualizador" class="btn-acao" title="Modo Visualizador">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button id="btn-modo-adm" class="btn-acao" title="Modo Administrador">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button id="btn-logout" class="btn-acao oculto" title="Sair">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+                <span id="modo-status" class="usuario-info">Modo: Visualizador</span>
+            </div>
+        </div>
 
         <!-- Card Principal -->
         <div class="card-moderno">
@@ -446,9 +571,11 @@
                     <button class="tab active" onclick="mudarTab('registro')">
                         <i class="fas fa-pen-alt"></i> Novo Registro
                     </button>
+                    <button class="tab" onclick="mudarTab('chamados')">
+                        <i class="fas fa-ticket-alt"></i> Chamados
+                    </button>
                     <button class="tab" onclick="mudarTab('historico')">
-                        <i class="fas fa-history"></i> Histórico 
-                        <span id="contador-historico" class="badge">0</span>
+                        <i class="fas fa-history"></i> Histórico
                     </button>
                 </div>
                 <div class="data-hora-editable">
@@ -510,10 +637,11 @@
                         <label class="label-moderno" for="sistema-afetado">Sistema Afetado</label>
                         <select id="sistema-afetado" class="select-moderno">
                             <option value="">Selecione o sistema</option>
-                            <option value="TOA">TOA</option>
                             <option value="SIR">SIR</option>
-                            <option value="SGO">SGO</option>
+                            <option value="TOA">TOA</option>
                             <option value="OSS">OSS</option>
+                            <option value="VPN">VPN</option>
+                            <option value="SGO">SGO</option>
                             <option value="OUTROS">OUTROS</option>
                         </select>
                         <div id="campo-outros-sistema" class="oculto" style="margin-top:10px;">
@@ -532,15 +660,90 @@
                 </button>
             </div>
 
+            <!-- Aba de Chamados -->
+            <div id="tab-chamados" class="tab-content">
+                <div class="form-group-moderno">
+                    <label class="label-moderno" for="numero-chamado">Número do Chamado</label>
+                    <input type="text" id="numero-chamado" class="input-moderno" placeholder="Ex: INC-2024-001">
+                </div>
+                <div class="form-group-moderno">
+                    <label class="label-moderno" for="motivo-chamado">Motivo</label>
+                    <select id="motivo-chamado" class="select-moderno">
+                        <option value="">Selecione o motivo</option>
+                        <option value="SIR">SIR</option>
+                        <option value="TOA">TOA</option>
+                        <option value="OSS">OSS</option>
+                        <option value="VPN">VPN</option>
+                        <option value="SGO">SGO</option>
+                        <option value="OUTROS">OUTROS</option>
+                    </select>
+                    <div id="campo-outros-motivo" class="oculto" style="margin-top:10px;">
+                        <input type="text" id="outro-motivo" class="input-moderno" placeholder="Especifique o motivo">
+                    </div>
+                </div>
+                <button id="botao-registrar-chamado" class="btn-primario">
+                    <i class="fas fa-plus-circle"></i> Registrar Chamado
+                </button>
+
+                <!-- Lista de Chamados -->
+                <div style="margin-top: 30px;">
+                    <h3 style="font-size: 16px; margin-bottom: 15px;">Chamados Registrados</h3>
+                    <div class="tabela-container">
+                        <table class="tabela-historico">
+                            <thead>
+                                <tr>
+                                    <th>Data/Hora</th>
+                                    <th>Número do Chamado</th>
+                                    <th>Motivo</th>
+                                    <th id="coluna-acao-chamados" class="oculto">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpo-chamados">
+                                <tr>
+                                    <td colspan="3" style="text-align: center;">Nenhum chamado registrado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
             <!-- Aba de Histórico -->
             <div id="tab-historico" class="tab-content">
-                <div class="historico-header">
-                    <h3 style="font-size: 18px; font-weight: 500;"><i class="fas fa-list"></i> Histórico de Falhas</h3>
-                    <button id="limpar-historico" class="btn-secundario btn-danger">
-                        <i class="fas fa-trash-alt"></i> Limpar Histórico
+                <!-- Filtros -->
+                <div class="filtros-container">
+                    <div class="filtro-group">
+                        <label>Filtrar por Título</label>
+                        <select id="filtro-titulo" class="select-moderno" style="padding: 8px;">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filtro-group">
+                        <label>Filtrar por Cluster</label>
+                        <select id="filtro-cluster" class="select-moderno" style="padding: 8px;">
+                            <option value="">Todos</option>
+                            <option value="N/A">N/A</option>
+                            <option value="MG">MG</option>
+                            <option value="CO">CO</option>
+                            <option value="NO">NO</option>
+                            <option value="NE">NE</option>
+                            <option value="ES">ES</option>
+                            <option value="RJ">RJ</option>
+                        </select>
+                    </div>
+                    <div class="filtro-group">
+                        <label>Filtrar por Sistema/Task</label>
+                        <input type="text" id="filtro-sistema" class="input-moderno" placeholder="Buscar..." style="padding: 8px;">
+                    </div>
+                    <button id="aplicar-filtros" class="btn-filtro">
+                        <i class="fas fa-search"></i> Filtrar
+                    </button>
+                    <button id="limpar-filtros" class="btn-secundario">
+                        <i class="fas fa-eraser"></i> Limpar
                     </button>
                 </div>
-                <div style="overflow-x: auto;">
+
+                <div class="tabela-container">
                     <table class="tabela-historico">
                         <thead>
                             <tr>
@@ -549,6 +752,7 @@
                                 <th>Cluster</th>
                                 <th>Incidente</th>
                                 <th>Task/Sistema</th>
+                                <th id="coluna-acao-historico" class="oculto">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="corpo-historico">
@@ -566,20 +770,34 @@
         </footer>
     </div>
 
+    <!-- Modal de Login -->
+    <div id="modal-login" class="modal">
+        <div class="modal-content">
+            <i class="fas fa-lock" style="font-size: 40px; color: var(--primary-color);"></i>
+            <h3 style="margin: 15px 0;">Acesso Administrador</h3>
+            <input type="text" id="login-usuario" placeholder="Usuário">
+            <input type="password" id="login-senha" placeholder="Senha">
+            <button id="btn-login" style="background: var(--primary-color); color: white;">Entrar</button>
+            <button id="btn-fechar-modal" style="background: #ccc;">Cancelar</button>
+        </div>
+    </div>
+
     <script>
-        // Armazenamento
+        // Variáveis globais
         let historicoFalhas = [];
+        let chamados = [];
         let opcaoIndicadoresSelecionada = null;
         let opcaoDetalheSelecionada = null;
+        let modoAtual = 'visualizador'; // visualizador ou admin
+        let usuarioLogado = false;
 
         // Função para limpar e formatar texto (caixa alta + correções ortográficas)
         function formatarTexto(texto) {
             if (!texto) return '';
             
-            // Remover espaços extras no início e fim
             let formatado = texto.trim();
             
-            // Remover espaços duplicados no meio
+            // Remover espaços duplicados no meio (apenas um espaço)
             formatado = formatado.replace(/\s+/g, ' ');
             
             // Remover espaços antes de pontuação
@@ -588,11 +806,6 @@
             // Remover múltiplos sinais de pontuação repetidos
             formatado = formatado.replace(/([!?]){2,}/g, '$1');
             formatado = formatado.replace(/(\.){2,}/g, '$1');
-            
-            // Remover acentos duplicados (casos como "Não" continua "Não", mas sem duplicar)
-            // Isso já é resolvido pelo fato de não adicionarmos acentos extras
-            
-            // Remover vírgulas repetidas
             formatado = formatado.replace(/,{2,}/g, ',');
             
             // Converter para CAIXA ALTA
@@ -601,33 +814,89 @@
             return formatado;
         }
 
-        // Carregar histórico do localStorage
-        function carregarHistorico() {
-            const saved = localStorage.getItem('historicoFalhas');
-            if (saved) {
-                historicoFalhas = JSON.parse(saved);
-                atualizarTabelaHistorico();
-            }
-        }
-
-        // Salvar histórico no localStorage
-        function salvarHistorico() {
+        // Salvar dados no localStorage
+        function salvarDados() {
             localStorage.setItem('historicoFalhas', JSON.stringify(historicoFalhas));
-            atualizarTabelaHistorico();
+            localStorage.setItem('chamados', JSON.stringify(chamados));
         }
 
-        // Atualizar tabela
-        function atualizarTabelaHistorico() {
-            const corpo = document.getElementById('corpo-historico');
-            const contador = document.getElementById('contador-historico');
+        // Carregar dados do localStorage
+        function carregarDados() {
+            const savedHistorico = localStorage.getItem('historicoFalhas');
+            const savedChamados = localStorage.getItem('chamados');
             
-            if (historicoFalhas.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum registro encontrado</td></tr>';
-                contador.textContent = '0';
+            if (savedHistorico) {
+                historicoFalhas = JSON.parse(savedHistorico);
+            }
+            if (savedChamados) {
+                chamados = JSON.parse(savedChamados);
+            }
+            
+            atualizarTabelaHistorico();
+            atualizarTabelaChamados();
+            atualizarFiltros();
+        }
+
+        // Atualizar opções de filtro
+        function atualizarFiltros() {
+            const titulosUnicos = [...new Set(historicoFalhas.map(f => f.titulo))];
+            const selectFiltro = document.getElementById('filtro-titulo');
+            selectFiltro.innerHTML = '<option value="">Todos</option>' + 
+                titulosUnicos.map(t => `<option value="${t}">${t.substring(0, 50)}${t.length > 50 ? '...' : ''}</option>`).join('');
+        }
+
+        // Aplicar filtros
+        function aplicarFiltros() {
+            const filtroTitulo = document.getElementById('filtro-titulo').value;
+            const filtroCluster = document.getElementById('filtro-cluster').value;
+            const filtroSistema = document.getElementById('filtro-sistema').value.toLowerCase();
+            
+            let filtrados = [...historicoFalhas];
+            
+            if (filtroTitulo) {
+                filtrados = filtrados.filter(f => f.titulo === filtroTitulo);
+            }
+            if (filtroCluster) {
+                filtrados = filtrados.filter(f => f.cluster === filtroCluster);
+            }
+            if (filtroSistema) {
+                filtrados = filtrados.filter(f => f.taskOuSistema.toLowerCase().includes(filtroSistema));
+            }
+            
+            const corpo = document.getElementById('corpo-historico');
+            if (filtrados.length === 0) {
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td></tr>';
                 return;
             }
+            
+            corpo.innerHTML = filtrados.map((falha, index) => `
+                <tr>
+                    <td>${falha.dataHora}</td>
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
+                    <td>${falha.cluster}</td>
+                    <td>${falha.incidente || 'N/A'}</td>
+                    <td>${falha.taskOuSistema}</td>
+                    ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 4px 8px; background: #e74c3c; color: white;" onclick="deletarRegistro(${falha.id})"><i class="fas fa-trash"></i></button></td>` : ''}
+                </tr>
+            `).join('');
+        }
 
-            contador.textContent = historicoFalhas.length;
+        // Atualizar tabela de histórico
+        function atualizarTabelaHistorico() {
+            const corpo = document.getElementById('corpo-historico');
+            const colunaAcao = document.getElementById('coluna-acao-historico');
+            
+            if (modoAtual === 'admin') {
+                colunaAcao.classList.remove('oculto');
+            } else {
+                colunaAcao.classList.add('oculto');
+            }
+            
+            if (historicoFalhas.length === 0) {
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td></tr>';
+                return;
+            }
+            
             corpo.innerHTML = historicoFalhas.map(falha => `
                 <tr>
                     <td>${falha.dataHora}</td>
@@ -635,8 +904,56 @@
                     <td>${falha.cluster}</td>
                     <td>${falha.incidente || 'N/A'}</td>
                     <td>${falha.taskOuSistema}</td>
+                    ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 4px 8px; background: #e74c3c; color: white;" onclick="deletarRegistro(${falha.id})"><i class="fas fa-trash"></i></button></td>` : ''}
                 </tr>
             `).join('');
+        }
+
+        // Deletar registro individual
+        function deletarRegistro(id) {
+            if (confirm('Tem certeza que deseja excluir este registro?')) {
+                historicoFalhas = historicoFalhas.filter(f => f.id !== id);
+                salvarDados();
+                atualizarTabelaHistorico();
+                atualizarFiltros();
+                mostrarToast('Registro excluído com sucesso!');
+            }
+        }
+
+        // Atualizar tabela de chamados
+        function atualizarTabelaChamados() {
+            const corpo = document.getElementById('corpo-chamados');
+            const colunaAcao = document.getElementById('coluna-acao-chamados');
+            
+            if (modoAtual === 'admin') {
+                colunaAcao.classList.remove('oculto');
+            } else {
+                colunaAcao.classList.add('oculto');
+            }
+            
+            if (chamados.length === 0) {
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '4' : '3') + '" style="text-align: center;">Nenhum chamado registrado</td></tr>';
+                return;
+            }
+            
+            corpo.innerHTML = chamados.map(chamado => `
+                <tr>
+                    <td>${chamado.dataHora}</td>
+                    <td>${chamado.numero}</td>
+                    <td>${chamado.motivo}</td>
+                    ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 4px 8px; background: #e74c3c; color: white;" onclick="deletarChamado(${chamado.id})"><i class="fas fa-trash"></i></button></td>` : ''}
+                </tr>
+            `).join('');
+        }
+
+        // Deletar chamado
+        function deletarChamado(id) {
+            if (confirm('Tem certeza que deseja excluir este chamado?')) {
+                chamados = chamados.filter(c => c.id !== id);
+                salvarDados();
+                atualizarTabelaChamados();
+                mostrarToast('Chamado excluído com sucesso!');
+            }
         }
 
         // Mostrar toast
@@ -661,14 +978,17 @@
             if (tab === 'registro') {
                 tabs[0].classList.add('active');
                 document.getElementById('tab-registro').classList.add('active');
-            } else {
+            } else if (tab === 'chamados') {
                 tabs[1].classList.add('active');
+                document.getElementById('tab-chamados').classList.add('active');
+            } else {
+                tabs[2].classList.add('active');
                 document.getElementById('tab-historico').classList.add('active');
-                atualizarTabelaHistorico();
+                aplicarFiltros();
             }
         }
 
-        // Criar interface de Indicadores com layout lado a lado
+        // Criar interface de Indicadores
         function criarAbaDinamica() {
             const container = document.getElementById('container-aba-dinamica');
             container.innerHTML = '';
@@ -679,26 +999,26 @@
                 <div class="indicadores-container">
                     <div class="indicador-coluna" id="coluna-indicador">
                         <div class="indicador-card">
-                            <div class="indicador-titulo">TIPO DE INDICADOR</div>
+                            <div class="indicador-titulo">Tipo de indicador</div>
                             <div class="opcoes-container">
-                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Tarefa cancelada')">
-                                    <input type="radio" name="indicador" value="[INDICADORES] - Tarefa cancelada">
-                                    <label>[INDICADORES] - Tarefa cancelada</label>
+                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Etit')">
+                                    <input type="radio" name="indicador" value="[INDICADORES] - Etit">
+                                    <label>[INDICADORES] - Etit</label>
                                 </div>
                                 <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Chat')">
                                     <input type="radio" name="indicador" value="[INDICADORES] - Chat">
                                     <label>[INDICADORES] - Chat</label>
                                 </div>
-                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Etit')">
-                                    <input type="radio" name="indicador" value="[INDICADORES] - Etit">
-                                    <label>[INDICADORES] - Etit</label>
+                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Tarefa cancelada')">
+                                    <input type="radio" name="indicador" value="[INDICADORES] - Tarefa cancelada">
+                                    <label>[INDICADORES] - Tarefa cancelada</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="indicador-coluna" id="coluna-detalhe">
-                        <div class="indicador-card" style="background: #f0f0f0; opacity: 0.7;">
-                            <div class="indicador-titulo">SELECIONE O DETALHAMENTO</div>
+                        <div class="indicador-card" style="background: #f0f0f0;">
+                            <div class="indicador-titulo">Selecione o detalhamento</div>
                             <div class="opcoes-container" id="opcoes-detalhe-container">
                                 <div style="padding: 10px; text-align: center; color: var(--text-light); font-size: 12px;">
                                     Selecione um tipo de indicador primeiro
@@ -711,7 +1031,6 @@
         }
 
         function selecionarIndicador(element, valor) {
-            // Remover seleção anterior
             const radios = document.querySelectorAll('#coluna-indicador input[name="indicador"]');
             radios.forEach(radio => {
                 radio.checked = false;
@@ -724,11 +1043,6 @@
             
             opcaoIndicadoresSelecionada = valor;
             
-            // Deixar coluna anterior levemente mais clara
-            const colunaIndicador = document.getElementById('coluna-indicador');
-            colunaIndicador.classList.add('claro');
-            
-            // Determinar opções de detalhe
             let opcoesDetalhe = [];
             if (valor === '[INDICADORES] - Tarefa cancelada') {
                 opcoesDetalhe = [
@@ -745,7 +1059,6 @@
                 ];
             }
             
-            // Atualizar coluna de detalhe
             const containerDetalhe = document.getElementById('opcoes-detalhe-container');
             if (opcoesDetalhe.length > 0) {
                 containerDetalhe.innerHTML = opcoesDetalhe.map(op => `
@@ -754,13 +1067,7 @@
                         <label>${op}</label>
                     </div>
                 `).join('');
-                
-                // Resetar seleção de detalhe
                 opcaoDetalheSelecionada = null;
-                
-                // Remover classe claro da coluna de detalhe se tiver
-                const colunaDetalhe = document.getElementById('coluna-detalhe');
-                colunaDetalhe.classList.remove('claro');
             } else {
                 containerDetalhe.innerHTML = '<div style="padding: 10px; text-align: center; color: var(--text-light); font-size: 12px;">Opções indisponíveis</div>';
             }
@@ -794,7 +1101,7 @@
             }
         }
 
-        // Mostrar campo "Outros" no título
+        // Eventos
         document.getElementById('titulo-falha').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-titulo');
             const containerAba = document.getElementById('container-aba-dinamica');
@@ -806,7 +1113,6 @@
                 document.getElementById('outro-titulo').value = '';
             }
             
-            // Para Indicadores
             if (this.value === '[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores') {
                 criarAbaDinamica();
             } else {
@@ -815,11 +1121,9 @@
                 opcaoDetalheSelecionada = null;
             }
             
-            // Alternar Task/Sistema
             alternarTaskSistema(this.value);
         });
 
-        // Sistema afetado - campo OUTROS
         document.getElementById('sistema-afetado').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-sistema');
             if (this.value === 'OUTROS') {
@@ -830,7 +1134,16 @@
             }
         });
 
-        // Aplicar formatação ao texto da descrição em tempo real
+        document.getElementById('motivo-chamado').addEventListener('change', function() {
+            const campoOutros = document.getElementById('campo-outros-motivo');
+            if (this.value === 'OUTROS') {
+                campoOutros.classList.remove('oculto');
+            } else {
+                campoOutros.classList.add('oculto');
+                document.getElementById('outro-motivo').value = '';
+            }
+        });
+
         document.getElementById('descricao-falha').addEventListener('input', function() {
             const cursorPos = this.selectionStart;
             const formatted = formatarTexto(this.value);
@@ -849,7 +1162,6 @@
                 return;
             }
             
-            // Verificar "Outros"
             if (titulo === '[PORTAL DE RELATÓRIO DE FALHAS] - Outros') {
                 const outroTitulo = document.getElementById('outro-titulo').value;
                 if (!outroTitulo) {
@@ -859,7 +1171,6 @@
                 titulo = `[PORTAL DE RELATÓRIO DE FALHAS] - ${outroTitulo}`;
             }
             
-            // Adicionar detalhes dos indicadores
             if (document.getElementById('titulo-falha').value === '[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores') {
                 if (!opcaoIndicadoresSelecionada) {
                     mostrarToast('Por favor, selecione uma opção de indicador!');
@@ -913,7 +1224,6 @@
                 return;
             }
             
-            // Aplicar formatação final na descrição
             descricao = formatarTexto(descricao);
             
             const data = document.getElementById('data-ocorrencia').value;
@@ -927,7 +1237,6 @@
             const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
             const dataHora = `${dataFormatada} ${hora}`;
             
-            // Registrar no histórico
             const novaFalha = {
                 id: Date.now(),
                 dataHora: dataHora,
@@ -939,7 +1248,7 @@
             };
             
             historicoFalhas.unshift(novaFalha);
-            salvarHistorico();
+            salvarDados();
             
             // Limpar formulário
             document.getElementById('titulo-falha').value = '';
@@ -958,21 +1267,136 @@
             opcaoDetalheSelecionada = null;
             
             mostrarToast('REGISTRO CONCLUÍDO! ✓');
-            
-            // Ir para aba de histórico
+            atualizarTabelaHistorico();
+            atualizarFiltros();
             mudarTab('historico');
         });
 
-        // Limpar histórico
-        document.getElementById('limpar-historico').addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+        // Registrar chamado
+        document.getElementById('botao-registrar-chamado').addEventListener('click', function() {
+            const numero = document.getElementById('numero-chamado').value;
+            let motivo = document.getElementById('motivo-chamado').value;
+            
+            if (!numero) {
+                mostrarToast('Por favor, informe o número do chamado!');
+                return;
+            }
+            
+            if (!motivo) {
+                mostrarToast('Por favor, selecione o motivo!');
+                return;
+            }
+            
+            if (motivo === 'OUTROS') {
+                const outroMotivo = document.getElementById('outro-motivo').value;
+                if (!outroMotivo) {
+                    mostrarToast('Por favor, especifique o motivo!');
+                    return;
+                }
+                motivo = outroMotivo;
+            }
+            
+            const data = document.getElementById('data-ocorrencia').value;
+            const hora = document.getElementById('hora-ocorrencia').value;
+            const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
+            const dataHora = `${dataFormatada} ${hora}`;
+            
+            const novoChamado = {
+                id: Date.now(),
+                dataHora: dataHora,
+                numero: numero,
+                motivo: motivo
+            };
+            
+            chamados.unshift(novoChamado);
+            salvarDados();
+            
+            document.getElementById('numero-chamado').value = '';
+            document.getElementById('motivo-chamado').value = '';
+            document.getElementById('campo-outros-motivo').classList.add('oculto');
+            document.getElementById('outro-motivo').value = '';
+            
+            mostrarToast('CHAMADO REGISTRADO! ✓');
+            atualizarTabelaChamados();
+        });
+
+        // Limpar histórico (admin apenas)
+        document.getElementById('limpar-historico')?.addEventListener('click', function() {
+            if (modoAtual !== 'admin') return;
+            if (confirm('Você tem certeza que deseja limpar todo o histórico?')) {
                 historicoFalhas = [];
-                salvarHistorico();
+                salvarDados();
+                atualizarTabelaHistorico();
+                atualizarFiltros();
                 mostrarToast('Histórico limpo com sucesso!');
             }
         });
 
-        // Inicializar com data/hora atual
+        // Modo Visualizador
+        document.getElementById('btn-modo-visualizador').addEventListener('click', function() {
+            modoAtual = 'visualizador';
+            usuarioLogado = false;
+            document.getElementById('modo-status').innerHTML = 'Modo: Visualizador';
+            document.getElementById('btn-modo-visualizador').classList.add('ativo');
+            document.getElementById('btn-modo-adm').classList.remove('ativo');
+            document.getElementById('btn-logout').classList.add('oculto');
+            atualizarTabelaHistorico();
+            atualizarTabelaChamados();
+            mostrarToast('Modo Visualizador ativado - Você pode visualizar, mas não pode excluir');
+        });
+
+        // Modal Admin
+        const modal = document.getElementById('modal-login');
+        
+        document.getElementById('btn-modo-adm').addEventListener('click', function() {
+            modal.style.display = 'flex';
+        });
+        
+        document.getElementById('btn-fechar-modal').addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        
+        document.getElementById('btn-login').addEventListener('click', function() {
+            const usuario = document.getElementById('login-usuario').value;
+            const senha = document.getElementById('login-senha').value;
+            
+            if (usuario === 'claro123' && senha === 'claro123') {
+                modal.style.display = 'none';
+                modoAtual = 'admin';
+                usuarioLogado = true;
+                document.getElementById('modo-status').innerHTML = 'Modo: Administrador';
+                document.getElementById('btn-modo-adm').classList.add('ativo');
+                document.getElementById('btn-modo-visualizador').classList.remove('ativo');
+                document.getElementById('btn-logout').classList.remove('oculto');
+                atualizarTabelaHistorico();
+                atualizarTabelaChamados();
+                mostrarToast('Modo Administrador ativado - Acesso total concedido');
+            } else {
+                alert('Usuário ou senha incorretos!');
+            }
+        });
+        
+        document.getElementById('btn-logout').addEventListener('click', function() {
+            modoAtual = 'visualizador';
+            usuarioLogado = false;
+            document.getElementById('modo-status').innerHTML = 'Modo: Visualizador';
+            document.getElementById('btn-modo-visualizador').classList.add('ativo');
+            document.getElementById('btn-modo-adm').classList.remove('ativo');
+            document.getElementById('btn-logout').classList.add('oculto');
+            atualizarTabelaHistorico();
+            atualizarTabelaChamados();
+            mostrarToast('Logout realizado com sucesso!');
+        });
+        
+        document.getElementById('aplicar-filtros').addEventListener('click', aplicarFiltros);
+        document.getElementById('limpar-filtros').addEventListener('click', function() {
+            document.getElementById('filtro-titulo').value = '';
+            document.getElementById('filtro-cluster').value = '';
+            document.getElementById('filtro-sistema').value = '';
+            atualizarTabelaHistorico();
+        });
+
+        // Inicializar
         function inicializarDataHora() {
             const hoje = new Date().toISOString().split('T')[0];
             const agora = new Date();
@@ -984,7 +1408,10 @@
         }
         
         inicializarDataHora();
-        carregarHistorico();
+        carregarDados();
+        
+        // Iniciar como visualizador
+        document.getElementById('btn-modo-visualizador').classList.add('ativo');
     </script>
 </body>
 </html>
