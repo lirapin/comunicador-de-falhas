@@ -240,7 +240,7 @@
             font-size: 18px;
             cursor: pointer;
             transition: var(--transition);
-            background: white;
+            background: transparent;
             padding: 5px;
             border-radius: 8px;
         }
@@ -380,6 +380,25 @@
             color: white;
         }
 
+        .btn-check {
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+        }
+
+        .btn-check:hover {
+            background: #229954;
+            transform: scale(1.05);
+        }
+
         .linha-chamado {
             display: flex;
             gap: 15px;
@@ -411,6 +430,12 @@
         .form-group-duas-colunas {
             flex: 2;
             min-width: 250px;
+        }
+
+        /* Campo título de falha ocupando todas as 3 colunas */
+        .form-group-tres-colunas {
+            flex: 3;
+            min-width: 100%;
         }
 
         /* Campo outros ocupando 2 colunas */
@@ -449,6 +474,14 @@
 
         .tabela-historico tr:hover {
             background: var(--secondary-color);
+        }
+
+        .input-data-hora-pequeno {
+            width: 130px;
+            padding: 6px 8px;
+            font-size: 11px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
         }
 
         .toast {
@@ -496,7 +529,7 @@
             background: white;
             padding: 28px;
             border-radius: 24px;
-            width: 300px;
+            width: 400px;
             text-align: center;
             box-shadow: var(--box-shadow-hover);
         }
@@ -515,6 +548,23 @@
             border: none;
             border-radius: 12px;
             cursor: pointer;
+        }
+
+        .modal-relatorio {
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-relatorio h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .modal-relatorio .contagem {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 20px 0;
         }
 
         .filtros-container {
@@ -632,8 +682,15 @@
         }
 
         .campo-outros-motivo input {
-            width: calc(33.333% - 10px);
+            width: 100%;
             min-width: 200px;
+        }
+
+        /* Campo cluster desabilitado */
+        .select-moderno:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         @media (max-width: 768px) {
@@ -739,7 +796,7 @@
             <!-- Aba de Registro -->
             <div id="tab-registro" class="tab-content active">
                 <div class="linha-formulario">
-                    <div class="form-group-duas-colunas">
+                    <div id="container-titulo-falha" class="form-group-duas-colunas">
                         <label class="label-moderno" for="titulo-falha">Título da falha</label>
                         <select id="titulo-falha" class="select-moderno">
                             <option value="">Selecione um tipo de falha</option>
@@ -756,7 +813,7 @@
                             <input type="text" id="outro-titulo" class="input-moderno" placeholder="Descreva o tipo de falha.">
                         </div>
                     </div>
-                    <div class="form-group-moderno oculto" id="espacador"></div>
+                    <div id="espacador-titulo" class="oculto"></div>
                 </div>
 
                 <div id="container-aba-dinamica"></div>
@@ -855,12 +912,13 @@
                                     <th>Data/hora</th>
                                     <th>Número do chamado</th>
                                     <th>Motivo</th>
+                                    <th>Chamado encerrado</th>
                                     <th id="coluna-acao-chamados" class="oculto">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="corpo-chamados">
                                 <tr>
-                                    <td colspan="3" style="text-align: center;">Nenhum chamado registrado</td>
+                                    <td colspan="4" style="text-align: center;">Nenhum chamado registrado</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -958,6 +1016,20 @@
             <input type="password" id="login-senha" placeholder="Senha">
             <button id="btn-login" style="background: var(--primary-color); color: white; border-radius: 12px;">Entrar</button>
             <button id="btn-fechar-modal" style="background: #e0e0e0; border-radius: 12px;">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="modal-relatorio" class="modal">
+        <div class="modal-content modal-relatorio">
+            <i class="fas fa-chart-line" style="font-size: 40px; color: var(--primary-color);"></i>
+            <h3>Relatório de Falhas no Período</h3>
+            <div id="relatorio-periodo">
+                <p><strong>Período analisado:</strong></p>
+                <p id="periodo-datas"></p>
+                <div class="contagem" id="contagem-falhas">0</div>
+                <p>falhas registradas neste período</p>
+            </div>
+            <button id="btn-fechar-relatorio" style="background: var(--primary-color); color: white; border-radius: 12px; margin-top: 20px;">Fechar</button>
         </div>
     </div>
 
@@ -1082,7 +1154,7 @@
             else colunaAcao.classList.add('oculto');
             
             if (chamados.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '4' : '3') + '" style="text-align: center;">Nenhum chamado registrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '5' : '4') + '" style="text-align: center;">Nenhum chamado registrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
                 return;
             }
             
@@ -1091,9 +1163,86 @@
                     <td>${chamado.dataHora}</td>
                     <td>${chamado.numero}</td>
                     <td>${chamado.motivo}</td>
+                    <td style="white-space: nowrap;">
+                        <input type="text" id="encerramento-${chamado.id}" class="input-data-hora-pequeno" placeholder="DD/MM/AAAA HH:MM" value="${chamado.dataEncerramento || ''}" ${modoAtual === 'admin' ? '' : 'disabled'}>
+                        ${modoAtual === 'admin' ? `<button class="btn-check" onclick="salvarEncerramento(${chamado.id})"><i class="fas fa-check"></i></button>
+                        <button class="btn-check" onclick="verRelatorioChamado(${chamado.id})" style="background: #3498db; margin-left: 5px;"><i class="fas fa-chart-line"></i></button>` : ''}
+                    </td>
                     ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarChamado(${chamado.id})"><i class="fas fa-trash"></i></button></td>` : ''}
                 </tr>
             `).join('');
+        }
+
+        function salvarEncerramento(id) {
+            const inputEncerramento = document.getElementById(`encerramento-${id}`);
+            const dataEncerramento = inputEncerramento.value;
+            
+            if (!dataEncerramento) {
+                mostrarToast('Por favor, informe a data e hora de encerramento!');
+                return;
+            }
+            
+            // Validar formato DD/MM/AAAA HH:MM
+            const regex = /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/;
+            if (!regex.test(dataEncerramento)) {
+                mostrarToast('Formato inválido! Use DD/MM/AAAA HH:MM');
+                return;
+            }
+            
+            const chamado = chamados.find(c => c.id === id);
+            if (chamado) {
+                chamado.dataEncerramento = dataEncerramento;
+                salvarDados();
+                mostrarToast('Data de encerramento salva com sucesso!');
+            }
+        }
+
+        function verRelatorioChamado(id) {
+            const chamado = chamados.find(c => c.id === id);
+            if (!chamado || !chamado.dataEncerramento) {
+                mostrarToast('Defina a data de encerramento do chamado primeiro!');
+                return;
+            }
+            
+            // Converter datas para comparar
+            const dataAbertura = converterStringParaData(chamado.dataHora);
+            const dataEncerramento = converterStringParaData(chamado.dataEncerramento);
+            
+            if (!dataAbertura || !dataEncerramento) {
+                mostrarToast('Erro ao converter datas!');
+                return;
+            }
+            
+            // Contar falhas no período
+            const falhasNoPeriodo = historicoFalhas.filter(falha => {
+                const dataFalha = converterStringParaData(falha.dataHora);
+                return dataFalha >= dataAbertura && dataFalha <= dataEncerramento;
+            });
+            
+            // Mostrar modal com resultado
+            const modal = document.getElementById('modal-relatorio');
+            const periodoDatas = document.getElementById('periodo-datas');
+            const contagemFalhas = document.getElementById('contagem-falhas');
+            
+            periodoDatas.innerHTML = `<strong>Abertura:</strong> ${chamado.dataHora}<br><strong>Encerramento:</strong> ${chamado.dataEncerramento}`;
+            contagemFalhas.textContent = falhasNoPeriodo.length;
+            
+            modal.style.display = 'flex';
+        }
+
+        function converterStringParaData(dataStr) {
+            // Formato esperado: DD/MM/AAAA HH:MM
+            const partes = dataStr.split(' ');
+            const dataPartes = partes[0].split('/');
+            const horaPartes = partes[1].split(':');
+            
+            return new Date(
+                parseInt(dataPartes[2]), // ano
+                parseInt(dataPartes[1]) - 1, // mês
+                parseInt(dataPartes[0]), // dia
+                parseInt(horaPartes[0]), // hora
+                parseInt(horaPartes[1]) // minuto
+            );
         }
 
         function deletarChamado(id) {
@@ -1124,6 +1273,7 @@
             } else if (tab === 'chamados') {
                 tabs[1].classList.add('active');
                 document.getElementById('tab-chamados').classList.add('active');
+                atualizarTabelaChamados();
             } else {
                 tabs[2].classList.add('active');
                 document.getElementById('tab-historico').classList.add('active');
@@ -1217,46 +1367,85 @@
             const taskContainer = document.getElementById('campo-task-container');
             const sistemaContainer = document.getElementById('campo-sistema-container');
             const taskLabel = document.getElementById('task-label');
+            const clusterSelect = document.getElementById('cluster');
             
+            // Configurar cluster para Falha sistêmica
             if (tituloSelecionado === 'Falha sistêmica') {
+                clusterSelect.value = 'N/A';
+                clusterSelect.disabled = true;
                 taskContainer.classList.add('oculto');
                 sistemaContainer.classList.remove('oculto');
-            } else if (tituloSelecionado === 'Rec em dp') {
-                taskContainer.classList.remove('oculto');
-                sistemaContainer.classList.add('oculto');
-                taskLabel.textContent = 'Rec';
-                document.getElementById('task').placeholder = '';
             } else {
-                taskContainer.classList.remove('oculto');
-                sistemaContainer.classList.add('oculto');
-                taskLabel.textContent = 'Task';
-                document.getElementById('task').placeholder = '';
+                clusterSelect.disabled = false;
+                if (tituloSelecionado === 'Rec em dp') {
+                    taskContainer.classList.remove('oculto');
+                    sistemaContainer.classList.add('oculto');
+                    taskLabel.textContent = 'Rec';
+                    document.getElementById('task').placeholder = '';
+                } else {
+                    taskContainer.classList.remove('oculto');
+                    sistemaContainer.classList.add('oculto');
+                    taskLabel.textContent = 'Task';
+                    document.getElementById('task').placeholder = '';
+                }
             }
+        }
+
+        // Verificar se task é obrigatória baseado no título
+        function isTaskObrigatoria(titulo) {
+            const titulosSemTask = ['Ocorrência não encerrada', 'Falha no escalonamento', 'Falha na atualização', 'Abrangência', 'Outros'];
+            return !titulosSemTask.includes(titulo);
+        }
+
+        // Verificar se incidente é obrigatório baseado no título e indicador
+        function isIncidenteObrigatorio(titulo, indicador) {
+            if (titulo === 'Falha sistêmica') return false;
+            if (titulo === 'Indicadores') {
+                if (indicador === 'Etit') return true;
+                if (indicador === 'Tarefa cancelada') return true;
+                return false;
+            }
+            return true;
         }
 
         document.getElementById('titulo-falha').addEventListener('change', function() {
             const campoOutros = document.getElementById('campo-outros-titulo');
             const containerAba = document.getElementById('container-aba-dinamica');
-            const espacador = document.getElementById('espacador');
+            const containerTitulo = document.getElementById('container-titulo-falha');
+            const espacador = document.getElementById('espacador-titulo');
+            const valorSelecionado = this.value;
             
-            if (this.value === 'Outros') {
+            // Ajustar largura do campo título
+            if (valorSelecionado === 'Indicadores') {
+                containerTitulo.classList.remove('form-group-duas-colunas');
+                containerTitulo.classList.add('form-group-tres-colunas');
+                espacador.classList.add('oculto');
+            } else {
+                containerTitulo.classList.remove('form-group-tres-colunas');
+                containerTitulo.classList.add('form-group-duas-colunas');
+                espacador.classList.remove('oculto');
+            }
+            
+            // Configurar campo "Outros"
+            if (valorSelecionado === 'Outros') {
                 campoOutros.classList.remove('oculto');
                 campoOutros.classList.add('campo-outros-duas-colunas');
-                espacador.classList.remove('oculto');
             } else {
                 campoOutros.classList.add('oculto');
                 campoOutros.classList.remove('campo-outros-duas-colunas');
                 document.getElementById('outro-titulo').value = '';
-                espacador.classList.add('oculto');
             }
             
-            if (this.value === 'Indicadores') criarAbaDinamica();
-            else {
+            // Configurar indicadores
+            if (valorSelecionado === 'Indicadores') {
+                criarAbaDinamica();
+            } else {
                 containerAba.innerHTML = '';
                 opcaoIndicadoresSelecionada = null;
                 opcaoDetalheSelecionada = null;
             }
-            alternarTaskSistema(this.value);
+            
+            alternarTaskSistema(valorSelecionado);
         });
 
         document.getElementById('sistema-afetado').addEventListener('change', function() {
@@ -1290,12 +1479,15 @@
         document.getElementById('botao-registrar-falha').addEventListener('click', function() {
             let titulo = document.getElementById('titulo-falha').value;
             if (!titulo) { mostrarToast('Por favor, selecione o título da falha!'); return; }
+            
             if (titulo === 'Outros') {
                 const outroTitulo = document.getElementById('outro-titulo').value;
                 if (!outroTitulo) { mostrarToast('Por favor, especifique o tipo de falha!'); return; }
                 titulo = outroTitulo;
             }
-            if (document.getElementById('titulo-falha').value === 'Indicadores') {
+            
+            const isIndicadores = document.getElementById('titulo-falha').value === 'Indicadores';
+            if (isIndicadores) {
                 if (!opcaoIndicadoresSelecionada) { mostrarToast('Por favor, selecione uma opção de indicador!'); return; }
                 if (!opcaoDetalheSelecionada) { mostrarToast('Por favor, selecione o detalhamento da falha!'); return; }
                 titulo = `Indicadores - ${opcaoIndicadoresSelecionada} - ${opcaoDetalheSelecionada}`;
@@ -1306,6 +1498,21 @@
             let taskOuSistema = '';
             const isFalhasSistemicas = document.getElementById('titulo-falha').value === 'Falha sistêmica';
             const isRecEmDp = document.getElementById('titulo-falha').value === 'Rec em dp';
+            const taskValue = document.getElementById('task').value;
+            
+            // Validar task baseado no título
+            const taskObrigatoria = isTaskObrigatoria(document.getElementById('titulo-falha').value);
+            if (!isFalhasSistemicas && !isRecEmDp && taskObrigatoria && !taskValue) {
+                mostrarToast('Por favor, informe o número da task!');
+                return;
+            }
+            
+            // Validar incidente baseado no título e indicador
+            const incidenteObrigatorio = isIncidenteObrigatorio(document.getElementById('titulo-falha').value, opcaoIndicadoresSelecionada);
+            if (incidenteObrigatorio && !incidente) {
+                mostrarToast('Por favor, informe o número do incidente!');
+                return;
+            }
             
             if (isFalhasSistemicas) {
                 let sistema = document.getElementById('sistema-afetado').value;
@@ -1317,13 +1524,10 @@
                 }
                 taskOuSistema = `Sistema: ${sistema}`;
             } else if (isRecEmDp) {
-                const rec = document.getElementById('task').value;
-                if (!rec) { mostrarToast('Por favor, informe o número do rec!'); return; }
-                taskOuSistema = `Rec: ${rec}`;
+                if (!taskValue) { mostrarToast('Por favor, informe o número do rec!'); return; }
+                taskOuSistema = `Rec: ${taskValue}`;
             } else {
-                const task = document.getElementById('task').value;
-                if (!task) { mostrarToast('Por favor, informe o número da task!'); return; }
-                taskOuSistema = `Task: ${task}`;
+                taskOuSistema = taskObrigatoria ? `Task: ${taskValue}` : (taskValue ? `Task: ${taskValue}` : 'N/A');
             }
             
             if (!cluster) { mostrarToast('Por favor, selecione o cluster!'); return; }
@@ -1349,8 +1553,10 @@
             historicoFalhas.unshift(novaFalha);
             salvarDados();
             
+            // Limpar formulário
             document.getElementById('titulo-falha').value = '';
             document.getElementById('cluster').value = '';
+            document.getElementById('cluster').disabled = false;
             document.getElementById('incidente').value = '';
             document.getElementById('task').value = '';
             document.getElementById('sistema-afetado').value = '';
@@ -1364,6 +1570,11 @@
             document.getElementById('task').placeholder = '';
             opcaoIndicadoresSelecionada = null;
             opcaoDetalheSelecionada = null;
+            
+            // Resetar largura do título
+            const containerTitulo = document.getElementById('container-titulo-falha');
+            containerTitulo.classList.remove('form-group-tres-colunas');
+            containerTitulo.classList.add('form-group-duas-colunas');
             
             mostrarToast('Registro concluído! ✓');
             atualizarTabelaHistorico();
@@ -1385,7 +1596,7 @@
             const hora = document.getElementById('hora-ocorrencia').value;
             const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
             const dataHora = `${dataFormatada} ${hora}`;
-            const novoChamado = { id: Date.now(), dataHora: dataHora, numero: numero, motivo: motivo };
+            const novoChamado = { id: Date.now(), dataHora: dataHora, numero: numero, motivo: motivo, dataEncerramento: '' };
             chamados.unshift(novoChamado);
             salvarDados();
             document.getElementById('numero-chamado').value = '';
@@ -1452,6 +1663,10 @@
         
         document.getElementById('btn-relatorio').addEventListener('click', function() {
             mostrarToast('Funcionalidade de gráfico em desenvolvimento!');
+        });
+
+        document.getElementById('btn-fechar-relatorio').addEventListener('click', function() {
+            document.getElementById('modal-relatorio').style.display = 'none';
         });
 
         function inicializarDataHora() {
