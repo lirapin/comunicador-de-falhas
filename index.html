@@ -223,6 +223,33 @@
             resize: vertical;
         }
 
+        /* Container para campo com ícone de anexo */
+        .textarea-container {
+            position: relative;
+        }
+
+        .textarea-container .textarea-moderno {
+            padding-right: 40px;
+        }
+
+        .anexo-icon {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            color: var(--text-light);
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .anexo-icon:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
         .indicadores-container {
             display: flex;
             gap: 20px;
@@ -380,6 +407,12 @@
             min-width: 120px;
         }
 
+        /* Campo título de falha ocupando 2 colunas */
+        .form-group-duas-colunas {
+            flex: 2;
+            min-width: 250px;
+        }
+
         .oculto {
             display: none;
         }
@@ -498,6 +531,47 @@
             display: block;
         }
 
+        /* Linha de filtros com 4 itens */
+        .filtros-linha-botoes {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filtro-botao-group {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .filtro-botao-group label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .filtro-botao {
+            width: 100%;
+            padding: 10px 8px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .filtro-botao:hover {
+            background: var(--primary-strong);
+            transform: translateY(-1px);
+        }
+
         .btn-filtro {
             padding: 10px 14px;
             background: var(--primary-color);
@@ -513,6 +587,29 @@
 
         .btn-filtro:hover {
             background: var(--primary-strong);
+        }
+
+        /* Botão registrar falha estilizado como botão primário */
+        .btn-registrar-falha {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-registrar-falha:hover {
+            background: var(--primary-strong);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(198, 40, 40, 0.3);
         }
 
         @media (max-width: 768px) {
@@ -561,6 +658,14 @@
             .filtro-group {
                 width: 100%;
             }
+            
+            .filtros-linha-botoes {
+                flex-direction: column;
+            }
+            
+            .filtro-botao-group {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -588,10 +693,10 @@
             <div class="tabs-container">
                 <div class="tabs">
                     <button class="tab active" onclick="mudarTab('registro')">
-                        <i class="fas fa-pen-alt"></i> Novo Registro
+                        <i class="fas fa-pen-alt"></i> Novo registro
                     </button>
                     <button class="tab" onclick="mudarTab('chamados')">
-                        <i class="fas fa-ticket-alt"></i> Chamados
+                        <i class="fas fa-phone"></i> Chamados
                     </button>
                     <button class="tab" onclick="mudarTab('historico')">
                         <i class="fas fa-history"></i> Histórico
@@ -605,21 +710,23 @@
 
             <!-- Aba de Registro -->
             <div id="tab-registro" class="tab-content active">
-                <div class="form-group-moderno">
-                    <label class="label-moderno" for="titulo-falha">Título da falha</label>
-                    <select id="titulo-falha" class="select-moderno">
-                        <option value="">Selecione um tipo de falha</option>
-                        <option value="Ocorrência não encerrada">Ocorrência não encerrada</option>
-                        <option value="Falha no escalonamento">Falha no escalonamento</option>
-                        <option value="Falha na atualização">Falha na atualização</option>
-                        <option value="Falha sistêmica">Falha sistêmica</option>
-                        <option value="Abrangência">Abrangência</option>
-                        <option value="Rec em dp">Rec em dp</option>
-                        <option value="Outros">Outros</option>
-                        <option value="Indicadores">Indicadores</option>
-                    </select>
-                    <div id="campo-outros-titulo" class="oculto" style="margin-top:10px;">
-                        <input type="text" id="outro-titulo" class="input-moderno" placeholder="Especifique o tipo de falha...">
+                <div class="linha-formulario">
+                    <div class="form-group-duas-colunas">
+                        <label class="label-moderno" for="titulo-falha">Título da falha</label>
+                        <select id="titulo-falha" class="select-moderno">
+                            <option value="">Selecione um tipo de falha</option>
+                            <option value="Ocorrência não encerrada">Ocorrência não encerrada</option>
+                            <option value="Falha no escalonamento">Falha no escalonamento</option>
+                            <option value="Falha na atualização">Falha na atualização</option>
+                            <option value="Falha sistêmica">Falha sistêmica</option>
+                            <option value="Abrangência">Abrangência</option>
+                            <option value="Rec em dp">Rec em dp</option>
+                            <option value="Outros">Outros</option>
+                            <option value="Indicadores">Indicadores</option>
+                        </select>
+                        <div id="campo-outros-titulo" class="oculto" style="margin-top:10px;">
+                            <input type="text" id="outro-titulo" class="input-moderno" placeholder="Descreva o tipo de falha.">
+                        </div>
                     </div>
                 </div>
 
@@ -643,12 +750,12 @@
                     
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="incidente">Incidente</label>
-                        <input type="text" id="incidente" class="input-moderno" placeholder="Número do incidente" value="">
+                        <input type="text" id="incidente" class="input-moderno" value="">
                     </div>
                     
                     <div class="form-group-moderno" id="campo-task-container">
                         <label class="label-moderno" id="task-label" for="task">Task</label>
-                        <input type="text" id="task" class="input-moderno" placeholder="Número da task" value="">
+                        <input type="text" id="task" class="input-moderno" value="">
                     </div>
 
                     <div class="form-group-moderno oculto" id="campo-sistema-container">
@@ -670,11 +777,14 @@
                 
                 <div class="form-group-moderno">
                     <label class="label-moderno" for="descricao-falha">Descrição da falha</label>
-                    <textarea id="descricao-falha" class="textarea-moderno" rows="4" placeholder="Descreva a falha."></textarea>
+                    <div class="textarea-container">
+                        <textarea id="descricao-falha" class="textarea-moderno" rows="4" placeholder="Descreva a falha."></textarea>
+                        <i class="fas fa-paperclip anexo-icon" title="Anexar imagem"></i>
+                    </div>
                 </div>
                 
                 <div style="display: flex; justify-content: flex-start;">
-                    <button id="botao-registrar-falha" class="btn-primario">
+                    <button id="botao-registrar-falha" class="btn-registrar-falha">
                         <i class="fas fa-save"></i> Registrar falha
                     </button>
                 </div>
@@ -752,30 +862,31 @@
                             <option value="N/A">N/A</option>
                         </select>
                     </div>
-                    <div class="filtro-group">
-                        <label>Filtrar por incidente</label>
-                        <input type="text" id="filtro-incidente" class="input-moderno" placeholder="Número do incidente" style="padding: 8px;">
-                    </div>
                     <button id="limpar-filtros" class="btn-secundario btn-icon-only" title="Limpar filtros">
                         <i class="fas fa-eraser"></i>
                     </button>
-                </div>
-                <div class="filtros-container">
-                    <div class="filtro-group">
-                        <label>Filtrar por task</label>
-                        <input type="text" id="filtro-task" class="input-moderno" placeholder="Número da task" style="padding: 8px;">
-                    </div>
-                    <div class="filtro-group">
-                        <label>Filtrar por sistema</label>
-                        <input type="text" id="filtro-sistema" class="input-moderno" placeholder="Nome do sistema" style="padding: 8px;">
-                    </div>
-                    <div class="filtro-group">
-                        <label>Filtrar por rec</label>
-                        <input type="text" id="filtro-rec" class="input-moderno" placeholder="Número do rec" style="padding: 8px;">
-                    </div>
                     <button id="aplicar-filtros" class="btn-filtro" title="Filtrar">
                         <i class="fas fa-search"></i>
                     </button>
+                </div>
+                
+                <div class="filtros-linha-botoes">
+                    <div class="filtro-botao-group">
+                        <label>Filtrar por incidente</label>
+                        <input type="text" id="filtro-incidente" class="input-moderno" style="padding: 8px;" value="">
+                    </div>
+                    <div class="filtro-botao-group">
+                        <label>Filtrar por task</label>
+                        <input type="text" id="filtro-task" class="input-moderno" style="padding: 8px;" value="">
+                    </div>
+                    <div class="filtro-botao-group">
+                        <label>Filtrar por sistema</label>
+                        <input type="text" id="filtro-sistema" class="input-moderno" style="padding: 8px;" value="">
+                    </div>
+                    <div class="filtro-botao-group">
+                        <label>Filtrar por rec</label>
+                        <input type="text" id="filtro-rec" class="input-moderno" style="padding: 8px;" value="">
+                    </div>
                 </div>
 
                 <div class="tabela-container">
@@ -891,6 +1002,11 @@
                     ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarRegistro(${falha.id})"><i class="fas fa-trash"></i></button></td>` : ''}
                 </tr>
             `).join('');
+            
+            // Atualizar visibilidade da coluna de ações
+            const colunaAcao = document.getElementById('coluna-acao-historico');
+            if (modoAtual === 'admin') colunaAcao.classList.remove('oculto');
+            else colunaAcao.classList.add('oculto');
         }
 
         function atualizarTabelaHistorico() {
@@ -1076,12 +1192,12 @@
                 taskContainer.classList.remove('oculto');
                 sistemaContainer.classList.add('oculto');
                 taskLabel.textContent = 'Rec';
-                document.getElementById('task').placeholder = 'Número do rec';
+                document.getElementById('task').placeholder = '';
             } else {
                 taskContainer.classList.remove('oculto');
                 sistemaContainer.classList.add('oculto');
                 taskLabel.textContent = 'Task';
-                document.getElementById('task').placeholder = 'Número da task';
+                document.getElementById('task').placeholder = '';
             }
         }
 
@@ -1200,7 +1316,7 @@
             document.getElementById('campo-task-container').classList.remove('oculto');
             document.getElementById('campo-sistema-container').classList.add('oculto');
             document.getElementById('task-label').textContent = 'Task';
-            document.getElementById('task').placeholder = 'Número da task';
+            document.getElementById('task').placeholder = '';
             opcaoIndicadoresSelecionada = null;
             opcaoDetalheSelecionada = null;
             
