@@ -477,7 +477,7 @@
         }
 
         .input-data-hora-pequeno {
-            width: 130px;
+            width: 150px;
             padding: 6px 8px;
             font-size: 11px;
             border: 1px solid #ddd;
@@ -909,7 +909,7 @@
                         <table class="tabela-historico">
                             <thead>
                                 <tr>
-                                    <th>Data/hora</th>
+                                    <th>Chamado aberto</th>
                                     <th>Número do chamado</th>
                                     <th>Motivo</th>
                                     <th>Chamado encerrado</th>
@@ -1164,9 +1164,9 @@
                     <td>${chamado.numero}</td>
                     <td>${chamado.motivo}</td>
                     <td style="white-space: nowrap;">
-                        <input type="text" id="encerramento-${chamado.id}" class="input-data-hora-pequeno" placeholder="DD/MM/AAAA HH:MM" value="${chamado.dataEncerramento || ''}" ${modoAtual === 'admin' ? '' : 'disabled'}>
-                        ${modoAtual === 'admin' ? `<button class="btn-check" onclick="salvarEncerramento(${chamado.id})"><i class="fas fa-check"></i></button>
-                        <button class="btn-check" onclick="verRelatorioChamado(${chamado.id})" style="background: #3498db; margin-left: 5px;"><i class="fas fa-chart-line"></i></button>` : ''}
+                        <input type="text" id="encerramento-${chamado.id}" class="input-data-hora-pequeno" placeholder="DD/MM/AAAA HH:MM" value="${chamado.dataEncerramento || ''}">
+                        <button class="btn-check" onclick="salvarEncerramento(${chamado.id})"><i class="fas fa-check"></i></button>
+                        <button class="btn-check" onclick="verRelatorioChamado(${chamado.id})" style="background: #3498db; margin-left: 5px;"><i class="fas fa-chart-line"></i></button>
                     </td>
                     ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarChamado(${chamado.id})"><i class="fas fa-trash"></i></button></td>` : ''}
                 </tr>
