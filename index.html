@@ -380,23 +380,24 @@
             color: white;
         }
 
-        .btn-check {
-            background: #27ae60;
-            color: white;
+        .btn-grafico-icone {
+            background: transparent;
             border: none;
-            border-radius: 10px;
-            padding: 6px 10px;
+            color: var(--primary-color);
+            font-size: 16px;
             cursor: pointer;
             transition: var(--transition);
+            padding: 6px;
+            border-radius: 8px;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            font-size: 11px;
+            justify-content: center;
         }
 
-        .btn-check:hover {
-            background: #229954;
-            transform: scale(1.05);
+        .btn-grafico-icone:hover {
+            background: var(--secondary-color);
+            transform: scale(1.1);
+            color: var(--primary-strong);
         }
 
         .linha-chamado {
@@ -476,12 +477,21 @@
             background: var(--secondary-color);
         }
 
-        .input-data-hora-pequeno {
-            width: 150px;
+        .input-data-hora-padrao {
+            width: 130px;
             padding: 6px 8px;
             font-size: 11px;
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0;
             border-radius: 8px;
+            font-family: monospace;
+            background-color: #fafafa;
+            transition: var(--transition);
+        }
+
+        .input-data-hora-padrao:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.1);
         }
 
         .toast {
@@ -1154,7 +1164,7 @@
             else colunaAcao.classList.add('oculto');
             
             if (chamados.length === 0) {
-                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '5' : '4') + '" style="text-align: center;">Nenhum chamado registrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
+                corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '5' : '4') + '" style="text-align: center;">Nenhum chamado registrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"><td>' : '') + '</tr>';
                 return;
             }
             
@@ -1164,9 +1174,9 @@
                     <td>${chamado.numero}</td>
                     <td>${chamado.motivo}</td>
                     <td style="white-space: nowrap;">
-                        <input type="text" id="encerramento-${chamado.id}" class="input-data-hora-pequeno" placeholder="DD/MM/AAAA HH:MM" value="${chamado.dataEncerramento || ''}">
-                        <button class="btn-check" onclick="salvarEncerramento(${chamado.id})"><i class="fas fa-check"></i></button>
-                        <button class="btn-check" onclick="verRelatorioChamado(${chamado.id})" style="background: #3498db; margin-left: 5px;"><i class="fas fa-chart-line"></i></button>
+                        <input type="text" id="encerramento-${chamado.id}" class="input-data-hora-padrao" placeholder="DD/MM/AAAA HH:MM" value="${chamado.dataEncerramento || ''}">
+                        <button class="btn-grafico-icone" onclick="salvarEncerramento(${chamado.id})" title="Salvar encerramento"><i class="fas fa-save"></i></button>
+                        <button class="btn-grafico-icone" onclick="verRelatorioChamado(${chamado.id})" title="Ver relatório"><i class="fas fa-chart-line"></i></button>
                     </td>
                     ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarChamado(${chamado.id})"><i class="fas fa-trash"></i></button></td>` : ''}
                 </tr>
