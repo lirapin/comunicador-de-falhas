@@ -11,15 +11,16 @@
             --primary-color: #d32f2f;
             --primary-light: #f44336;
             --primary-dark: #b71c1c;
-            --secondary-color: #ffebee;
-            --accent-color: #ef9a9a;
-            --text-color: #333;
-            --text-light: #666;
+            --secondary-color: #fff5f5;
+            --accent-color: #ffcdd2;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-body: #f0f2f5;
+            --bg-card: #ffffff;
             --border-radius: 12px;
-            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            --box-shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.12);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --glass-bg: rgba(255, 255, 255, 0.95);
+            --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            --box-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
         }
 
         /* ===== RESET E CONFIGURAÇÕES GERAIS ===== */
@@ -31,114 +32,121 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-body);
             color: var(--text-color);
-            line-height: 1.6;
+            line-height: 1.5;
             padding: 20px;
             min-height: 100vh;
         }
 
         /* ===== LAYOUT CONTAINER ===== */
         .container-moderno {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
         /* ===== HEADER ===== */
         .header-moderno {
             text-align: center;
-            margin-bottom: 30px;
-            padding: 30px 20px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: var(--box-shadow);
-            animation: slideDown 0.5s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            margin-bottom: 25px;
+            padding: 20px;
         }
 
         .titulo-principal {
             color: var(--primary-dark);
-            text-transform: uppercase;
-            font-size: 28px;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-            font-weight: 700;
-        }
-
-        .subtitulo {
-            color: var(--text-light);
-            font-size: 14px;
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         /* ===== CARDS ===== */
         .card-moderno {
-            background: var(--glass-bg);
-            border-radius: 20px;
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
-            padding: 30px;
+            padding: 25px;
             margin-bottom: 25px;
             transition: var(--transition);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.5s ease;
         }
 
-        @keyframes fadeInUp {
+        .card-moderno:hover {
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        /* ===== TABS ===== */
+        .tabs-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 8px 20px;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-light);
+            border-radius: 20px;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        .data-hora-editable {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .data-hora-editable input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: monospace;
+            background: var(--bg-card);
+            transition: var(--transition);
+        }
+
+        .data-hora-editable input:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .card-moderno:hover {
-            box-shadow: var(--box-shadow-hover);
-            transform: translateY(-2px);
-        }
-
-        .titulo-secao {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 12px;
-            margin-bottom: 25px;
-            font-size: 22px;
-            font-weight: 600;
-        }
-
-        /* ===== LINHA TOPO COM DATA/HORA DISCRETAS ===== */
-        .linha-topo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .info-tempo {
-            display: flex;
-            gap: 15px;
-            font-size: 13px;
-            color: var(--text-light);
-        }
-
-        .info-tempo span {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
         }
 
         /* ===== FORMULÁRIOS ===== */
@@ -149,133 +157,155 @@
         .label-moderno {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--primary-dark);
             font-size: 14px;
         }
 
         .input-moderno, .select-moderno, .textarea-moderno {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: var(--border-radius);
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
             font-size: 14px;
             transition: var(--transition);
             background-color: #fafafa;
+            font-family: inherit;
         }
 
         .input-moderno:focus, .select-moderno:focus, .textarea-moderno:focus {
             outline: none;
             border-color: var(--primary-light);
-            box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
             background-color: white;
         }
 
-        /* ===== ABAS DINÂMICAS ===== */
-        .aba-dinamica {
-            background: #f5f5f5;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary-color);
-            animation: fadeIn 0.3s ease;
+        .textarea-moderno {
+            resize: vertical;
+            text-transform: uppercase;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateX(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        /* ===== ABAS DINÂMICAS ===== */
+        .indicadores-container {
+            display: flex;
+            gap: 25px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .indicador-coluna {
+            flex: 1;
+            min-width: 200px;
+            transition: var(--transition);
+        }
+
+        .indicador-coluna.claro {
+            opacity: 0.6;
+        }
+
+        .indicador-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .indicador-titulo {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .opcoes-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .opcao-radio {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px;
+            padding: 8px 12px;
             background: white;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 13px;
         }
 
         .opcao-radio:hover {
             background: var(--secondary-color);
-            transform: translateX(5px);
+            transform: translateX(3px);
         }
 
         .opcao-radio input[type="radio"] {
             cursor: pointer;
             accent-color: var(--primary-color);
+            width: 16px;
+            height: 16px;
         }
 
         .opcao-radio label {
             cursor: pointer;
             flex: 1;
-            font-weight: 500;
+            font-weight: normal;
+            font-size: 13px;
         }
 
         /* ===== BOTÕES ===== */
         .btn-primario {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            background: var(--primary-color);
             color: white;
             border: none;
-            border-radius: var(--border-radius);
-            padding: 14px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .btn-primario:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(211, 47, 47, 0.3);
-        }
-
-        .btn-primario:active {
-            transform: translateY(0);
-        }
-
-        .btn-secundario {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 12px 25px;
+            border-radius: 8px;
+            padding: 12px 24px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            width: 100%;
+        }
+
+        .btn-primario:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
+        }
+
+        .btn-secundario {
+            background: #e0e0e0;
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .btn-secundario:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            background: #d0d0d0;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #757575, #616161);
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
         }
 
         /* ===== LAYOUT EM GRID ===== */
@@ -296,32 +326,31 @@
         }
 
         /* ===== HISTÓRICO ===== */
-        .historico-container {
-            margin-top: 30px;
-        }
-
         .historico-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .tabela-historico {
             width: 100%;
             border-collapse: collapse;
+            font-size: 13px;
         }
 
         .tabela-historico th {
             background: var(--primary-color);
             color: white;
-            padding: 12px;
+            padding: 10px;
             text-align: left;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .tabela-historico td {
-            padding: 12px;
+            padding: 10px;
             border-bottom: 1px solid #e0e0e0;
         }
 
@@ -331,15 +360,13 @@
 
         .badge {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 2px 8px;
+            border-radius: 12px;
             font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-sucesso {
-            background: #4caf50;
+            font-weight: 500;
+            background: var(--primary-light);
             color: white;
+            margin-left: 5px;
         }
 
         /* ===== TOAST NOTIFICATION ===== */
@@ -347,16 +374,17 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, #4caf50, #45a049);
+            background: #27ae60;
             color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             display: flex;
             align-items: center;
             gap: 10px;
             z-index: 1000;
             animation: slideInRight 0.3s ease;
+            font-size: 14px;
         }
 
         @keyframes slideInRight {
@@ -370,40 +398,6 @@
             }
         }
 
-        /* ===== TABS ===== */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-
-        .tab {
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-light);
-        }
-
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: -2px;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 768px) {
             .linha-formulario {
@@ -411,30 +405,25 @@
                 gap: 15px;
             }
             
-            .btn-primario, .btn-secundario {
-                width: 100%;
-            }
-            
-            .container-moderno {
-                padding: 10px;
-            }
-            
-            .card-moderno {
-                padding: 20px;
-            }
-            
-            .linha-topo {
+            .indicadores-container {
                 flex-direction: column;
-                gap: 10px;
+            }
+            
+            .tabs-container {
+                flex-direction: column;
                 align-items: flex-start;
             }
             
+            .data-hora-editable {
+                align-self: flex-end;
+            }
+            
             .tabela-historico {
-                font-size: 12px;
+                font-size: 11px;
             }
             
             .tabela-historico th, .tabela-historico td {
-                padding: 8px;
+                padding: 6px;
             }
         }
     </style>
@@ -447,31 +436,29 @@
                 <i class="fas fa-bug"></i>
                 Portal de Relatórios de Falhas
             </h1>
-            <p class="subtitulo">Sistema rápido e eficiente para registro de ocorrências</p>
         </header>
 
-        <!-- Tabs -->
+        <!-- Card Principal -->
         <div class="card-moderno">
-            <div class="tabs">
-                <button class="tab active" onclick="mudarTab('registro')">
-                    <i class="fas fa-pen-alt"></i> Novo Registro
-                </button>
-                <button class="tab" onclick="mudarTab('historico')">
-                    <i class="fas fa-history"></i> Histórico 
-                    <span id="contador-historico" class="badge" style="background:var(--primary-color); color:white; margin-left:5px;">0</span>
-                </button>
+            <!-- Tabs com Data/Hora no canto -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab active" onclick="mudarTab('registro')">
+                        <i class="fas fa-pen-alt"></i> Novo Registro
+                    </button>
+                    <button class="tab" onclick="mudarTab('historico')">
+                        <i class="fas fa-history"></i> Histórico 
+                        <span id="contador-historico" class="badge">0</span>
+                    </button>
+                </div>
+                <div class="data-hora-editable">
+                    <input type="date" id="data-ocorrencia" class="input-data">
+                    <input type="time" id="hora-ocorrencia" class="input-hora">
+                </div>
             </div>
 
             <!-- Aba de Registro -->
             <div id="tab-registro" class="tab-content active">
-                <!-- Linha topo com data/hora discretas -->
-                <div class="linha-topo">
-                    <div class="info-tempo">
-                        <span><i class="far fa-calendar-alt"></i> <span id="data-atual"></span></span>
-                        <span><i class="far fa-clock"></i> <span id="hora-atual"></span></span>
-                    </div>
-                </div>
-
                 <div class="form-group-moderno">
                     <label class="label-moderno" for="titulo-falha">Título da Falha</label>
                     <select id="titulo-falha" class="select-moderno">
@@ -490,7 +477,7 @@
                     </div>
                 </div>
 
-                <!-- Container para abas dinâmicas -->
+                <!-- Container para abas dinâmicas de Indicadores -->
                 <div id="container-aba-dinamica"></div>
 
                 <!-- Cluster, Incidente e Task/Sistema -->
@@ -541,19 +528,19 @@
                 </div>
                 
                 <button id="botao-registrar-falha" class="btn-primario">
-                    <i class="fas fa-save btn-icone"></i>Registrar Falha
+                    <i class="fas fa-save"></i> Registrar Falha
                 </button>
             </div>
 
             <!-- Aba de Histórico -->
             <div id="tab-historico" class="tab-content">
                 <div class="historico-header">
-                    <h3><i class="fas fa-list"></i> Histórico de Falhas</h3>
+                    <h3 style="font-size: 18px; font-weight: 500;"><i class="fas fa-list"></i> Histórico de Falhas</h3>
                     <button id="limpar-historico" class="btn-secundario btn-danger">
                         <i class="fas fa-trash-alt"></i> Limpar Histórico
                     </button>
                 </div>
-                <div id="lista-historico">
+                <div style="overflow-x: auto;">
                     <table class="tabela-historico">
                         <thead>
                             <tr>
@@ -574,14 +561,45 @@
             </div>
         </div>
 
-        <footer style="text-align: center; margin-top: 30px; color: white; opacity: 0.8;">
-            <div>Desenvolvido por N5923221</div>
+        <footer style="text-align: center; margin-top: 20px; color: var(--text-light); font-size: 12px;">
+            Desenvolvido por N5923221
         </footer>
     </div>
 
     <script>
         // Armazenamento
         let historicoFalhas = [];
+        let opcaoIndicadoresSelecionada = null;
+        let opcaoDetalheSelecionada = null;
+
+        // Função para limpar e formatar texto (caixa alta + correções ortográficas)
+        function formatarTexto(texto) {
+            if (!texto) return '';
+            
+            // Remover espaços extras no início e fim
+            let formatado = texto.trim();
+            
+            // Remover espaços duplicados no meio
+            formatado = formatado.replace(/\s+/g, ' ');
+            
+            // Remover espaços antes de pontuação
+            formatado = formatado.replace(/\s+([.,!?;:])/g, '$1');
+            
+            // Remover múltiplos sinais de pontuação repetidos
+            formatado = formatado.replace(/([!?]){2,}/g, '$1');
+            formatado = formatado.replace(/(\.){2,}/g, '$1');
+            
+            // Remover acentos duplicados (casos como "Não" continua "Não", mas sem duplicar)
+            // Isso já é resolvido pelo fato de não adicionarmos acentos extras
+            
+            // Remover vírgulas repetidas
+            formatado = formatado.replace(/,{2,}/g, ',');
+            
+            // Converter para CAIXA ALTA
+            formatado = formatado.toUpperCase();
+            
+            return formatado;
+        }
 
         // Carregar histórico do localStorage
         function carregarHistorico() {
@@ -613,7 +631,7 @@
             corpo.innerHTML = historicoFalhas.map(falha => `
                 <tr>
                     <td>${falha.dataHora}</td>
-                    <td>${falha.titulo}</td>
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
                     <td>${falha.cluster}</td>
                     <td>${falha.incidente || 'N/A'}</td>
                     <td>${falha.taskOuSistema}</td>
@@ -650,54 +668,51 @@
             }
         }
 
-        // Limpar histórico
-        document.getElementById('limpar-historico').addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
-                historicoFalhas = [];
-                salvarHistorico();
-                mostrarToast('Histórico limpo com sucesso!');
-            }
-        });
-
-        // Abas dinâmicas para Indicadores
-        let opcaoIndicadoresSelecionada = null;
-        let opcaoDetalheSelecionada = null;
-
-        function criarAbaDinamica(tipo) {
+        // Criar interface de Indicadores com layout lado a lado
+        function criarAbaDinamica() {
             const container = document.getElementById('container-aba-dinamica');
             container.innerHTML = '';
             opcaoIndicadoresSelecionada = null;
             opcaoDetalheSelecionada = null;
 
-            if (tipo === 'Indicadores') {
-                // Aba 1 - Opções de Indicadores
-                const aba1 = document.createElement('div');
-                aba1.className = 'aba-dinamica';
-                aba1.innerHTML = `
-                    <h4 style="margin-bottom: 15px; color: var(--primary-dark);">
-                        <i class="fas fa-chart-line"></i> Selecione o tipo de indicador:
-                    </h4>
-                    <div class="opcoes-container">
-                        <div class="opcao-radio" onclick="selecionarOpcaoIndicador(this, '[INDICADORES] - Tarefa cancelada')">
-                            <input type="radio" name="indicador" value="[INDICADORES] - Tarefa cancelada">
-                            <label>[INDICADORES] - Tarefa cancelada</label>
-                        </div>
-                        <div class="opcao-radio" onclick="selecionarOpcaoIndicador(this, '[INDICADORES] - Chat')">
-                            <input type="radio" name="indicador" value="[INDICADORES] - Chat">
-                            <label>[INDICADORES] - Chat</label>
-                        </div>
-                        <div class="opcao-radio" onclick="selecionarOpcaoIndicador(this, '[INDICADORES] - Etit')">
-                            <input type="radio" name="indicador" value="[INDICADORES] - Etit">
-                            <label>[INDICADORES] - Etit</label>
+            container.innerHTML = `
+                <div class="indicadores-container">
+                    <div class="indicador-coluna" id="coluna-indicador">
+                        <div class="indicador-card">
+                            <div class="indicador-titulo">TIPO DE INDICADOR</div>
+                            <div class="opcoes-container">
+                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Tarefa cancelada')">
+                                    <input type="radio" name="indicador" value="[INDICADORES] - Tarefa cancelada">
+                                    <label>[INDICADORES] - Tarefa cancelada</label>
+                                </div>
+                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Chat')">
+                                    <input type="radio" name="indicador" value="[INDICADORES] - Chat">
+                                    <label>[INDICADORES] - Chat</label>
+                                </div>
+                                <div class="opcao-radio" onclick="selecionarIndicador(this, '[INDICADORES] - Etit')">
+                                    <input type="radio" name="indicador" value="[INDICADORES] - Etit">
+                                    <label>[INDICADORES] - Etit</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                `;
-                container.appendChild(aba1);
-            }
+                    <div class="indicador-coluna" id="coluna-detalhe">
+                        <div class="indicador-card" style="background: #f0f0f0; opacity: 0.7;">
+                            <div class="indicador-titulo">SELECIONE O DETALHAMENTO</div>
+                            <div class="opcoes-container" id="opcoes-detalhe-container">
+                                <div style="padding: 10px; text-align: center; color: var(--text-light); font-size: 12px;">
+                                    Selecione um tipo de indicador primeiro
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function selecionarOpcaoIndicador(element, valor) {
-            const radios = document.querySelectorAll('#container-aba-dinamica input[name="indicador"]');
+        function selecionarIndicador(element, valor) {
+            // Remover seleção anterior
+            const radios = document.querySelectorAll('#coluna-indicador input[name="indicador"]');
             radios.forEach(radio => {
                 radio.checked = false;
                 radio.parentElement.style.background = 'white';
@@ -709,7 +724,11 @@
             
             opcaoIndicadoresSelecionada = valor;
             
-            // Aba 2 baseada na escolha
+            // Deixar coluna anterior levemente mais clara
+            const colunaIndicador = document.getElementById('coluna-indicador');
+            colunaIndicador.classList.add('claro');
+            
+            // Determinar opções de detalhe
             let opcoesDetalhe = [];
             if (valor === '[INDICADORES] - Tarefa cancelada') {
                 opcoesDetalhe = [
@@ -726,33 +745,29 @@
                 ];
             }
             
-            // Remove aba2 se existir
-            const aba2Existente = document.getElementById('aba-detalhe');
-            if (aba2Existente) aba2Existente.remove();
-            
+            // Atualizar coluna de detalhe
+            const containerDetalhe = document.getElementById('opcoes-detalhe-container');
             if (opcoesDetalhe.length > 0) {
-                const aba2 = document.createElement('div');
-                aba2.id = 'aba-detalhe';
-                aba2.className = 'aba-dinamica';
-                aba2.innerHTML = `
-                    <h4 style="margin-bottom: 15px; color: var(--primary-dark);">
-                        <i class="fas fa-info-circle"></i> Selecione o detalhamento:
-                    </h4>
-                    <div class="opcoes-container" id="opcoes-detalhe">
-                        ${opcoesDetalhe.map(op => `
-                            <div class="opcao-radio" onclick="selecionarOpcaoDetalhe(this, '${op}')">
-                                <input type="radio" name="detalhe" value="${op}">
-                                <label>${op}</label>
-                            </div>
-                        `).join('')}
+                containerDetalhe.innerHTML = opcoesDetalhe.map(op => `
+                    <div class="opcao-radio" onclick="selecionarDetalhe(this, '${op}')">
+                        <input type="radio" name="detalhe" value="${op}">
+                        <label>${op}</label>
                     </div>
-                `;
-                document.getElementById('container-aba-dinamica').appendChild(aba2);
+                `).join('');
+                
+                // Resetar seleção de detalhe
+                opcaoDetalheSelecionada = null;
+                
+                // Remover classe claro da coluna de detalhe se tiver
+                const colunaDetalhe = document.getElementById('coluna-detalhe');
+                colunaDetalhe.classList.remove('claro');
+            } else {
+                containerDetalhe.innerHTML = '<div style="padding: 10px; text-align: center; color: var(--text-light); font-size: 12px;">Opções indisponíveis</div>';
             }
         }
 
-        function selecionarOpcaoDetalhe(element, valor) {
-            const radios = document.querySelectorAll('#opcoes-detalhe input[name="detalhe"]');
+        function selecionarDetalhe(element, valor) {
+            const radios = document.querySelectorAll('#opcoes-detalhe-container input[name="detalhe"]');
             radios.forEach(radio => {
                 radio.checked = false;
                 radio.parentElement.style.background = 'white';
@@ -793,7 +808,7 @@
             
             // Para Indicadores
             if (this.value === '[PORTAL DE RELATÓRIO DE FALHAS] - Indicadores') {
-                criarAbaDinamica('Indicadores');
+                criarAbaDinamica();
             } else {
                 containerAba.innerHTML = '';
                 opcaoIndicadoresSelecionada = null;
@@ -812,6 +827,16 @@
             } else {
                 campoOutros.classList.add('oculto');
                 document.getElementById('outro-sistema').value = '';
+            }
+        });
+
+        // Aplicar formatação ao texto da descrição em tempo real
+        document.getElementById('descricao-falha').addEventListener('input', function() {
+            const cursorPos = this.selectionStart;
+            const formatted = formatarTexto(this.value);
+            if (formatted !== this.value) {
+                this.value = formatted;
+                this.setSelectionRange(cursorPos, cursorPos);
             }
         });
 
@@ -867,14 +892,14 @@
                     }
                     sistema = outroSistema;
                 }
-                taskOuSistema = `Sistema: ${sistema}`;
+                taskOuSistema = `SISTEMA: ${sistema}`;
             } else {
                 const task = document.getElementById('task').value;
                 if (!task) {
                     mostrarToast('Por favor, informe o número da task!');
                     return;
                 }
-                taskOuSistema = `Task: ${task}`;
+                taskOuSistema = `TASK: ${task}`;
             }
             
             if (!cluster) {
@@ -882,13 +907,25 @@
                 return;
             }
             
-            const descricao = document.getElementById('descricao-falha').value;
+            let descricao = document.getElementById('descricao-falha').value;
             if (!descricao) {
                 mostrarToast('Por favor, preencha a descrição da falha!');
                 return;
             }
             
-            const dataHora = `${document.getElementById('data-atual').textContent} ${document.getElementById('hora-atual').textContent}`;
+            // Aplicar formatação final na descrição
+            descricao = formatarTexto(descricao);
+            
+            const data = document.getElementById('data-ocorrencia').value;
+            const hora = document.getElementById('hora-ocorrencia').value;
+            
+            if (!data || !hora) {
+                mostrarToast('Por favor, preencha data e hora da ocorrência!');
+                return;
+            }
+            
+            const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
+            const dataHora = `${dataFormatada} ${hora}`;
             
             // Registrar no histórico
             const novaFalha = {
@@ -920,25 +957,33 @@
             opcaoIndicadoresSelecionada = null;
             opcaoDetalheSelecionada = null;
             
-            mostrarToast('Registro concluído! ✓');
+            mostrarToast('REGISTRO CONCLUÍDO! ✓');
             
             // Ir para aba de histórico
             mudarTab('historico');
         });
 
-        // Atualizar data/hora
-        function atualizarDataHora() {
+        // Limpar histórico
+        document.getElementById('limpar-historico').addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja limpar todo o histórico?')) {
+                historicoFalhas = [];
+                salvarHistorico();
+                mostrarToast('Histórico limpo com sucesso!');
+            }
+        });
+
+        // Inicializar com data/hora atual
+        function inicializarDataHora() {
+            const hoje = new Date().toISOString().split('T')[0];
             const agora = new Date();
-            const data = agora.toLocaleDateString('pt-BR');
-            const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('data-atual').textContent = data;
-            document.getElementById('hora-atual').textContent = hora;
+            const horas = agora.getHours().toString().padStart(2, '0');
+            const minutos = agora.getMinutes().toString().padStart(2, '0');
+            
+            document.getElementById('data-ocorrencia').value = hoje;
+            document.getElementById('hora-ocorrencia').value = `${horas}:${minutos}`;
         }
         
-        atualizarDataHora();
-        setInterval(atualizarDataHora, 60000);
-        
-        // Inicializar
+        inicializarDataHora();
         carregarHistorico();
     </script>
 </body>
