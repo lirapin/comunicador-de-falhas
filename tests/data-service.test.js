@@ -38,7 +38,7 @@ test('carrega falhas e chamados sem expor o identificador do autor', async () =>
             attachment_name: 'imagem.png',
             attachment_mime: 'image/png',
             attachment_size: 1024,
-            reporter_name: 'EQUIPE MADRUGADA (ANÔNIMO)'
+            reporter_name: 'Equipe Madrugada'
         }],
         failure_portal_tickets: [{
             id: 't1',
@@ -46,6 +46,7 @@ test('carrega falhas e chamados sem expor o identificador do autor', async () =>
             closed_at: null,
             ticket_number: 'CH-1',
             reason: 'SIR',
+            event_description: 'INOPERANTE',
             reporter_name: 'Kelly Lira'
         }]
     };
@@ -70,8 +71,9 @@ test('carrega falhas e chamados sem expor o identificador do autor', async () =>
     assert.equal(service.configurado(), true);
     assert.equal((await service.sessaoAtual()).user.id, 'u1');
     const dados = await service.listarTudo();
-    assert.equal(dados.falhas[0].reporterName, 'EQUIPE MADRUGADA (ANÔNIMO)');
+    assert.equal(dados.falhas[0].reporterName, 'Equipe Madrugada');
     assert.equal(dados.chamados[0].reporterName, 'Kelly Lira');
+    assert.equal(dados.chamados[0].descricaoEvento, 'INOPERANTE');
     assert.equal(Object.hasOwn(dados.falhas[0], 'reporterId'), false);
     assert.equal(dados.falhas[0].incidente, 'N/A');
     assert.equal(dados.falhas[0].anexoPath, 'u1/f1/imagem.png');
@@ -109,7 +111,7 @@ test('envia imagem privada e vincula o caminho ao registro', async () => {
                                 single: async () => ({
                                     data: {
                                         ...value,
-                                        reporter_name: 'EQUIPE MADRUGADA (ANÔNIMO)'
+                                        reporter_name: value.reporter_name || 'Equipe Madrugada'
                                     },
                                     error: null
                                 })
@@ -134,7 +136,8 @@ test('envia imagem privada e vincula o caminho ao registro', async () => {
         cluster: 'RJ',
         incidente: 'N/A',
         taskOuSistema: 'N/A',
-        descricao: 'TESTE'
+        descricao: 'TESTE',
+        reporterName: 'Alan'
     }, imagem);
 
     assert.equal(upload.path, 'u1/uuid-1/uuid-2.png');
@@ -143,6 +146,7 @@ test('envia imagem privada e vincula o caminho ao registro', async () => {
     assert.equal(payload.id, 'uuid-1');
     assert.equal(payload.attachment_path, upload.path);
     assert.equal(payload.attachment_name, 'evidencia.png');
+    assert.equal(payload.reporter_name, 'Alan');
     assert.equal(falha.anexoMime, 'image/png');
     assert.equal(await service.criarUrlAnexo(upload.path), `https://signed.test/${upload.path}`);
 });
@@ -209,19 +213,22 @@ test('converte o usuário compartilhado madrugada para a identidade técnica', a
     assert.equal(credenciais.password, 'senha-compartilhada');
 });
 
-test('consulta somente o papel do usuário da sessão', async () => {
-    let filtro;
+test('consulta papel e nome do usuário da sessão', async () => {
+    const filtros = [];
     const client = {
         from(table) {
-            assert.equal(table, 'failure_portal_memberships');
             return {
                 select(columns) {
-                    assert.equal(columns, 'role');
                     return {
                         eq(column, value) {
-                            filtro = { column, value };
+                            filtros.push({ table, columns, column, value });
                             return {
-                                maybeSingle: async () => ({ data: { role: 'admin' }, error: null })
+                                maybeSingle: async () => ({
+                                    data: table === 'failure_portal_memberships'
+                                        ? { role: 'admin' }
+                                        : { display_name: 'Nelson Soares' },
+                                    error: null
+                                })
                             };
                         }
                     };
@@ -237,7 +244,55 @@ test('consulta somente o papel do usuário da sessão', async () => {
         client
     });
 
-    assert.equal(await service.obterAcesso('usuario-nelson'), 'admin');
-    assert.deepEqual(filtro, { column: 'user_id', value: 'usuario-nelson' });
+    const identidade = await service.obterIdentidade('usuario-nelson');
+    assert.equal(identidade.role, 'admin');
+    assert.equal(identidade.displayName, 'Nelson Soares');
+    assert.deepEqual(filtros, [
+        { table: 'failure_portal_memberships', columns: 'role', column: 'user_id', value: 'usuario-nelson' },
+        { table: 'failure_portal_profiles', columns: 'display_name', column: 'user_id', value: 'usuario-nelson' }
+    ]);
     await assert.rejects(service.obterAcesso(), /Sessão inválida/);
+});
+
+test('salva múltiplos motivos e a descrição copiável do chamado', async () => {
+    let payload;
+    const client = {
+        from(table) {
+            assert.equal(table, 'failure_portal_tickets');
+            return {
+                insert(value) {
+                    payload = value;
+                    return {
+                        select() {
+                            return {
+                                single: async () => ({
+                                    data: { id: 't2', closed_at: null, reporter_name: 'Equipe Madrugada', ...value },
+                                    error: null
+                                })
+                            };
+                        }
+                    };
+                }
+            };
+        }
+    };
+    const service = carregarServico({
+        config: {
+            supabaseUrl: 'https://projeto.supabase.co',
+            supabasePublishableKey: `sb_publishable_${'t'.repeat(30)}`
+        },
+        client
+    });
+
+    const chamado = await service.criarChamado({
+        openedAt: '2026-08-13T10:30:00.000Z',
+        numero: 'CH-2',
+        motivo: 'TOA / SGO',
+        descricaoEvento: 'INTERMITENTE'
+    });
+
+    assert.equal(payload.reason, 'TOA / SGO');
+    assert.equal(payload.event_description, 'INTERMITENTE');
+    assert.equal(chamado.motivo, 'TOA / SGO');
+    assert.equal(chamado.descricaoEvento, 'INTERMITENTE');
 });
