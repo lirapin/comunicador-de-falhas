@@ -59,7 +59,7 @@
             <!-- Aba de Registro -->
             <div id="tab-registro" class="tab-content active">
                 <div class="linha-formulario">
-                    <div id="container-titulo-falha" class="form-group-duas-colunas">
+                    <div id="container-titulo-falha" class="form-group-moderno">
                         <label class="label-moderno" for="titulo-falha">Título da falha</label>
                         <select id="titulo-falha" class="select-moderno">
                             <option value="">Selecione um tipo de falha</option>
@@ -76,7 +76,18 @@
                             <input type="text" id="outro-titulo" class="input-moderno" placeholder="Descreva o tipo de falha.">
                         </div>
                     </div>
-                    <div id="espacador-titulo" class="oculto"></div>
+                    <div class="form-group-moderno">
+                        <label class="label-moderno" for="reportado-por">Reportado por:</label>
+                        <select id="reportado-por" class="select-moderno">
+                            <option value="Alan">Alan</option>
+                            <option value="Raissa">Raissa</option>
+                            <option value="Thiago">Thiago</option>
+                            <option value="Cristiane">Cristiane</option>
+                            <option value="Leonardo">Leonardo</option>
+                            <option value="Maristella">Maristella</option>
+                            <option value="Equipe Madrugada" selected>Equipe Madrugada</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="container-aba-dinamica"></div>
@@ -156,16 +167,24 @@
                         <label class="label-moderno" for="numero-chamado">Número do chamado</label>
                         <input type="text" id="numero-chamado" class="input-moderno" value="">
                     </div>
+                    <fieldset class="form-group-moderno motivos-chamado" id="motivo-chamado">
+                        <legend class="label-moderno">Motivo</legend>
+                        <div class="motivos-opcoes">
+                            <label><input type="checkbox" name="motivo-chamado" value="SIR"> SIR</label>
+                            <label><input type="checkbox" name="motivo-chamado" value="TOA"> TOA</label>
+                            <label><input type="checkbox" name="motivo-chamado" value="OSS"> OSS</label>
+                            <label><input type="checkbox" name="motivo-chamado" value="VPN"> VPN</label>
+                            <label><input type="checkbox" name="motivo-chamado" value="SGO"> SGO</label>
+                            <label><input type="checkbox" name="motivo-chamado" value="OUTROS"> Outros</label>
+                        </div>
+                    </fieldset>
                     <div class="form-group-moderno">
-                        <label class="label-moderno" for="motivo-chamado">Motivo</label>
-                        <select id="motivo-chamado" class="select-moderno">
-                            <option value="">Selecione o motivo</option>
-                            <option value="SIR">SIR</option>
-                            <option value="TOA">TOA</option>
-                            <option value="OSS">OSS</option>
-                            <option value="VPN">VPN</option>
-                            <option value="SGO">SGO</option>
-                            <option value="OUTROS">Outros</option>
+                        <label class="label-moderno" for="descricao-chamado">Descrição</label>
+                        <select id="descricao-chamado" class="select-moderno">
+                            <option value="">Selecione a descrição</option>
+                            <option value="INOPERANTE">INOPERANTE</option>
+                            <option value="INTERMITENTE">INTERMITENTE</option>
+                            <option value="OUTRO">OUTRO</option>
                         </select>
                     </div>
                     <button id="botao-registrar-chamado" class="btn-primario" style="width: auto; white-space: nowrap;">
@@ -174,6 +193,9 @@
                 </div>
                 <div id="campo-outros-motivo" class="campo-outros-motivo oculto">
                     <input type="text" id="outro-motivo" class="input-moderno" placeholder="Descreva o motivo.">
+                </div>
+                <div id="campo-outra-descricao-chamado" class="campo-outros-motivo oculto">
+                    <input type="text" id="outra-descricao-chamado" class="input-moderno" placeholder="Descreva a condição do chamado.">
                 </div>
 
                 <div style="margin-top: 25px;">
@@ -186,12 +208,12 @@
                                     <th>Número do chamado</th>
                                     <th>Motivo</th>
                                     <th id="coluna-status-chamado">Status do chamado</th>
-                                    <th id="coluna-acao-chamados" class="oculto">Ações</th>
+                                    <th id="coluna-acao-chamados">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="corpo-chamados">
                                 <tr>
-                                    <td colspan="4" style="text-align: center;">Nenhum chamado registrado</td>
+                                    <td colspan="5" style="text-align: center;">Nenhum chamado registrado</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -279,7 +301,7 @@
         </div>
 
         <footer style="text-align: center; margin-top: 20px; color: var(--text-light); font-size: 11px;">
-            Desenvolvido por N5923221
+            Desenvolvido por Kelly Lira e Nelson Leandro.
         </footer>
     </div>
 

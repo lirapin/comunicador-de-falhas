@@ -344,6 +344,28 @@ body {
 
 .linha-chamado .form-group-moderno { flex: 1; margin-bottom: 0; min-width: 150px; }
 
+.motivos-chamado {
+    border: 0;
+    padding: 0;
+}
+
+.motivos-opcoes {
+    min-height: 45px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(58px, 1fr));
+    align-items: center;
+    gap: 4px 8px;
+    padding: 6px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 14px;
+    background-color: #fafafa;
+    font-size: 12px;
+}
+
+.motivos-opcoes label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.motivos-opcoes input { accent-color: var(--primary-color); }
+.motivos-opcoes:focus-within { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12); background-color: white; }
+
 .linha-formulario { display: flex; gap: 15px; margin-bottom: 18px; flex-wrap: wrap; }
 .linha-formulario .form-group-moderno { flex: 1; margin-bottom: 0; min-width: 120px; }
 
@@ -406,6 +428,9 @@ body {
 
 .status-chamado.status-aberto { color: #854d0e; background: #fef9c3; }
 .status-chamado.status-encerrado { color: #166534; background: #dcfce7; }
+
+.acoes-chamado { white-space: nowrap; }
+.acoes-chamado-container { display: inline-flex; align-items: center; gap: 6px; }
 
 .toast {
     position: fixed;

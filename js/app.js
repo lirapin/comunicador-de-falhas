@@ -6,6 +6,7 @@ let modoAtual = 'visualizador';
 let usuarioLogado = false;
 let sessaoAtual = null;
 let portalRole = null;
+let portalDisplayName = null;
 let dadosCarregando = false;
 let imagemSelecionada = null;
 let imagemPreviewUrl = null;
@@ -45,10 +46,29 @@ function atualizarVisaoPorPerfil() {
         colunaStatus.textContent = 'Encerramento administrativo';
     } else {
         titulo.textContent = 'Modo Equipe Madrugada';
-        descricao.textContent = 'Você pode registrar e consultar. As inserções da equipe são anônimas.';
+        descricao.textContent = 'Você pode registrar, identificar o responsável e consultar os registros.';
         icone.className = 'fas fa-users';
         colunaStatus.textContent = 'Status do chamado';
     }
+}
+
+function configurarCampoReportadoPor() {
+    const campo = document.getElementById('reportado-por');
+    campo.querySelectorAll('[data-admin-option]').forEach(opcao => opcao.remove());
+    if (usuarioLogado && usuarioEhAdmin() && portalDisplayName) {
+        if (![...campo.options].some(opcao => opcao.value === portalDisplayName)) {
+            const opcaoAdmin = document.createElement('option');
+            opcaoAdmin.value = portalDisplayName;
+            opcaoAdmin.textContent = portalDisplayName;
+            opcaoAdmin.dataset.adminOption = 'true';
+            campo.append(opcaoAdmin);
+        }
+        campo.value = portalDisplayName;
+        campo.disabled = true;
+        return;
+    }
+    campo.disabled = false;
+    campo.value = 'Equipe Madrugada';
 }
 
 function renderizarCelulaAnexo(falha) {
@@ -271,12 +291,9 @@ async function salvarEncerramento(id) {
 
 function atualizarTabelaChamados() {
     const corpo = document.getElementById('corpo-chamados');
-    const colunaAcao = document.getElementById('coluna-acao-chamados');
-    if (modoAtual === 'admin') colunaAcao.classList.remove('oculto');
-    else colunaAcao.classList.add('oculto');
 
     if (chamados.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '5' : '4') + '" style="text-align: center;">Nenhum chamado registrado</td></tr>';
+        corpo.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum chamado registrado</td></tr>';
         return;
     }
 
@@ -314,9 +331,56 @@ function atualizarTabelaChamados() {
             <td>${escaparHtml(chamado.numero)}</td>
             <td>${escaparHtml(chamado.motivo)}<br><small>${escaparHtml(chamado.reporterName)}</small></td>
             <td>${controleEncerramento}</td>
-            ${modoAtual === 'admin' ? `<td><button class="btn-secundario btn-danger" onclick="deletarChamado('${chamado.id}')" title="Excluir chamado"><i class="fas fa-trash"></i></button></td>` : ''}
+            <td class="acoes-chamado"><div class="acoes-chamado-container">
+                <button class="btn-secundario btn-icon-only" onclick="copiarRegistroEvento('${chamado.id}')" title="Copiar registro do evento" aria-label="Copiar registro do evento"><i class="fas fa-copy"></i></button>
+                ${modoAtual === 'admin' ? `<button class="btn-secundario btn-danger" onclick="deletarChamado('${chamado.id}')" title="Excluir chamado" aria-label="Excluir chamado"><i class="fas fa-trash"></i></button>` : ''}
+            </div></td>
         </tr>`;
     }).join('');
+}
+
+function montarTextoRegistroEvento(chamado) {
+    const linhas = [
+        '⚠️ REGISTRO DE EVENTO:',
+        '',
+        `DATA/HI: ${chamado.dataHora}`,
+        `MOTIVO: ${chamado.motivo}`,
+        `CHAMADO: ${chamado.numero}`,
+        `DESCRIÇÃO: ${chamado.descricaoEvento}`
+    ];
+    if (chamado.encerramentoIso) linhas.push(`DATA/HF: ${chamado.dataEncerramento}`);
+    return linhas.join('\n');
+}
+
+async function copiarParaAreaTransferencia(texto) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(texto);
+        return;
+    }
+    const campoTemporario = document.createElement('textarea');
+    campoTemporario.value = texto;
+    campoTemporario.setAttribute('readonly', '');
+    campoTemporario.style.position = 'fixed';
+    campoTemporario.style.opacity = '0';
+    document.body.append(campoTemporario);
+    campoTemporario.select();
+    const copiado = document.execCommand('copy');
+    campoTemporario.remove();
+    if (!copiado) throw new Error('O navegador não permitiu copiar o texto.');
+}
+
+async function copiarRegistroEvento(id) {
+    const chamado = chamados.find(item => item.id === id);
+    if (!chamado) {
+        mostrarToast('Chamado não encontrado.');
+        return;
+    }
+    try {
+        await copiarParaAreaTransferencia(montarTextoRegistroEvento(chamado));
+        mostrarToast('Registro do evento copiado.');
+    } catch (error) {
+        mostrarToast(error.message);
+    }
 }
 
 function verRelatorioChamado(id) {
@@ -535,19 +599,7 @@ function isIncidenteObrigatorio(titulo, indicador) {
 document.getElementById('titulo-falha').addEventListener('change', function() {
     const campoOutros = document.getElementById('campo-outros-titulo');
     const containerAba = document.getElementById('container-aba-dinamica');
-    const containerTitulo = document.getElementById('container-titulo-falha');
-    const espacador = document.getElementById('espacador-titulo');
     const valorSelecionado = this.value;
-
-    if (valorSelecionado === 'Indicadores') {
-        containerTitulo.classList.remove('form-group-duas-colunas');
-        containerTitulo.classList.add('form-group-tres-colunas');
-        espacador.classList.add('oculto');
-    } else {
-        containerTitulo.classList.remove('form-group-tres-colunas');
-        containerTitulo.classList.add('form-group-duas-colunas');
-        espacador.classList.remove('oculto');
-    }
 
     if (valorSelecionado === 'Outros') {
         campoOutros.classList.remove('oculto');
@@ -580,16 +632,26 @@ document.getElementById('sistema-afetado').addEventListener('change', function()
 
 document.getElementById('motivo-chamado').addEventListener('change', function() {
     const campoOutros = document.getElementById('campo-outros-motivo');
-    if (this.value === 'OUTROS') campoOutros.classList.remove('oculto');
+    const selecionouOutros = Boolean(this.querySelector('input[value="OUTROS"]:checked'));
+    if (selecionouOutros) campoOutros.classList.remove('oculto');
     else {
         campoOutros.classList.add('oculto');
         document.getElementById('outro-motivo').value = '';
     }
 });
 
+document.getElementById('descricao-chamado').addEventListener('change', function() {
+    const campoOutro = document.getElementById('campo-outra-descricao-chamado');
+    if (this.value === 'OUTRO') campoOutro.classList.remove('oculto');
+    else {
+        campoOutro.classList.add('oculto');
+        document.getElementById('outra-descricao-chamado').value = '';
+    }
+});
+
 document.getElementById('descricao-falha').addEventListener('input', function() {
     const cursorPos = this.selectionStart;
-    const formatted = formatarTexto(this.value);
+    const formatted = this.value.toUpperCase();
     if (formatted !== this.value) {
         this.value = formatted;
         this.setSelectionRange(cursorPos, cursorPos);
@@ -697,6 +759,8 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
     let descricao = document.getElementById('descricao-falha').value;
     if (!descricao) { mostrarToast('Por favor, preencha a descrição da falha!'); return; }
     descricao = formatarTexto(descricao);
+    const reporterName = document.getElementById('reportado-por').value;
+    if (!reporterName) { mostrarToast('Por favor, selecione quem está reportando a falha!'); return; }
 
     const data = document.getElementById('data-ocorrencia').value;
     const hora = document.getElementById('hora-ocorrencia').value;
@@ -711,7 +775,8 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
             cluster,
             incidente: incidente || 'N/A',
             taskOuSistema,
-            descricao
+            descricao,
+            reporterName
         }, imagemSelecionada);
         historicoFalhas.unshift(novaFalha);
     } catch (error) {
@@ -739,10 +804,7 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
     document.getElementById('task').placeholder = '';
     opcaoIndicadoresSelecionada = null;
     opcaoDetalheSelecionada = null;
-
-    const containerTitulo = document.getElementById('container-titulo-falha');
-    containerTitulo.classList.remove('form-group-tres-colunas');
-    containerTitulo.classList.add('form-group-duas-colunas');
+    configurarCampoReportadoPor();
 
     mostrarToast('Registro salvo no servidor.');
     atualizarTabelaHistorico();
@@ -753,13 +815,22 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
 document.getElementById('botao-registrar-chamado').addEventListener('click', async function() {
     if (!exigirSessao()) return;
     const numero = document.getElementById('numero-chamado').value;
-    let motivo = document.getElementById('motivo-chamado').value;
+    const motivosSelecionados = [...document.querySelectorAll('input[name="motivo-chamado"]:checked')].map(campo => campo.value);
     if (!numero) { mostrarToast('Por favor, informe o número do chamado!'); return; }
-    if (!motivo) { mostrarToast('Por favor, selecione o motivo!'); return; }
-    if (motivo === 'OUTROS') {
+    if (!motivosSelecionados.length) { mostrarToast('Por favor, selecione ao menos um motivo!'); return; }
+    const motivos = motivosSelecionados.filter(motivo => motivo !== 'OUTROS');
+    if (motivosSelecionados.includes('OUTROS')) {
         const outroMotivo = document.getElementById('outro-motivo').value;
         if (!outroMotivo) { mostrarToast('Por favor, especifique o motivo!'); return; }
-        motivo = outroMotivo;
+        motivos.push(formatarTexto(outroMotivo));
+    }
+    const motivo = motivos.join(' / ');
+    let descricaoEvento = document.getElementById('descricao-chamado').value;
+    if (!descricaoEvento) { mostrarToast('Por favor, selecione a descrição do chamado!'); return; }
+    if (descricaoEvento === 'OUTRO') {
+        descricaoEvento = document.getElementById('outra-descricao-chamado').value;
+        if (!descricaoEvento) { mostrarToast('Por favor, informe a descrição do chamado!'); return; }
+        descricaoEvento = formatarTexto(descricaoEvento);
     }
     const data = document.getElementById('data-ocorrencia').value;
     const hora = document.getElementById('hora-ocorrencia').value;
@@ -770,7 +841,8 @@ document.getElementById('botao-registrar-chamado').addEventListener('click', asy
         const novoChamado = await DataService.criarChamado({
             openedAt: DataService.paraIso(data, hora),
             numero: numero.trim(),
-            motivo
+            motivo,
+            descricaoEvento
         });
         chamados.unshift(novoChamado);
     } catch (error) {
@@ -780,9 +852,12 @@ document.getElementById('botao-registrar-chamado').addEventListener('click', asy
         botao.disabled = false;
     }
     document.getElementById('numero-chamado').value = '';
-    document.getElementById('motivo-chamado').value = '';
+    document.querySelectorAll('input[name="motivo-chamado"]').forEach(campo => { campo.checked = false; });
+    document.getElementById('descricao-chamado').value = '';
     document.getElementById('campo-outros-motivo').classList.add('oculto');
     document.getElementById('outro-motivo').value = '';
+    document.getElementById('campo-outra-descricao-chamado').classList.add('oculto');
+    document.getElementById('outra-descricao-chamado').value = '';
     mostrarToast('Chamado salvo no servidor.');
     atualizarTabelaChamados();
 });
@@ -821,10 +896,13 @@ document.getElementById('btn-logout').addEventListener('click', async function()
 async function aplicarSessao(sessao) {
     sessaoAtual = sessao;
     portalRole = null;
+    portalDisplayName = null;
     let erroAcesso = null;
     if (sessaoAtual) {
         try {
-            portalRole = await DataService.obterAcesso(sessaoAtual.user.id);
+            const identidade = await DataService.obterIdentidade(sessaoAtual.user.id);
+            portalRole = identidade.role;
+            portalDisplayName = identidade.displayName;
         } catch (error) {
             erroAcesso = error;
         }
@@ -845,8 +923,9 @@ async function aplicarSessao(sessao) {
     document.getElementById('btn-logout').classList.toggle('oculto', !usuarioLogado);
     usuarioAtual.classList.toggle('oculto', !usuarioLogado);
     usuarioAtual.textContent = usuarioLogado
-        ? (usuarioEhAdmin() ? `${sessao.user.email} · ADMIN` : 'EQUIPE MADRUGADA')
+        ? (usuarioEhAdmin() ? `${portalDisplayName || sessao.user.email} · ADMIN` : 'EQUIPE MADRUGADA')
         : '';
+    configurarCampoReportadoPor();
     atualizarVisaoPorPerfil();
 
     if (usuarioLogado) {

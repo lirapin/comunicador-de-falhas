@@ -74,7 +74,7 @@
             incidente: row.incident || 'N/A',
             taskOuSistema: row.task_or_system || 'N/A',
             descricao: row.description,
-            reporterName: row.reporter_name || 'EQUIPE MADRUGADA (ANÔNIMO)',
+            reporterName: row.reporter_name || 'Equipe Madrugada',
             anexoPath: row.attachment_path || null,
             anexoNome: row.attachment_name || null,
             anexoMime: row.attachment_mime || null,
@@ -91,12 +91,13 @@
             motivo: row.reason,
             dataEncerramento: formatarDataHora(row.closed_at),
             encerramentoIso: row.closed_at,
-            reporterName: row.reporter_name || 'EQUIPE MADRUGADA (ANÔNIMO)'
+            reporterName: row.reporter_name || 'Equipe Madrugada',
+            descricaoEvento: row.event_description || 'NÃO INFORMADA'
         };
     }
 
     const failureSelect = 'id,occurred_at,title,cluster,incident,task_or_system,description,attachment_path,attachment_name,attachment_mime,attachment_size,reporter_name';
-    const ticketSelect = 'id,opened_at,closed_at,ticket_number,reason,reporter_name';
+    const ticketSelect = 'id,opened_at,closed_at,ticket_number,reason,event_description,reporter_name';
 
     async function sessaoAtual() {
         if (!configurado()) return null;
@@ -113,15 +114,23 @@
         return data.session;
     }
 
-    async function obterAcesso(userId) {
+    async function obterIdentidade(userId) {
         if (!userId) throw new Error('Sessão inválida para verificar o acesso.');
-        const { data, error } = await obterClient()
-            .from('failure_portal_memberships')
-            .select('role')
-            .eq('user_id', userId)
-            .maybeSingle();
-        propagarErro(error, 'Falha ao verificar o acesso ao Comunicador');
-        return data?.role || null;
+        const supabaseClient = obterClient();
+        const [acessoResult, perfilResult] = await Promise.all([
+            supabaseClient.from('failure_portal_memberships').select('role').eq('user_id', userId).maybeSingle(),
+            supabaseClient.from('failure_portal_profiles').select('display_name').eq('user_id', userId).maybeSingle()
+        ]);
+        propagarErro(acessoResult.error, 'Falha ao verificar o acesso ao Comunicador');
+        propagarErro(perfilResult.error, 'Falha ao identificar o usuário do Comunicador');
+        return {
+            role: acessoResult.data?.role || null,
+            displayName: perfilResult.data?.display_name || null
+        };
+    }
+
+    async function obterAcesso(userId) {
+        return (await obterIdentidade(userId)).role;
     }
 
     async function sair() {
@@ -198,6 +207,7 @@
             incident: falha.incidente === 'N/A' ? null : falha.incidente,
             task_or_system: falha.taskOuSistema === 'N/A' ? null : falha.taskOuSistema,
             description: falha.descricao,
+            reporter_name: falha.reporterName,
             attachment_path: caminhoAnexo,
             attachment_name: imagem ? String(imagem.name || 'imagem').slice(0, 255) : null,
             attachment_mime: imagem?.type || null,
@@ -240,7 +250,8 @@
         const payload = {
             opened_at: chamado.openedAt,
             ticket_number: chamado.numero,
-            reason: chamado.motivo
+            reason: chamado.motivo,
+            event_description: chamado.descricaoEvento
         };
         const { data, error } = await obterClient().from('failure_portal_tickets').insert(payload).select(ticketSelect).single();
         propagarErro(error, 'Falha ao salvar o chamado no servidor');
@@ -283,7 +294,8 @@
             const criado = await criarChamado({
                 openedAt,
                 numero: String(ticket.numero || '').slice(0, 120),
-                motivo: String(ticket.motivo || '').slice(0, 180)
+                motivo: String(ticket.motivo || '').slice(0, 180),
+                descricaoEvento: String(ticket.descricaoEvento || 'NÃO INFORMADA').slice(0, 500)
             });
             const closedAt = ticket.encerramentoIso || dataBrParaIso(ticket.dataEncerramento);
             if (closedAt) await encerrarChamado(criado.id, closedAt);
@@ -296,6 +308,7 @@
         configurado,
         sessaoAtual,
         entrar,
+        obterIdentidade,
         obterAcesso,
         sair,
         observarAuth,
