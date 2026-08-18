@@ -4,6 +4,96 @@ let opcaoIndicadoresSelecionada = null;
 let opcaoDetalheSelecionada = null;
 let modoAtual = 'visualizador';
 let usuarioLogado = false;
+let sessaoAtual = null;
+let portalRole = null;
+let portalDisplayName = null;
+let dadosCarregando = false;
+let imagemSelecionada = null;
+let imagemPreviewUrl = null;
+
+function escaparHtml(valor) {
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+function usuarioEhAdmin() {
+    return portalRole === 'admin';
+}
+
+function atualizarVisaoPorPerfil() {
+    const painel = document.getElementById('painel-perfil');
+    const titulo = document.getElementById('painel-perfil-titulo');
+    const descricao = document.getElementById('painel-perfil-descricao');
+    const icone = document.getElementById('painel-perfil-icone');
+    const colunaStatus = document.getElementById('coluna-status-chamado');
+
+    painel.classList.toggle('oculto', !usuarioLogado);
+    painel.classList.toggle('perfil-admin', usuarioLogado && usuarioEhAdmin());
+    painel.classList.toggle('perfil-equipe', usuarioLogado && !usuarioEhAdmin());
+    document.querySelectorAll('.admin-only').forEach(elemento => {
+        elemento.classList.toggle('oculto', !usuarioLogado || !usuarioEhAdmin());
+    });
+
+    if (!usuarioLogado) return;
+    if (usuarioEhAdmin()) {
+        titulo.textContent = 'Modo administrador';
+        descricao.textContent = 'Relatórios, encerramento de chamados e exclusão de informações habilitados.';
+        icone.className = 'fas fa-user-shield';
+        colunaStatus.textContent = 'Encerramento administrativo';
+    } else {
+        titulo.textContent = 'Modo Equipe Madrugada';
+        descricao.textContent = 'Você pode registrar, identificar o responsável e consultar os registros.';
+        icone.className = 'fas fa-users';
+        colunaStatus.textContent = 'Status do chamado';
+    }
+}
+
+function configurarCampoReportadoPor() {
+    const campo = document.getElementById('reportado-por');
+    campo.querySelectorAll('[data-admin-option]').forEach(opcao => opcao.remove());
+    if (usuarioLogado && usuarioEhAdmin() && portalDisplayName) {
+        if (![...campo.options].some(opcao => opcao.value === portalDisplayName)) {
+            const opcaoAdmin = document.createElement('option');
+            opcaoAdmin.value = portalDisplayName;
+            opcaoAdmin.textContent = portalDisplayName;
+            opcaoAdmin.dataset.adminOption = 'true';
+            campo.append(opcaoAdmin);
+        }
+        campo.value = portalDisplayName;
+        campo.disabled = true;
+        return;
+    }
+    campo.disabled = false;
+    campo.value = 'Equipe Madrugada';
+}
+
+function renderizarCelulaAnexo(falha) {
+    if (!falha.anexoPath) return '<span class="sem-anexo">—</span>';
+    return `
+        <button type="button" class="btn-ver-imagem"
+                data-anexo="${escaparHtml(falha.anexoPath)}"
+                onclick="abrirAnexo(this.dataset.anexo)"
+                title="${escaparHtml(falha.anexoNome || 'Ver imagem')}">
+            <i class="fas fa-image" aria-hidden="true"></i> Ver
+        </button>`;
+}
+
+function exigirSessao() {
+    if (sessaoAtual) return true;
+    mostrarToast('Entre no sistema para registrar ou consultar dados.');
+    document.getElementById('modal-login').style.display = 'flex';
+    return false;
+}
+
+function atualizarStatusConexao(estado, texto) {
+    const status = document.getElementById('status-conexao');
+    status.className = `status-conexao status-${estado}`;
+    status.innerHTML = `<i class="fas fa-circle"></i> ${escaparHtml(texto)}`;
+}
 
 function formatarTexto(texto) {
     if (!texto) return '';
@@ -17,26 +107,31 @@ function formatarTexto(texto) {
     return formatado;
 }
 
-function salvarDados() {
-    localStorage.setItem('historicoFalhas', JSON.stringify(historicoFalhas));
-    localStorage.setItem('chamados', JSON.stringify(chamados));
-}
-
-function carregarDados() {
-    const savedHistorico = localStorage.getItem('historicoFalhas');
-    const savedChamados = localStorage.getItem('chamados');
-    if (savedHistorico) historicoFalhas = JSON.parse(savedHistorico);
-    if (savedChamados) chamados = JSON.parse(savedChamados);
-    atualizarTabelaHistorico();
-    atualizarTabelaChamados();
-    atualizarFiltros();
+async function carregarDados() {
+    if (!sessaoAtual || dadosCarregando) return;
+    dadosCarregando = true;
+    atualizarStatusConexao('carregando', 'Sincronizando');
+    try {
+        const dados = await DataService.listarTudo();
+        historicoFalhas = dados.falhas;
+        chamados = dados.chamados;
+        atualizarTabelaHistorico();
+        atualizarTabelaChamados();
+        atualizarFiltros();
+        atualizarStatusConexao('online', 'Dados sincronizados');
+    } catch (error) {
+        atualizarStatusConexao('offline', 'Falha de conexão');
+        mostrarToast(error.message);
+    } finally {
+        dadosCarregando = false;
+    }
 }
 
 function atualizarFiltros() {
-    const titulosUnicos = [...new Set(historicoFalhas.map(f => f.titulo))];
+    const titulosUnicos = [...new Set(historicoFalhas.map(f => f.titulo))].sort();
     const selectFiltro = document.getElementById('filtro-titulo');
     selectFiltro.innerHTML = '<option value="">Todos</option>' +
-        titulosUnicos.map(t => `<option value="${t}">${t.length > 50 ? t.substring(0, 50) + '...' : t}</option>`).join('');
+        titulosUnicos.map(t => `<option value="${escaparHtml(t)}">${escaparHtml(t.length > 50 ? t.substring(0, 50) + '...' : t)}</option>`).join('');
 }
 
 function aplicarFiltros() {
@@ -58,18 +153,20 @@ function aplicarFiltros() {
 
     const corpo = document.getElementById('corpo-historico');
     if (filtrados.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
+        corpo.innerHTML = `<tr><td colspan="${modoAtual === 'admin' ? 8 : 7}" class="estado-vazio">Nenhum registro encontrado</td></tr>`;
         return;
     }
 
     corpo.innerHTML = filtrados.map((falha) => `
         <tr>
-            <td>${falha.dataHora}</td>
-            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
-            <td>${falha.cluster}</td>
-            <td>${falha.incidente || 'N/A'}</td>
-            <td>${falha.taskOuSistema}</td>
-            ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarRegistro(${falha.id})"><i class="fas fa-trash"></i></button></td>` : ''}
+            <td>${escaparHtml(falha.dataHora)}</td>
+            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;" title="${escaparHtml(falha.descricao)}">${escaparHtml(falha.titulo)}</td>
+            <td>${escaparHtml(falha.cluster)}</td>
+            <td>${escaparHtml(falha.incidente || 'N/A')}</td>
+            <td>${escaparHtml(falha.taskOuSistema)}</td>
+            <td>${escaparHtml(falha.reporterName)}</td>
+            <td>${renderizarCelulaAnexo(falha)}</td>
+            ${modoAtual === 'admin' ? `<td><button class="btn-secundario btn-danger" onclick="deletarRegistro('${falha.id}')" title="Excluir registro"><i class="fas fa-trash"></i></button></td>` : ''}
         </tr>
     `).join('');
 
@@ -85,29 +182,57 @@ function atualizarTabelaHistorico() {
     else colunaAcao.classList.add('oculto');
 
     if (historicoFalhas.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '6' : '5') + '" style="text-align: center;">Nenhum registro encontrado</td>' + (modoAtual === 'admin' ? '<td class="oculto"></td>' : '') + '</tr>';
+        corpo.innerHTML = `<tr><td colspan="${modoAtual === 'admin' ? 8 : 7}" class="estado-vazio">Nenhum registro encontrado</td></tr>`;
         return;
     }
 
     corpo.innerHTML = historicoFalhas.map(falha => `
         <tr>
-            <td>${falha.dataHora}</td>
-            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;">${falha.titulo}</td>
-            <td>${falha.cluster}</td>
-            <td>${falha.incidente || 'N/A'}</td>
-            <td>${falha.taskOuSistema}</td>
-            ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarRegistro(${falha.id})"><i class="fas fa-trash"></i></button></td>` : ''}
+            <td>${escaparHtml(falha.dataHora)}</td>
+            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis;" title="${escaparHtml(falha.descricao)}">${escaparHtml(falha.titulo)}</td>
+            <td>${escaparHtml(falha.cluster)}</td>
+            <td>${escaparHtml(falha.incidente || 'N/A')}</td>
+            <td>${escaparHtml(falha.taskOuSistema)}</td>
+            <td>${escaparHtml(falha.reporterName)}</td>
+            <td>${renderizarCelulaAnexo(falha)}</td>
+            ${modoAtual === 'admin' ? `<td><button class="btn-secundario btn-danger" onclick="deletarRegistro('${falha.id}')" title="Excluir registro"><i class="fas fa-trash"></i></button></td>` : ''}
         </tr>
     `).join('');
 }
 
-function deletarRegistro(id) {
+async function deletarRegistro(id) {
+    if (!usuarioEhAdmin()) {
+        mostrarToast('Somente administradores podem excluir registros.');
+        return;
+    }
     if (confirm('Tem certeza que deseja excluir este registro?')) {
-        historicoFalhas = historicoFalhas.filter(f => f.id !== id);
-        salvarDados();
-        atualizarTabelaHistorico();
-        atualizarFiltros();
-        mostrarToast('Registro excluído com sucesso!');
+        try {
+            const falha = historicoFalhas.find(f => f.id === id);
+            const resultado = await DataService.excluirFalha(id, falha?.anexoPath);
+            historicoFalhas = historicoFalhas.filter(f => f.id !== id);
+            atualizarTabelaHistorico();
+            atualizarFiltros();
+            mostrarToast(resultado?.cleanupWarning || 'Registro excluído do servidor.');
+        } catch (error) {
+            mostrarToast(error.message);
+        }
+    }
+}
+
+async function abrirAnexo(caminhoAnexo) {
+    const novaJanela = window.open('about:blank', '_blank');
+    if (novaJanela) {
+        novaJanela.opener = null;
+        novaJanela.document.title = 'Carregando imagem';
+        novaJanela.document.body.textContent = 'Carregando imagem…';
+    }
+    try {
+        const url = await DataService.criarUrlAnexo(caminhoAnexo);
+        if (!novaJanela) throw new Error('O navegador bloqueou a nova janela. Permita pop-ups para visualizar a imagem.');
+        novaJanela.location.replace(url);
+    } catch (error) {
+        if (novaJanela) novaJanela.close();
+        mostrarToast(error.message);
     }
 }
 
@@ -135,7 +260,11 @@ function encStringParaInputs(str) {
  * Lê os dois inputs de um chamado e salva no objeto.
  * Chamado automaticamente no onchange dos inputs.
  */
-function salvarEncerramento(id) {
+async function salvarEncerramento(id) {
+    if (!usuarioEhAdmin()) {
+        mostrarToast('Somente administradores podem encerrar chamados.');
+        return;
+    }
     const dataInput = document.getElementById(`enc-data-${id}`);
     const horaInput = document.getElementById(`enc-hora-${id}`);
     if (!dataInput || !horaInput) return;
@@ -146,71 +275,123 @@ function salvarEncerramento(id) {
     // Só salva quando ambos estiverem preenchidos
     if (!dataVal || !horaVal) return;
 
-    const dp = dataVal.split('-');
-    const dataFormatada = `${dp[2]}/${dp[1]}/${dp[0]}`;
-    const dataEncerramento = `${dataFormatada} ${horaVal}`;
-
     const chamado = chamados.find(c => c.id === id);
     if (chamado) {
-        chamado.dataEncerramento = dataEncerramento;
-        salvarDados();
-        mostrarToast('Encerramento salvo!');
+        try {
+            const atualizado = await DataService.encerrarChamado(id, DataService.paraIso(dataVal, horaVal));
+            Object.assign(chamado, atualizado);
+            atualizarTabelaChamados();
+            mostrarToast('Encerramento salvo no servidor.');
+        } catch (error) {
+            mostrarToast(error.message);
+            atualizarTabelaChamados();
+        }
     }
 }
 
 function atualizarTabelaChamados() {
     const corpo = document.getElementById('corpo-chamados');
-    const colunaAcao = document.getElementById('coluna-acao-chamados');
-    if (modoAtual === 'admin') colunaAcao.classList.remove('oculto');
-    else colunaAcao.classList.add('oculto');
 
     if (chamados.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="' + (modoAtual === 'admin' ? '5' : '4') + '" style="text-align: center;">Nenhum chamado registrado</td></tr>';
+        corpo.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum chamado registrado</td></tr>';
         return;
     }
 
     corpo.innerHTML = chamados.map(chamado => {
         // Converte valor armazenado para os inputs nativos
-        const enc = encStringParaInputs(chamado.dataEncerramento);
+        const dataEncerramento = chamado.encerramentoIso ? new Date(chamado.encerramentoIso) : null;
+        const enc = dataEncerramento && !Number.isNaN(dataEncerramento.getTime()) ? {
+            date: `${dataEncerramento.getFullYear()}-${String(dataEncerramento.getMonth() + 1).padStart(2, '0')}-${String(dataEncerramento.getDate()).padStart(2, '0')}`,
+            time: `${String(dataEncerramento.getHours()).padStart(2, '0')}:${String(dataEncerramento.getMinutes()).padStart(2, '0')}`
+        } : encStringParaInputs(chamado.dataEncerramento);
+        const controleEncerramento = usuarioEhAdmin() ? `
+            <div class="enc-wrapper">
+                <input type="date"
+                       id="enc-data-${chamado.id}"
+                       class="enc-data-input"
+                       value="${enc.date}"
+                       onchange="salvarEncerramento('${chamado.id}')">
+                <input type="time"
+                       id="enc-hora-${chamado.id}"
+                       class="enc-hora-input"
+                       value="${enc.time}"
+                       onchange="salvarEncerramento('${chamado.id}')">
+                <button class="btn-grafico-icone"
+                        onclick="verRelatorioChamado('${chamado.id}')"
+                        title="Ver relatório">
+                    <i class="fas fa-chart-bar"></i>
+                </button>
+            </div>` : chamado.encerramentoIso
+                ? `<span class="status-chamado status-encerrado"><i class="fas fa-check-circle"></i> Encerrado em ${escaparHtml(chamado.dataEncerramento)}</span>`
+                : '<span class="status-chamado status-aberto"><i class="fas fa-clock"></i> Em aberto</span>';
 
         return `
         <tr>
-            <td>${chamado.dataHora}</td>
-            <td>${chamado.numero}</td>
-            <td>${chamado.motivo}</td>
-            <td>
-                <div class="enc-wrapper">
-                    <input type="date"
-                           id="enc-data-${chamado.id}"
-                           class="enc-data-input"
-                           value="${enc.date}"
-                           onchange="salvarEncerramento(${chamado.id})">
-                    <input type="time"
-                           id="enc-hora-${chamado.id}"
-                           class="enc-hora-input"
-                           value="${enc.time}"
-                           onchange="salvarEncerramento(${chamado.id})">
-                    <button class="btn-grafico-icone"
-                            onclick="verRelatorioChamado(${chamado.id})"
-                            title="Ver relatório">
-                        <i class="fas fa-chart-bar"></i>
-                    </button>
-                </div>
-            </td>
-            ${modoAtual === 'admin' ? `<td><button class="btn-secundario" style="padding: 6px 10px; background: #e74c3c; color: white; border-radius: 10px;" onclick="deletarChamado(${chamado.id})"><i class="fas fa-trash"></i></button></td>` : ''}
+            <td>${escaparHtml(chamado.dataHora)}</td>
+            <td>${escaparHtml(chamado.numero)}</td>
+            <td>${escaparHtml(chamado.motivo)}<br><small>${escaparHtml(chamado.reporterName)}</small></td>
+            <td>${controleEncerramento}</td>
+            <td class="acoes-chamado"><div class="acoes-chamado-container">
+                <button class="btn-secundario btn-icon-only" onclick="copiarRegistroEvento('${chamado.id}')" title="Copiar registro do evento" aria-label="Copiar registro do evento"><i class="fas fa-copy"></i></button>
+                ${modoAtual === 'admin' ? `<button class="btn-secundario btn-danger" onclick="deletarChamado('${chamado.id}')" title="Excluir chamado" aria-label="Excluir chamado"><i class="fas fa-trash"></i></button>` : ''}
+            </div></td>
         </tr>`;
     }).join('');
 }
 
+function montarTextoRegistroEvento(chamado) {
+    const linhas = [
+        '⚠️ REGISTRO DE EVENTO:',
+        '',
+        `DATA/HI: ${chamado.dataHora}`,
+        `MOTIVO: ${chamado.motivo}`,
+        `CHAMADO: ${chamado.numero}`,
+        `DESCRIÇÃO: ${chamado.descricaoEvento}`
+    ];
+    if (chamado.encerramentoIso) linhas.push(`DATA/HF: ${chamado.dataEncerramento}`);
+    return linhas.join('\n');
+}
+
+async function copiarParaAreaTransferencia(texto) {
+    if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(texto);
+        return;
+    }
+    const campoTemporario = document.createElement('textarea');
+    campoTemporario.value = texto;
+    campoTemporario.setAttribute('readonly', '');
+    campoTemporario.style.position = 'fixed';
+    campoTemporario.style.opacity = '0';
+    document.body.append(campoTemporario);
+    campoTemporario.select();
+    const copiado = document.execCommand('copy');
+    campoTemporario.remove();
+    if (!copiado) throw new Error('O navegador não permitiu copiar o texto.');
+}
+
+async function copiarRegistroEvento(id) {
+    const chamado = chamados.find(item => item.id === id);
+    if (!chamado) {
+        mostrarToast('Chamado não encontrado.');
+        return;
+    }
+    try {
+        await copiarParaAreaTransferencia(montarTextoRegistroEvento(chamado));
+        mostrarToast('Registro do evento copiado.');
+    } catch (error) {
+        mostrarToast(error.message);
+    }
+}
+
 function verRelatorioChamado(id) {
     const chamado = chamados.find(c => c.id === id);
-    if (!chamado || !chamado.dataEncerramento) {
+    if (!chamado || !chamado.encerramentoIso) {
         mostrarToast('Defina a data de encerramento do chamado primeiro!');
         return;
     }
 
-    const dataAbertura = converterStringParaData(chamado.dataHora);
-    const dataEncerramento = converterStringParaData(chamado.dataEncerramento);
+    const dataAbertura = new Date(chamado.dataIso);
+    const dataEncerramento = new Date(chamado.encerramentoIso);
 
     if (!dataAbertura || !dataEncerramento) {
         mostrarToast('Erro ao converter datas!');
@@ -218,43 +399,56 @@ function verRelatorioChamado(id) {
     }
 
     const falhasNoPeriodo = historicoFalhas.filter(falha => {
-        const dataFalha = converterStringParaData(falha.dataHora);
+        const dataFalha = new Date(falha.dataIso);
         return dataFalha >= dataAbertura && dataFalha <= dataEncerramento;
     });
 
     const modal = document.getElementById('modal-relatorio');
     document.getElementById('periodo-datas').innerHTML =
-        `<strong>Abertura:</strong> ${chamado.dataHora}<br><strong>Encerramento:</strong> ${chamado.dataEncerramento}`;
+        `<strong>Abertura:</strong> ${escaparHtml(chamado.dataHora)}<br><strong>Encerramento:</strong> ${escaparHtml(chamado.dataEncerramento)}`;
     document.getElementById('contagem-falhas').textContent = falhasNoPeriodo.length;
+    renderizarResumoRelatorio(falhasNoPeriodo);
     modal.style.display = 'flex';
 }
 
-function converterStringParaData(dataStr) {
-    const partes = dataStr.split(' ');
-    const dataPartes = partes[0].split('/');
-    const horaPartes = partes[1].split(':');
-    return new Date(
-        parseInt(dataPartes[2]),
-        parseInt(dataPartes[1]) - 1,
-        parseInt(dataPartes[0]),
-        parseInt(horaPartes[0]),
-        parseInt(horaPartes[1])
-    );
+function renderizarResumoRelatorio(falhas) {
+    const porUsuario = new Map();
+    falhas.forEach(falha => {
+        const nome = falha.reporterName || 'USUÁRIO';
+        porUsuario.set(nome, (porUsuario.get(nome) || 0) + 1);
+    });
+    const linhas = [...porUsuario.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const resumo = document.getElementById('relatorio-resumo');
+    resumo.innerHTML = linhas.length ? `
+        <table>
+            <thead><tr><th>Perfil</th><th>Registros</th></tr></thead>
+            <tbody>${linhas.map(([nome, total]) => `<tr><td>${escaparHtml(nome)}</td><td>${total}</td></tr>`).join('')}</tbody>
+        </table>` : '<p class="estado-vazio">Nenhuma falha no período.</p>';
 }
 
-function deletarChamado(id) {
+async function deletarChamado(id) {
+    if (!usuarioEhAdmin()) {
+        mostrarToast('Somente administradores podem excluir chamados.');
+        return;
+    }
     if (confirm('Tem certeza que deseja excluir este chamado?')) {
-        chamados = chamados.filter(c => c.id !== id);
-        salvarDados();
-        atualizarTabelaChamados();
-        mostrarToast('Chamado excluído com sucesso!');
+        try {
+            await DataService.excluirChamado(id);
+            chamados = chamados.filter(c => c.id !== id);
+            atualizarTabelaChamados();
+            mostrarToast('Chamado excluído do servidor.');
+        } catch (error) {
+            mostrarToast(error.message);
+        }
     }
 }
 
 function mostrarToast(mensagem) {
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${mensagem}`;
+    const icone = document.createElement('i');
+    icone.className = 'fas fa-info-circle';
+    toast.append(icone, document.createTextNode(` ${mensagem}`));
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
 }
@@ -405,19 +599,7 @@ function isIncidenteObrigatorio(titulo, indicador) {
 document.getElementById('titulo-falha').addEventListener('change', function() {
     const campoOutros = document.getElementById('campo-outros-titulo');
     const containerAba = document.getElementById('container-aba-dinamica');
-    const containerTitulo = document.getElementById('container-titulo-falha');
-    const espacador = document.getElementById('espacador-titulo');
     const valorSelecionado = this.value;
-
-    if (valorSelecionado === 'Indicadores') {
-        containerTitulo.classList.remove('form-group-duas-colunas');
-        containerTitulo.classList.add('form-group-tres-colunas');
-        espacador.classList.add('oculto');
-    } else {
-        containerTitulo.classList.remove('form-group-tres-colunas');
-        containerTitulo.classList.add('form-group-duas-colunas');
-        espacador.classList.remove('oculto');
-    }
 
     if (valorSelecionado === 'Outros') {
         campoOutros.classList.remove('oculto');
@@ -450,23 +632,78 @@ document.getElementById('sistema-afetado').addEventListener('change', function()
 
 document.getElementById('motivo-chamado').addEventListener('change', function() {
     const campoOutros = document.getElementById('campo-outros-motivo');
-    if (this.value === 'OUTROS') campoOutros.classList.remove('oculto');
+    const selecionouOutros = Boolean(this.querySelector('input[value="OUTROS"]:checked'));
+    if (selecionouOutros) campoOutros.classList.remove('oculto');
     else {
         campoOutros.classList.add('oculto');
         document.getElementById('outro-motivo').value = '';
     }
 });
 
+document.getElementById('descricao-chamado').addEventListener('change', function() {
+    const campoOutro = document.getElementById('campo-outra-descricao-chamado');
+    if (this.value === 'OUTRO') campoOutro.classList.remove('oculto');
+    else {
+        campoOutro.classList.add('oculto');
+        document.getElementById('outra-descricao-chamado').value = '';
+    }
+});
+
 document.getElementById('descricao-falha').addEventListener('input', function() {
     const cursorPos = this.selectionStart;
-    const formatted = formatarTexto(this.value);
+    const formatted = this.value.toUpperCase();
     if (formatted !== this.value) {
         this.value = formatted;
         this.setSelectionRange(cursorPos, cursorPos);
     }
 });
 
-document.getElementById('botao-registrar-falha').addEventListener('click', function() {
+function formatarTamanhoArquivo(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function limparImagemSelecionada() {
+    if (imagemPreviewUrl) URL.revokeObjectURL(imagemPreviewUrl);
+    imagemSelecionada = null;
+    imagemPreviewUrl = null;
+    document.getElementById('imagem-falha').value = '';
+    document.getElementById('imagem-preview-miniatura').removeAttribute('src');
+    document.getElementById('imagem-preview-nome').textContent = '';
+    document.getElementById('imagem-preview-tamanho').textContent = '';
+    document.getElementById('imagem-preview').classList.add('oculto');
+}
+
+document.getElementById('botao-anexar-imagem').addEventListener('click', function() {
+    if (!exigirSessao()) return;
+    document.getElementById('imagem-falha').click();
+});
+
+document.getElementById('imagem-falha').addEventListener('change', function() {
+    const arquivo = this.files?.[0];
+    if (!arquivo) return;
+    try {
+        DataService.validarImagem(arquivo);
+    } catch (error) {
+        limparImagemSelecionada();
+        mostrarToast(error.message);
+        return;
+    }
+
+    if (imagemPreviewUrl) URL.revokeObjectURL(imagemPreviewUrl);
+    imagemSelecionada = arquivo;
+    imagemPreviewUrl = URL.createObjectURL(arquivo);
+    document.getElementById('imagem-preview-miniatura').src = imagemPreviewUrl;
+    document.getElementById('imagem-preview-nome').textContent = arquivo.name;
+    document.getElementById('imagem-preview-tamanho').textContent = formatarTamanhoArquivo(arquivo.size);
+    document.getElementById('imagem-preview').classList.remove('oculto');
+});
+
+document.getElementById('remover-imagem').addEventListener('click', limparImagemSelecionada);
+
+document.getElementById('botao-registrar-falha').addEventListener('click', async function() {
+    if (!exigirSessao()) return;
     let titulo = document.getElementById('titulo-falha').value;
     if (!titulo) { mostrarToast('Por favor, selecione o título da falha!'); return; }
 
@@ -522,24 +759,33 @@ document.getElementById('botao-registrar-falha').addEventListener('click', funct
     let descricao = document.getElementById('descricao-falha').value;
     if (!descricao) { mostrarToast('Por favor, preencha a descrição da falha!'); return; }
     descricao = formatarTexto(descricao);
+    const reporterName = document.getElementById('reportado-por').value;
+    if (!reporterName) { mostrarToast('Por favor, selecione quem está reportando a falha!'); return; }
 
     const data = document.getElementById('data-ocorrencia').value;
     const hora = document.getElementById('hora-ocorrencia').value;
     if (!data || !hora) { mostrarToast('Por favor, preencha data e hora da ocorrência!'); return; }
-    const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
-    const dataHora = `${dataFormatada} ${hora}`;
-
-    const novaFalha = {
-        id: Date.now(),
-        dataHora: dataHora,
-        titulo: titulo,
-        cluster: cluster,
-        incidente: incidente || 'N/A',
-        taskOuSistema: taskOuSistema,
-        descricao: descricao
-    };
-    historicoFalhas.unshift(novaFalha);
-    salvarDados();
+    const botao = this;
+    botao.disabled = true;
+    botao.classList.add('carregando');
+    try {
+        const novaFalha = await DataService.criarFalha({
+            occurredAt: DataService.paraIso(data, hora),
+            titulo,
+            cluster,
+            incidente: incidente || 'N/A',
+            taskOuSistema,
+            descricao,
+            reporterName
+        }, imagemSelecionada);
+        historicoFalhas.unshift(novaFalha);
+    } catch (error) {
+        mostrarToast(error.message);
+        return;
+    } finally {
+        botao.disabled = false;
+        botao.classList.remove('carregando');
+    }
 
     document.getElementById('titulo-falha').value = '';
     document.getElementById('cluster').value = '';
@@ -548,6 +794,7 @@ document.getElementById('botao-registrar-falha').addEventListener('click', funct
     document.getElementById('task').value = '';
     document.getElementById('sistema-afetado').value = '';
     document.getElementById('descricao-falha').value = '';
+    limparImagemSelecionada();
     document.getElementById('container-aba-dinamica').innerHTML = '';
     document.getElementById('campo-outros-titulo').classList.add('oculto');
     document.getElementById('campo-outros-sistema').classList.add('oculto');
@@ -557,82 +804,144 @@ document.getElementById('botao-registrar-falha').addEventListener('click', funct
     document.getElementById('task').placeholder = '';
     opcaoIndicadoresSelecionada = null;
     opcaoDetalheSelecionada = null;
+    configurarCampoReportadoPor();
 
-    const containerTitulo = document.getElementById('container-titulo-falha');
-    containerTitulo.classList.remove('form-group-tres-colunas');
-    containerTitulo.classList.add('form-group-duas-colunas');
-
-    mostrarToast('Registro concluído! ✓');
+    mostrarToast('Registro salvo no servidor.');
+    resetarDataHora();
     atualizarTabelaHistorico();
     atualizarFiltros();
     mudarTab('historico');
 });
 
-document.getElementById('botao-registrar-chamado').addEventListener('click', function() {
+document.getElementById('botao-registrar-chamado').addEventListener('click', async function() {
+    if (!exigirSessao()) return;
     const numero = document.getElementById('numero-chamado').value;
-    let motivo = document.getElementById('motivo-chamado').value;
+    const motivosSelecionados = [...document.querySelectorAll('input[name="motivo-chamado"]:checked')].map(campo => campo.value);
     if (!numero) { mostrarToast('Por favor, informe o número do chamado!'); return; }
-    if (!motivo) { mostrarToast('Por favor, selecione o motivo!'); return; }
-    if (motivo === 'OUTROS') {
+    if (!motivosSelecionados.length) { mostrarToast('Por favor, selecione ao menos um motivo!'); return; }
+    const motivos = motivosSelecionados.filter(motivo => motivo !== 'OUTROS');
+    if (motivosSelecionados.includes('OUTROS')) {
         const outroMotivo = document.getElementById('outro-motivo').value;
         if (!outroMotivo) { mostrarToast('Por favor, especifique o motivo!'); return; }
-        motivo = outroMotivo;
+        motivos.push(formatarTexto(outroMotivo));
+    }
+    const motivo = motivos.join(' / ');
+    let descricaoEvento = document.getElementById('descricao-chamado').value;
+    if (!descricaoEvento) { mostrarToast('Por favor, selecione a descrição do chamado!'); return; }
+    if (descricaoEvento === 'OUTRO') {
+        descricaoEvento = document.getElementById('outra-descricao-chamado').value;
+        if (!descricaoEvento) { mostrarToast('Por favor, informe a descrição do chamado!'); return; }
+        descricaoEvento = formatarTexto(descricaoEvento);
     }
     const data = document.getElementById('data-ocorrencia').value;
     const hora = document.getElementById('hora-ocorrencia').value;
-    const dataFormatada = new Date(data).toLocaleDateString('pt-BR');
-    const dataHora = `${dataFormatada} ${hora}`;
-    const novoChamado = { id: Date.now(), dataHora: dataHora, numero: numero, motivo: motivo, dataEncerramento: '' };
-    chamados.unshift(novoChamado);
-    salvarDados();
+    if (!data || !hora) { mostrarToast('Preencha data e hora da abertura.'); return; }
+    const botao = this;
+    botao.disabled = true;
+    try {
+        const novoChamado = await DataService.criarChamado({
+            openedAt: DataService.paraIso(data, hora),
+            numero: numero.trim(),
+            motivo,
+            descricaoEvento
+        });
+        chamados.unshift(novoChamado);
+    } catch (error) {
+        mostrarToast(error.message);
+        return;
+    } finally {
+        botao.disabled = false;
+    }
     document.getElementById('numero-chamado').value = '';
-    document.getElementById('motivo-chamado').value = '';
+    document.querySelectorAll('input[name="motivo-chamado"]').forEach(campo => { campo.checked = false; });
+    document.getElementById('descricao-chamado').value = '';
     document.getElementById('campo-outros-motivo').classList.add('oculto');
     document.getElementById('outro-motivo').value = '';
-    mostrarToast('Chamado registrado! ✓');
+    document.getElementById('campo-outra-descricao-chamado').classList.add('oculto');
+    document.getElementById('outra-descricao-chamado').value = '';
+    mostrarToast('Chamado salvo no servidor.');
+    resetarDataHora();
     atualizarTabelaChamados();
-});
-
-document.getElementById('btn-modo-visualizador').addEventListener('click', function() {
-    modoAtual = 'visualizador';
-    usuarioLogado = false;
-    document.getElementById('btn-modo-visualizador').classList.add('ativo');
-    document.getElementById('btn-modo-adm').classList.remove('ativo');
-    document.getElementById('btn-logout').classList.add('oculto');
-    atualizarTabelaHistorico();
-    atualizarTabelaChamados();
-    mostrarToast('Modo visualizador ativado');
 });
 
 const modal = document.getElementById('modal-login');
-document.getElementById('btn-modo-adm').addEventListener('click', () => modal.style.display = 'flex');
+document.getElementById('btn-entrar').addEventListener('click', () => modal.style.display = 'flex');
 document.getElementById('btn-fechar-modal').addEventListener('click', () => modal.style.display = 'none');
-document.getElementById('btn-login').addEventListener('click', function() {
-    const usuario = document.getElementById('login-usuario').value;
+document.getElementById('btn-login').addEventListener('click', async function() {
+    const usuario = document.getElementById('login-usuario').value.trim();
     const senha = document.getElementById('login-senha').value;
-    if (usuario === 'claro123' && senha === 'claro123') {
+    if (!usuario || !senha) { mostrarToast('Informe usuário ou e-mail e senha.'); return; }
+    this.disabled = true;
+    try {
+        const sessao = await DataService.entrar(usuario, senha);
         modal.style.display = 'none';
-        modoAtual = 'admin';
-        usuarioLogado = true;
-        document.getElementById('btn-modo-adm').classList.add('ativo');
-        document.getElementById('btn-modo-visualizador').classList.remove('ativo');
-        document.getElementById('btn-logout').classList.remove('oculto');
-        atualizarTabelaHistorico();
-        atualizarTabelaChamados();
-        mostrarToast('Modo administrador ativado');
-    } else alert('Usuário ou senha incorretos!');
+        document.getElementById('login-senha').value = '';
+        const sessaoAplicada = await aplicarSessao(sessao);
+        if (sessaoAplicada) mostrarToast('Sessão iniciada.');
+    } catch (error) {
+        mostrarToast(error.message);
+    } finally {
+        this.disabled = false;
+    }
 });
 
-document.getElementById('btn-logout').addEventListener('click', function() {
-    modoAtual = 'visualizador';
-    usuarioLogado = false;
-    document.getElementById('btn-modo-visualizador').classList.add('ativo');
-    document.getElementById('btn-modo-adm').classList.remove('ativo');
-    document.getElementById('btn-logout').classList.add('oculto');
-    atualizarTabelaHistorico();
-    atualizarTabelaChamados();
-    mostrarToast('Logout realizado com sucesso!');
+document.getElementById('btn-logout').addEventListener('click', async function() {
+    try {
+        await DataService.sair();
+    } catch (error) {
+        mostrarToast(error.message);
+    } finally {
+        await aplicarSessao(null);
+    }
 });
+
+async function aplicarSessao(sessao) {
+    sessaoAtual = sessao;
+    portalRole = null;
+    portalDisplayName = null;
+    let erroAcesso = null;
+    if (sessaoAtual) {
+        try {
+            const identidade = await DataService.obterIdentidade(sessaoAtual.user.id);
+            portalRole = identidade.role;
+            portalDisplayName = identidade.displayName;
+        } catch (error) {
+            erroAcesso = error;
+        }
+        if (!portalRole) {
+            try {
+                await DataService.sair();
+            } catch (error) {
+                console.error('Falha ao encerrar sessão sem acesso:', error);
+            }
+            sessaoAtual = null;
+            mostrarToast(erroAcesso?.message || 'Esta conta não possui acesso ao Comunicador de Falhas.');
+        }
+    }
+    usuarioLogado = Boolean(sessaoAtual);
+    modoAtual = usuarioEhAdmin() ? 'admin' : 'visualizador';
+    const usuarioAtual = document.getElementById('usuario-atual');
+    document.getElementById('btn-entrar').classList.toggle('oculto', usuarioLogado);
+    document.getElementById('btn-logout').classList.toggle('oculto', !usuarioLogado);
+    usuarioAtual.classList.toggle('oculto', !usuarioLogado);
+    usuarioAtual.textContent = usuarioLogado
+        ? (usuarioEhAdmin() ? `${portalDisplayName || sessao.user.email} · ADMIN` : 'EQUIPE MADRUGADA')
+        : '';
+    configurarCampoReportadoPor();
+    atualizarVisaoPorPerfil();
+
+    if (usuarioLogado) {
+        await carregarDados();
+    } else {
+        historicoFalhas = [];
+        chamados = [];
+        atualizarTabelaHistorico();
+        atualizarTabelaChamados();
+        atualizarFiltros();
+        atualizarStatusConexao(DataService.configurado() ? 'online' : 'offline', DataService.configurado() ? 'Aguardando login' : 'Servidor não configurado');
+    }
+    return usuarioLogado;
+}
 
 document.getElementById('aplicar-filtros').addEventListener('click', aplicarFiltros);
 
@@ -648,22 +957,114 @@ document.getElementById('limpar-filtros').addEventListener('click', function() {
 });
 
 document.getElementById('btn-relatorio').addEventListener('click', function() {
-    mostrarToast('Funcionalidade de gráfico em desenvolvimento!');
+    if (!exigirSessao()) return;
+    const modalRelatorio = document.getElementById('modal-relatorio');
+    const datas = historicoFalhas.map(f => new Date(f.dataIso)).filter(d => !Number.isNaN(d.getTime())).sort((a, b) => a - b);
+    document.getElementById('periodo-datas').textContent = datas.length
+        ? `${DataService.formatarDataHora(datas[0].toISOString())} até ${DataService.formatarDataHora(datas.at(-1).toISOString())}`
+        : 'Sem registros';
+    document.getElementById('contagem-falhas').textContent = historicoFalhas.length;
+    renderizarResumoRelatorio(historicoFalhas);
+    modalRelatorio.style.display = 'flex';
 });
 
 document.getElementById('btn-fechar-relatorio').addEventListener('click', function() {
     document.getElementById('modal-relatorio').style.display = 'none';
 });
 
-function inicializarDataHora() {
-    const hoje = new Date().toISOString().split('T')[0];
-    const agora = new Date();
-    const horas = agora.getHours().toString().padStart(2, '0');
-    const minutos = agora.getMinutes().toString().padStart(2, '0');
-    document.getElementById('data-ocorrencia').value = hoje;
-    document.getElementById('hora-ocorrencia').value = `${horas}:${minutos}`;
+let dataHoraManual = false;
+let intervaloRelogio = null;
+
+function obterDataLocalIso(data = new Date()) {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
 }
 
-inicializarDataHora();
-carregarDados();
-document.getElementById('btn-modo-visualizador').classList.add('ativo');
+function obterHoraLocal(data = new Date()) {
+    const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0');
+    return `${horas}:${minutos}`;
+}
+
+function sincronizarDataHora(forcar = false) {
+    const campoData = document.getElementById('data-ocorrencia');
+    const campoHora = document.getElementById('hora-ocorrencia');
+    if (!campoData || !campoHora) return;
+
+    const estaFocado = document.activeElement === campoData || document.activeElement === campoHora;
+    if (!forcar && (dataHoraManual || estaFocado)) return;
+
+    const agora = new Date();
+    const dataLocal = obterDataLocalIso(agora);
+    const horaLocal = obterHoraLocal(agora);
+
+    if (campoData.value !== dataLocal) {
+        campoData.value = dataLocal;
+    }
+    if (campoHora.value !== horaLocal) {
+        campoHora.value = horaLocal;
+    }
+}
+
+function resetarDataHora() {
+    dataHoraManual = false;
+    sincronizarDataHora(true);
+}
+
+function iniciarSincronizacaoRelogio() {
+    const campoData = document.getElementById('data-ocorrencia');
+    const campoHora = document.getElementById('hora-ocorrencia');
+
+    if (campoData) {
+        campoData.addEventListener('input', () => { dataHoraManual = Boolean(campoData.value); });
+        campoData.addEventListener('change', () => { dataHoraManual = Boolean(campoData.value); });
+    }
+    if (campoHora) {
+        campoHora.addEventListener('input', () => { dataHoraManual = Boolean(campoHora.value); });
+        campoHora.addEventListener('change', () => { dataHoraManual = Boolean(campoHora.value); });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !dataHoraManual) {
+            sincronizarDataHora(true);
+        }
+    });
+
+    sincronizarDataHora(true);
+    if (intervaloRelogio) clearInterval(intervaloRelogio);
+    intervaloRelogio = setInterval(() => {
+        sincronizarDataHora(false);
+    }, 1000);
+}
+
+async function inicializarAplicacao() {
+    const parametrosErro = new URLSearchParams(globalThis.location.hash.replace(/^#/, ''));
+    if (parametrosErro.has('error')) {
+        const codigo = parametrosErro.get('error_code');
+        const mensagem = codigo === 'otp_expired'
+            ? 'Este link de confirmação expirou. Se sua conta já foi criada, entre com e-mail e senha.'
+            : 'Não foi possível validar o link de acesso. Entre com e-mail e senha.';
+        globalThis.history.replaceState(null, '', `${globalThis.location.pathname}${globalThis.location.search}`);
+        mostrarToast(mensagem);
+    }
+    iniciarSincronizacaoRelogio();
+    atualizarTabelaHistorico();
+    atualizarTabelaChamados();
+    atualizarFiltros();
+    if (!DataService.configurado()) {
+        atualizarStatusConexao('offline', 'Servidor não configurado');
+        return;
+    }
+    atualizarStatusConexao('carregando', 'Conectando');
+    try {
+        const sessao = await DataService.sessaoAtual();
+        await aplicarSessao(sessao);
+    } catch (error) {
+        atualizarStatusConexao('offline', 'Servidor indisponível');
+        mostrarToast(error.message);
+    }
+}
+
+inicializarAplicacao();

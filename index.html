@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Portal de Relatórios - Sistema de Falhas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐞</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -15,15 +16,24 @@
                 Portal de Relatórios de Falhas
             </h1>
             <div class="botoes-acao">
-                <button id="btn-modo-visualizador" class="btn-acao" title="Modo visualizador">
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button id="btn-modo-adm" class="btn-acao" title="Modo administrador">
-                    <i class="fas fa-cog"></i>
+                <span id="status-conexao" class="status-conexao status-offline">
+                    <i class="fas fa-circle"></i> Servidor não configurado
+                </span>
+                <span id="usuario-atual" class="usuario-atual oculto"></span>
+                <button id="btn-entrar" class="btn-acao" title="Entrar no sistema">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
                 </button>
                 <button id="btn-logout" class="btn-acao oculto" title="Sair">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
+            </div>
+        </div>
+
+        <div id="painel-perfil" class="painel-perfil oculto" aria-live="polite">
+            <i id="painel-perfil-icone" class="fas fa-users" aria-hidden="true"></i>
+            <div>
+                <strong id="painel-perfil-titulo"></strong>
+                <span id="painel-perfil-descricao"></span>
             </div>
         </div>
 
@@ -41,15 +51,15 @@
                     </button>
                 </div>
                 <div class="data-hora-editable">
-                    <input type="date" id="data-ocorrencia" class="input-data">
-                    <input type="time" id="hora-ocorrencia" class="input-hora">
+                    <input type="date" id="data-ocorrencia" class="input-data" title="Data (sincronizada com o computador)">
+                    <input type="time" id="hora-ocorrencia" class="input-hora" title="Horário (sincronizado com o computador)">
                 </div>
             </div>
 
             <!-- Aba de Registro -->
             <div id="tab-registro" class="tab-content active">
                 <div class="linha-formulario">
-                    <div id="container-titulo-falha" class="form-group-duas-colunas">
+                    <div id="container-titulo-falha" class="form-group-moderno">
                         <label class="label-moderno" for="titulo-falha">Título da falha</label>
                         <select id="titulo-falha" class="select-moderno">
                             <option value="">Selecione um tipo de falha</option>
@@ -66,7 +76,18 @@
                             <input type="text" id="outro-titulo" class="input-moderno" placeholder="Descreva o tipo de falha.">
                         </div>
                     </div>
-                    <div id="espacador-titulo" class="oculto"></div>
+                    <div class="form-group-moderno">
+                        <label class="label-moderno" for="reportado-por">Reportado por:</label>
+                        <select id="reportado-por" class="select-moderno">
+                            <option value="Alan">Alan</option>
+                            <option value="Raissa">Raissa</option>
+                            <option value="Thiago">Thiago</option>
+                            <option value="Cristiane">Cristiane</option>
+                            <option value="Leonardo">Leonardo</option>
+                            <option value="Maristella">Maristella</option>
+                            <option value="Equipe Madrugada" selected>Equipe Madrugada</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="container-aba-dinamica"></div>
@@ -115,34 +136,54 @@
                     <label class="label-moderno" for="descricao-falha">Descrição da falha</label>
                     <div class="textarea-container">
                         <textarea id="descricao-falha" class="textarea-moderno" rows="4" placeholder="Descreva a falha."></textarea>
-                        <i class="fas fa-paperclip anexo-icon" title="Anexar imagem"></i>
+                        <button type="button" id="botao-anexar-imagem" class="anexo-icon" title="Anexar imagem" aria-label="Anexar imagem">
+                            <i class="fas fa-paperclip" aria-hidden="true"></i>
+                        </button>
+                        <input type="file" id="imagem-falha" class="oculto" accept="image/jpeg,image/png,image/webp,image/gif">
+                    </div>
+                    <div id="imagem-preview" class="imagem-preview oculto" aria-live="polite">
+                        <img id="imagem-preview-miniatura" alt="Prévia da imagem selecionada">
+                        <div class="imagem-preview-info">
+                            <strong id="imagem-preview-nome"></strong>
+                            <span id="imagem-preview-tamanho"></span>
+                        </div>
+                        <button type="button" id="remover-imagem" class="btn-remover-imagem" aria-label="Remover imagem" title="Remover imagem">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-start;">
-                    <button id="botao-registrar-falha" class="btn-registrar-falha">
-                        <i class="fas fa-save"></i> Registrar falha
-                    </button>
-                </div>
+                <button id="botao-registrar-falha" class="btn-primario">
+                    <i class="fas fa-save"></i> Salvar registro
+                </button>
             </div>
 
             <!-- Aba de Chamados -->
             <div id="tab-chamados" class="tab-content">
-                <div class="linha-chamado">
+                <div class="linha-formulario">
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="numero-chamado">Número do chamado</label>
-                        <input type="text" id="numero-chamado" class="input-moderno" value="">
+                        <input type="text" id="numero-chamado" class="input-moderno" placeholder="Ex: INC123456">
                     </div>
+                    <fieldset class="form-group-moderno" id="motivo-chamado">
+                        <legend class="label-moderno">Motivo</legend>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="SIR"> SIR</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="TOA"> TOA</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="OSS"> OSS</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="VPN"> VPN</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="SGO"> SGO</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="INDISPONIBILIDADE"> Indisponibilidade</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="OUTROS"> Outros</label>
+                        </div>
+                    </fieldset>
                     <div class="form-group-moderno">
-                        <label class="label-moderno" for="motivo-chamado">Motivo</label>
-                        <select id="motivo-chamado" class="select-moderno">
-                            <option value="">Selecione o motivo</option>
-                            <option value="SIR">SIR</option>
-                            <option value="TOA">TOA</option>
-                            <option value="OSS">OSS</option>
-                            <option value="VPN">VPN</option>
-                            <option value="SGO">SGO</option>
-                            <option value="OUTROS">Outros</option>
+                        <label class="label-moderno" for="descricao-chamado">Descrição</label>
+                        <select id="descricao-chamado" class="select-moderno">
+                            <option value="">Selecione a descrição</option>
+                            <option value="INOPERANTE">INOPERANTE</option>
+                            <option value="INTERMITENTE">INTERMITENTE</option>
+                            <option value="OUTRO">OUTRO</option>
                         </select>
                     </div>
                     <button id="botao-registrar-chamado" class="btn-primario" style="width: auto; white-space: nowrap;">
@@ -151,6 +192,9 @@
                 </div>
                 <div id="campo-outros-motivo" class="campo-outros-motivo oculto">
                     <input type="text" id="outro-motivo" class="input-moderno" placeholder="Descreva o motivo.">
+                </div>
+                <div id="campo-outra-descricao-chamado" class="campo-outros-motivo oculto">
+                    <input type="text" id="outra-descricao-chamado" class="input-moderno" placeholder="Descreva a condição do chamado.">
                 </div>
 
                 <div style="margin-top: 25px;">
@@ -162,13 +206,13 @@
                                     <th>Chamado aberto</th>
                                     <th>Número do chamado</th>
                                     <th>Motivo</th>
-                                    <th>Chamado encerrado</th>
-                                    <th id="coluna-acao-chamados" class="oculto">Ações</th>
+                                    <th id="coluna-status-chamado">Status do chamado</th>
+                                    <th id="coluna-acao-chamados">Ações</th>
                                 </tr>
                             </thead>
                             <tbody id="corpo-chamados">
                                 <tr>
-                                    <td colspan="4" style="text-align: center;">Nenhum chamado registrado</td>
+                                    <td colspan="5" style="text-align: center;">Nenhum chamado registrado</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -206,7 +250,7 @@
                         <button id="limpar-filtros" class="btn-secundario btn-icon-only" title="Limpar filtros">
                             <i class="fas fa-eraser"></i>
                         </button>
-                        <button id="btn-relatorio" class="btn-secundario btn-icon-only" title="Ver relatório em gráfico">
+                        <button id="btn-relatorio" class="btn-secundario btn-icon-only admin-only oculto" title="Ver relatório administrativo">
                             <i class="fas fa-chart-bar"></i>
                         </button>
                     </div>
@@ -240,12 +284,14 @@
                                 <th>Cluster</th>
                                 <th>Incidente</th>
                                 <th>Task | Rec | Sistema</th>
+                                <th>Reportado por</th>
+                                <th>Imagem</th>
                                 <th id="coluna-acao-historico" class="oculto">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="corpo-historico">
                             <tr>
-                                <td colspan="5" style="text-align: center;">Nenhum registro encontrado</td>
+                                <td colspan="7" style="text-align: center;">Nenhum registro encontrado</td>
                             </tr>
                         </tbody>
                     </table>
@@ -254,16 +300,17 @@
         </div>
 
         <footer style="text-align: center; margin-top: 20px; color: var(--text-light); font-size: 11px;">
-            Desenvolvido por N5923221
+            Desenvolvido por Kelly Lira e Nelson Leandro.
         </footer>
     </div>
 
     <div id="modal-login" class="modal">
         <div class="modal-content">
             <i class="fas fa-lock" style="font-size: 40px; color: var(--primary-color);"></i>
-            <h3 style="margin: 15px 0; font-size: 18px;">Acesso administrador</h3>
-            <input type="text" id="login-usuario" placeholder="Usuário">
-            <input type="password" id="login-senha" placeholder="Senha">
+            <h3 style="margin: 15px 0; font-size: 18px;">Entrar no portal</h3>
+            <p class="login-ajuda">Equipe: use o usuário compartilhado <strong>madrugada</strong>. Administradores entram com o e-mail corporativo.</p>
+            <input type="text" id="login-usuario" placeholder="Usuário ou e-mail" autocomplete="username" autocapitalize="none" spellcheck="false">
+            <input type="password" id="login-senha" placeholder="Senha" minlength="8" autocomplete="current-password">
             <button id="btn-login" style="background: var(--primary-color); color: white; border-radius: 12px;">Entrar</button>
             <button id="btn-fechar-modal" style="background: #e0e0e0; border-radius: 12px;">Cancelar</button>
         </div>
@@ -278,11 +325,20 @@
                 <p id="periodo-datas"></p>
                 <div class="contagem" id="contagem-falhas">0</div>
                 <p>falhas registradas neste período</p>
+                <div id="relatorio-resumo" class="relatorio-resumo"></div>
             </div>
             <button id="btn-fechar-relatorio" style="background: var(--primary-color); color: white; border-radius: 12px; margin-top: 20px;">Fechar</button>
         </div>
     </div>
 
-    <script src="js/app.js" defer></script>
+    <script src="js/supabase.min.js"></script>
+    <script>
+        if (typeof window.supabase === 'undefined') {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.min.js"><\/script>');
+        }
+    </script>
+    <script src="js/config.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
