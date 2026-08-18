@@ -794,23 +794,6 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
     document.getElementById('task').value = '';
     document.getElementById('sistema-afetado').value = '';
     document.getElementById('descricao-falha').value = '';
-        }, imagemSelecionada);
-        historicoFalhas.unshift(novaFalha);
-    } catch (error) {
-        mostrarToast(error.message);
-        return;
-    } finally {
-        botao.disabled = false;
-        botao.classList.remove('carregando');
-    }
-
-    document.getElementById('titulo-falha').value = '';
-    document.getElementById('cluster').value = '';
-    document.getElementById('cluster').disabled = false;
-    document.getElementById('incidente').value = '';
-    document.getElementById('task').value = '';
-    document.getElementById('sistema-afetado').value = '';
-    document.getElementById('descricao-falha').value = '';
     limparImagemSelecionada();
     document.getElementById('container-aba-dinamica').innerHTML = '';
     document.getElementById('campo-outros-titulo').classList.add('oculto');
