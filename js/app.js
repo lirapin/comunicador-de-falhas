@@ -794,6 +794,23 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
     document.getElementById('task').value = '';
     document.getElementById('sistema-afetado').value = '';
     document.getElementById('descricao-falha').value = '';
+        }, imagemSelecionada);
+        historicoFalhas.unshift(novaFalha);
+    } catch (error) {
+        mostrarToast(error.message);
+        return;
+    } finally {
+        botao.disabled = false;
+        botao.classList.remove('carregando');
+    }
+
+    document.getElementById('titulo-falha').value = '';
+    document.getElementById('cluster').value = '';
+    document.getElementById('cluster').disabled = false;
+    document.getElementById('incidente').value = '';
+    document.getElementById('task').value = '';
+    document.getElementById('sistema-afetado').value = '';
+    document.getElementById('descricao-falha').value = '';
     limparImagemSelecionada();
     document.getElementById('container-aba-dinamica').innerHTML = '';
     document.getElementById('campo-outros-titulo').classList.add('oculto');
@@ -807,6 +824,7 @@ document.getElementById('botao-registrar-falha').addEventListener('click', async
     configurarCampoReportadoPor();
 
     mostrarToast('Registro salvo no servidor.');
+    resetarDataHora();
     atualizarTabelaHistorico();
     atualizarFiltros();
     mudarTab('historico');
@@ -859,6 +877,7 @@ document.getElementById('botao-registrar-chamado').addEventListener('click', asy
     document.getElementById('campo-outra-descricao-chamado').classList.add('oculto');
     document.getElementById('outra-descricao-chamado').value = '';
     mostrarToast('Chamado salvo no servidor.');
+    resetarDataHora();
     atualizarTabelaChamados();
 });
 
@@ -970,13 +989,71 @@ document.getElementById('btn-fechar-relatorio').addEventListener('click', functi
     document.getElementById('modal-relatorio').style.display = 'none';
 });
 
-function inicializarDataHora() {
-    const hoje = new Date().toISOString().split('T')[0];
+let dataHoraManual = false;
+let intervaloRelogio = null;
+
+function obterDataLocalIso(data = new Date()) {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, '0');
+    const dia = String(data.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+}
+
+function obterHoraLocal(data = new Date()) {
+    const horas = String(data.getHours()).padStart(2, '0');
+    const minutos = String(data.getMinutes()).padStart(2, '0');
+    return `${horas}:${minutos}`;
+}
+
+function sincronizarDataHora(forcar = false) {
+    const campoData = document.getElementById('data-ocorrencia');
+    const campoHora = document.getElementById('hora-ocorrencia');
+    if (!campoData || !campoHora) return;
+
+    const estaFocado = document.activeElement === campoData || document.activeElement === campoHora;
+    if (!forcar && (dataHoraManual || estaFocado)) return;
+
     const agora = new Date();
-    const horas = agora.getHours().toString().padStart(2, '0');
-    const minutos = agora.getMinutes().toString().padStart(2, '0');
-    document.getElementById('data-ocorrencia').value = hoje;
-    document.getElementById('hora-ocorrencia').value = `${horas}:${minutos}`;
+    const dataLocal = obterDataLocalIso(agora);
+    const horaLocal = obterHoraLocal(agora);
+
+    if (campoData.value !== dataLocal) {
+        campoData.value = dataLocal;
+    }
+    if (campoHora.value !== horaLocal) {
+        campoHora.value = horaLocal;
+    }
+}
+
+function resetarDataHora() {
+    dataHoraManual = false;
+    sincronizarDataHora(true);
+}
+
+function iniciarSincronizacaoRelogio() {
+    const campoData = document.getElementById('data-ocorrencia');
+    const campoHora = document.getElementById('hora-ocorrencia');
+
+    if (campoData) {
+        campoData.addEventListener('input', () => { dataHoraManual = Boolean(campoData.value); });
+        campoData.addEventListener('change', () => { dataHoraManual = Boolean(campoData.value); });
+    }
+    if (campoHora) {
+        campoHora.addEventListener('input', () => { dataHoraManual = Boolean(campoHora.value); });
+        campoHora.addEventListener('change', () => { dataHoraManual = Boolean(campoHora.value); });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !dataHoraManual) {
+            sincronizarDataHora(true);
+        }
+    });
+
+    sincronizarDataHora(true);
+    if (intervaloRelogio) clearInterval(intervaloRelogio);
+    intervaloRelogio = setInterval(() => {
+        sincronizarDataHora(false);
+    }, 1000);
 }
 
 async function inicializarAplicacao() {
@@ -989,7 +1066,7 @@ async function inicializarAplicacao() {
         globalThis.history.replaceState(null, '', `${globalThis.location.pathname}${globalThis.location.search}`);
         mostrarToast(mensagem);
     }
-    inicializarDataHora();
+    iniciarSincronizacaoRelogio();
     atualizarTabelaHistorico();
     atualizarTabelaChamados();
     atualizarFiltros();

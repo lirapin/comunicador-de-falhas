@@ -1,7 +1,19 @@
 (function criarDataService(global) {
     'use strict';
 
-    const config = global.APP_CONFIG || {};
+    const defaultSupabaseUrl = 'https://aaxdcpftynjphzitigrv.supabase.co';
+    const defaultSupabasePublishableKey = 'sb_publishable_qJaICKj1Ro-tO3DPqtr9TA_9cFFccCS';
+
+    function obterConfig() {
+        if (global.APP_CONFIG && typeof global.APP_CONFIG === 'object') {
+            return global.APP_CONFIG;
+        }
+        return {
+            supabaseUrl: defaultSupabaseUrl,
+            supabasePublishableKey: defaultSupabasePublishableKey
+        };
+    }
+
     let client = null;
     const imageBucket = 'failure-portal-images';
     const imageTypes = Object.freeze({
@@ -16,20 +28,25 @@
     });
 
     function configurado() {
+        const cfg = obterConfig();
         return Boolean(
             global.supabase &&
-            /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(config.supabaseUrl || '') &&
-            typeof config.supabasePublishableKey === 'string' &&
-            config.supabasePublishableKey.length > 20
+            /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(cfg.supabaseUrl || '') &&
+            typeof cfg.supabasePublishableKey === 'string' &&
+            cfg.supabasePublishableKey.length > 20
         );
     }
 
     function obterClient() {
+        if (!global.supabase) {
+            throw new Error('Biblioteca de conexão com o banco não carregada. Verifique sua conexão ou recarregue a página.');
+        }
         if (!configurado()) {
             throw new Error('Servidor não configurado. Informe a URL e a publishable key em js/config.js.');
         }
         if (!client) {
-            client = global.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey, {
+            const cfg = obterConfig();
+            client = global.supabase.createClient(cfg.supabaseUrl, cfg.supabasePublishableKey, {
                 auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
             });
         }
@@ -101,9 +118,18 @@
 
     async function sessaoAtual() {
         if (!configurado()) return null;
-        const { data, error } = await obterClient().auth.getSession();
-        propagarErro(error, 'Falha ao verificar a sessão');
-        return data.session;
+        const supabaseClient = obterClient();
+        if (typeof supabaseClient.auth?.getSession === 'function') {
+            const { data, error } = await supabaseClient.auth.getSession();
+            propagarErro(error, 'Falha ao verificar a sessão');
+            return data.session;
+        }
+        if (typeof supabaseClient.auth?.getUser === 'function') {
+            const { data, error } = await supabaseClient.auth.getUser();
+            propagarErro(error, 'Falha ao verificar o usuário');
+            return data.user ? { user: data.user } : null;
+        }
+        return null;
     }
 
     async function entrar(identificador, senha) {
@@ -158,92 +184,103 @@
         };
     }
 
-    function validarImagem(imagem) {
-        if (!imagem) return null;
-        if (!Object.hasOwn(imageTypes, imagem.type)) {
-            throw new Error('Formato de imagem inválido. Use JPG, PNG, WEBP ou GIF.');
-        }
-        if (!Number.isFinite(imagem.size) || imagem.size < 1 || imagem.size > maxImageSize) {
-            throw new Error('A imagem deve ter no máximo 5 MB.');
-        }
-        return imagem;
+    function validarImagem(file) {
+        if (!file) throw new Error('Nenhum arquivo de imagem foi selecionado.');
+        if (!imageTypes[file.type]) throw new Error('Formato de imagem inválido. Use JPG, PNG, WEBP ou GIF.');
+        if (file.size > maxImageSize) throw new Error('A imagem deve ter no máximo 5 MB.');
     }
 
-    function criarIdentificador() {
-        if (!global.crypto?.randomUUID) {
-            throw new Error('Este navegador não oferece suporte seguro ao envio de imagens. Atualize-o e tente novamente.');
-        }
-        return global.crypto.randomUUID();
+    function gerarCaminhoStorage(userId, reportId, file) {
+        const extensao = imageTypes[file.type] || 'bin';
+        const fileId = global.crypto?.randomUUID?.() || Date.now().toString(36);
+        return `${userId}/${reportId}/${fileId}.${extensao}`;
     }
 
     async function criarFalha(falha, imagem = null) {
-        validarImagem(imagem);
         const supabaseClient = obterClient();
-        let caminhoAnexo = null;
-        let reportId = null;
+        const reportId = global.crypto?.randomUUID?.();
+        if (!reportId) throw new Error('Ambiente sem suporte a crypto.randomUUID.');
+
+        const session = await sessaoAtual();
+        const userId = session?.user?.id;
+        if (!userId) throw new Error('Sessão inválida para salvar o registro.');
+
+        let attachmentPath = null;
+        let attachmentName = null;
+        let attachmentMime = null;
+        let attachmentSize = null;
 
         if (imagem) {
-            const { data: userData, error: userError } = await supabaseClient.auth.getUser();
-            propagarErro(userError, 'Falha ao identificar o usuário do anexo');
-            if (!userData?.user?.id) throw new Error('Sessão inválida para enviar a imagem. Entre novamente.');
+            validarImagem(imagem);
+            attachmentPath = gerarCaminhoStorage(userId, reportId, imagem);
+            attachmentName = imagem.name;
+            attachmentMime = imagem.type;
+            attachmentSize = imagem.size;
 
-            reportId = criarIdentificador();
-            caminhoAnexo = `${userData.user.id}/${reportId}/${criarIdentificador()}.${imageTypes[imagem.type]}`;
             const { error: uploadError } = await supabaseClient.storage
                 .from(imageBucket)
-                .upload(caminhoAnexo, imagem, {
-                    cacheControl: '3600',
+                .upload(attachmentPath, imagem, {
                     contentType: imagem.type,
                     upsert: false
                 });
-            propagarErro(uploadError, 'Falha ao enviar a imagem');
+            propagarErro(uploadError, 'Não foi possível enviar a imagem');
         }
 
         const payload = {
-            ...(reportId ? { id: reportId } : {}),
+            id: reportId,
             occurred_at: falha.occurredAt,
             title: falha.titulo,
             cluster: falha.cluster,
-            incident: falha.incidente === 'N/A' ? null : falha.incidente,
-            task_or_system: falha.taskOuSistema === 'N/A' ? null : falha.taskOuSistema,
+            incident: falha.incidente && falha.incidente !== 'N/A' ? falha.incidente : null,
+            task_or_system: falha.taskOuSistema && falha.taskOuSistema !== 'N/A' ? falha.taskOuSistema : null,
             description: falha.descricao,
-            reporter_name: falha.reporterName,
-            attachment_path: caminhoAnexo,
-            attachment_name: imagem ? String(imagem.name || 'imagem').slice(0, 255) : null,
-            attachment_mime: imagem?.type || null,
-            attachment_size: imagem?.size || null
+            reporter_name: falha.reporterName || 'Equipe Madrugada',
+            attachment_path: attachmentPath,
+            attachment_name: attachmentName,
+            attachment_mime: attachmentMime,
+            attachment_size: attachmentSize
         };
 
-        const { data, error } = await supabaseClient.from('failure_portal_reports').insert(payload).select(failureSelect).single();
-        if (error && caminhoAnexo) {
-            await supabaseClient.storage.from(imageBucket).remove([caminhoAnexo]);
+        const { data, error } = await supabaseClient
+            .from('failure_portal_reports')
+            .insert(payload)
+            .select(failureSelect)
+            .single();
+
+        if (error) {
+            if (attachmentPath) {
+                await supabaseClient.storage.from(imageBucket).remove([attachmentPath]);
+            }
+            propagarErro(error, 'Não foi possível salvar o registro');
         }
-        propagarErro(error, 'Falha ao salvar o registro no servidor');
+
         return mapearFalha(data);
     }
 
-    async function excluirFalha(id, caminhoAnexo = null) {
-        const supabaseClient = obterClient();
-        const { error } = await supabaseClient.from('failure_portal_reports').delete().eq('id', id);
-        propagarErro(error, 'Falha ao excluir o registro');
-        if (!caminhoAnexo) return { cleanupWarning: null };
-
-        const { error: cleanupError } = await supabaseClient.storage.from(imageBucket).remove([caminhoAnexo]);
-        return {
-            cleanupWarning: cleanupError
-                ? `Registro excluído, mas a imagem não pôde ser removida: ${cleanupError.message || cleanupError}`
-                : null
-        };
-    }
-
-    async function criarUrlAnexo(caminhoAnexo) {
-        if (!caminhoAnexo) throw new Error('Este registro não possui imagem.');
+    async function criarUrlAnexo(storagePath) {
+        if (!storagePath) throw new Error('Caminho de anexo inválido.');
         const { data, error } = await obterClient().storage
             .from(imageBucket)
-            .createSignedUrl(caminhoAnexo, 60);
-        propagarErro(error, 'Falha ao abrir a imagem');
-        if (!data?.signedUrl) throw new Error('O servidor não retornou o endereço da imagem.');
+            .createSignedUrl(storagePath, 60 * 60);
+        propagarErro(error, 'Não foi possível carregar a imagem');
         return data.signedUrl;
+    }
+
+    async function excluirFalha(id, anexoPath = null) {
+        const supabaseClient = obterClient();
+        const { error } = await supabaseClient.from('failure_portal_reports').delete().eq('id', id);
+        propagarErro(error, 'Não foi possível excluir o registro');
+
+        if (anexoPath) {
+            const { error: storageError } = await supabaseClient.storage.from(imageBucket).remove([anexoPath]);
+            if (storageError) {
+                return {
+                    deleted: true,
+                    cleanupWarning: 'Registro excluído, mas o arquivo de imagem precisará de limpeza posterior.'
+                };
+            }
+        }
+        return { deleted: true };
     }
 
     async function criarChamado(chamado) {
@@ -253,75 +290,51 @@
             reason: chamado.motivo,
             event_description: chamado.descricaoEvento
         };
-        const { data, error } = await obterClient().from('failure_portal_tickets').insert(payload).select(ticketSelect).single();
-        propagarErro(error, 'Falha ao salvar o chamado no servidor');
+        const { data, error } = await obterClient()
+            .from('failure_portal_tickets')
+            .insert(payload)
+            .select(ticketSelect)
+            .single();
+        propagarErro(error, 'Não foi possível salvar o chamado');
         return mapearChamado(data);
     }
 
     async function encerrarChamado(id, closedAt) {
-        const { data, error } = await obterClient().from('failure_portal_tickets')
+        const { data, error } = await obterClient()
+            .from('failure_portal_tickets')
             .update({ closed_at: closedAt })
             .eq('id', id)
             .select(ticketSelect)
             .single();
-        propagarErro(error, 'Falha ao salvar o encerramento');
+        propagarErro(error, 'Não foi possível atualizar o chamado');
         return mapearChamado(data);
     }
 
     async function excluirChamado(id) {
         const { error } = await obterClient().from('failure_portal_tickets').delete().eq('id', id);
-        propagarErro(error, 'Falha ao excluir o chamado');
+        propagarErro(error, 'Não foi possível excluir o chamado');
+        return { deleted: true };
     }
 
-    async function importarLegado(falhas, tickets) {
-        const resultados = { falhas: 0, chamados: 0 };
-        for (const falha of (falhas || []).slice(0, 500)) {
-            const occurredAt = falha.dataIso || dataBrParaIso(falha.dataHora);
-            if (!occurredAt) continue;
-            await criarFalha({
-                occurredAt,
-                titulo: String(falha.titulo || 'SEM TÍTULO').slice(0, 160),
-                cluster: String(falha.cluster || 'N/A').slice(0, 10),
-                incidente: String(falha.incidente || 'N/A').slice(0, 120),
-                taskOuSistema: String(falha.taskOuSistema || 'N/A').slice(0, 180),
-                descricao: String(falha.descricao || 'IMPORTADO DO ARMAZENAMENTO LOCAL').slice(0, 5000)
-            });
-            resultados.falhas += 1;
-        }
-        for (const ticket of (tickets || []).slice(0, 500)) {
-            const openedAt = ticket.dataIso || dataBrParaIso(ticket.dataHora);
-            if (!openedAt) continue;
-            const criado = await criarChamado({
-                openedAt,
-                numero: String(ticket.numero || '').slice(0, 120),
-                motivo: String(ticket.motivo || '').slice(0, 180),
-                descricaoEvento: String(ticket.descricaoEvento || 'NÃO INFORMADA').slice(0, 500)
-            });
-            const closedAt = ticket.encerramentoIso || dataBrParaIso(ticket.dataEncerramento);
-            if (closedAt) await encerrarChamado(criado.id, closedAt);
-            resultados.chamados += 1;
-        }
-        return resultados;
-    }
-
-    global.DataService = Object.freeze({
+    global.DataService = {
         configurado,
         sessaoAtual,
         entrar,
-        obterIdentidade,
         obterAcesso,
+        obterIdentidade,
         sair,
         observarAuth,
         listarTudo,
         criarFalha,
-        excluirFalha,
+        salvarFalha: criarFalha,
         criarUrlAnexo,
-        validarImagem,
+        excluirFalha,
         criarChamado,
         encerrarChamado,
         excluirChamado,
-        importarLegado,
+        formatarDataHora,
         paraIso,
-        formatarDataHora
-    });
-})(window);
+        dataBrParaIso,
+        validarImagem
+    };
+})(typeof window !== 'undefined' ? window : globalThis);

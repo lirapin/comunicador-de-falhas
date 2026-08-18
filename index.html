@@ -51,8 +51,8 @@
                     </button>
                 </div>
                 <div class="data-hora-editable">
-                    <input type="date" id="data-ocorrencia" class="input-data">
-                    <input type="time" id="hora-ocorrencia" class="input-hora">
+                    <input type="date" id="data-ocorrencia" class="input-data" title="Data (sincronizada com o computador)">
+                    <input type="time" id="hora-ocorrencia" class="input-hora" title="Horário (sincronizado com o computador)">
                 </div>
             </div>
 
@@ -153,29 +153,28 @@
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-start;">
-                    <button id="botao-registrar-falha" class="btn-registrar-falha">
-                        <i class="fas fa-save"></i> Registrar falha
-                    </button>
-                </div>
+                <button id="botao-registrar-falha" class="btn-primario">
+                    <i class="fas fa-save"></i> Salvar registro
+                </button>
             </div>
 
             <!-- Aba de Chamados -->
             <div id="tab-chamados" class="tab-content">
-                <div class="linha-chamado">
+                <div class="linha-formulario">
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="numero-chamado">Número do chamado</label>
-                        <input type="text" id="numero-chamado" class="input-moderno" value="">
+                        <input type="text" id="numero-chamado" class="input-moderno" placeholder="Ex: INC123456">
                     </div>
-                    <fieldset class="form-group-moderno motivos-chamado" id="motivo-chamado">
+                    <fieldset class="form-group-moderno" id="motivo-chamado">
                         <legend class="label-moderno">Motivo</legend>
-                        <div class="motivos-opcoes">
-                            <label><input type="checkbox" name="motivo-chamado" value="SIR"> SIR</label>
-                            <label><input type="checkbox" name="motivo-chamado" value="TOA"> TOA</label>
-                            <label><input type="checkbox" name="motivo-chamado" value="OSS"> OSS</label>
-                            <label><input type="checkbox" name="motivo-chamado" value="VPN"> VPN</label>
-                            <label><input type="checkbox" name="motivo-chamado" value="SGO"> SGO</label>
-                            <label><input type="checkbox" name="motivo-chamado" value="OUTROS"> Outros</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="SIR"> SIR</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="TOA"> TOA</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="OSS"> OSS</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="VPN"> VPN</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="SGO"> SGO</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="INDISPONIBILIDADE"> Indisponibilidade</label>
+                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="OUTROS"> Outros</label>
                         </div>
                     </fieldset>
                     <div class="form-group-moderno">
@@ -332,9 +331,14 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.min.js" crossorigin="anonymous" defer></script>
-    <script src="js/config.js" defer></script>
-    <script src="js/data-service.js" defer></script>
-    <script src="js/app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+    <script>
+        if (typeof window.supabase === 'undefined') {
+            document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.105.0/dist/umd/supabase.min.js"><\/script>');
+        }
+    </script>
+    <script src="js/config.js"></script>
+    <script src="js/data-service.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
