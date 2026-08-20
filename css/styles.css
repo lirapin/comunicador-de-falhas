@@ -344,27 +344,91 @@ body {
 
 .linha-chamado .form-group-moderno { flex: 1; margin-bottom: 0; min-width: 150px; }
 
-.motivos-chamado {
-    border: 0;
-    padding: 0;
+/* Multi-select Dropdown (Motivo) */
+.multiselect-dropdown {
+    position: relative;
+    width: 100%;
 }
 
-.motivos-opcoes {
-    min-height: 45px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(58px, 1fr));
+.multiselect-trigger {
+    display: flex;
     align-items: center;
-    gap: 4px 8px;
-    padding: 6px 10px;
+    justify-content: space-between;
+    gap: 8px;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    width: 100%;
+}
+
+.multiselect-placeholder {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-color);
+}
+
+.multiselect-placeholder.is-empty {
+    color: #757575;
+}
+
+.multiselect-icone {
+    font-size: 11px;
+    color: var(--text-light);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.multiselect-trigger[aria-expanded="true"] .multiselect-icone {
+    transform: rotate(180deg);
+}
+
+.multiselect-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 14px;
-    background-color: #fafafa;
-    font-size: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    padding: 6px 0;
+    z-index: 100;
+    max-height: 260px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.motivos-opcoes label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
-.motivos-opcoes input { accent-color: var(--primary-color); }
-.motivos-opcoes:focus-within { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12); background-color: white; }
+.multiselect-menu.oculto {
+    display: none;
+}
+
+.multiselect-opcao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    font-weight: 500;
+    user-select: none;
+}
+
+.multiselect-opcao:hover {
+    background-color: #f8f9fa;
+    color: var(--primary-dark);
+}
+
+.multiselect-opcao input[type="checkbox"] {
+    accent-color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+}
 
 .linha-formulario { display: flex; gap: 15px; margin-bottom: 18px; flex-wrap: wrap; }
 .linha-formulario .form-group-moderno { flex: 1; margin-bottom: 0; min-width: 120px; }
