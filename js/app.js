@@ -630,13 +630,71 @@ document.getElementById('sistema-afetado').addEventListener('change', function()
     }
 });
 
-document.getElementById('motivo-chamado').addEventListener('change', function() {
-    const campoOutros = document.getElementById('campo-outros-motivo');
-    const selecionouOutros = Boolean(this.querySelector('input[value="OUTROS"]:checked'));
-    if (selecionouOutros) campoOutros.classList.remove('oculto');
-    else {
-        campoOutros.classList.add('oculto');
-        document.getElementById('outro-motivo').value = '';
+function atualizarTextoMotivosSelecionados() {
+    const selecionados = [...document.querySelectorAll('input[name="motivo-chamado"]:checked')].map(c => c.value);
+    const placeholder = document.getElementById('texto-motivo-selecionado');
+    if (!placeholder) return;
+    if (selecionados.length === 0) {
+        placeholder.textContent = 'Selecione o motivo';
+        placeholder.classList.add('is-empty');
+    } else {
+        placeholder.textContent = selecionados.join(' / ');
+        placeholder.classList.remove('is-empty');
+    }
+}
+
+function fecharDropdownMotivos() {
+    const menu = document.getElementById('menu-motivos-chamado');
+    const trigger = document.getElementById('dropdown-motivo-trigger');
+    if (menu) menu.classList.add('oculto');
+    if (trigger) trigger.setAttribute('aria-expanded', 'false');
+}
+
+function alternarDropdownMotivos() {
+    const menu = document.getElementById('menu-motivos-chamado');
+    const trigger = document.getElementById('dropdown-motivo-trigger');
+    if (!menu || !trigger) return;
+    const estaAberto = !menu.classList.contains('oculto');
+    if (estaAberto) {
+        fecharDropdownMotivos();
+    } else {
+        menu.classList.remove('oculto');
+        trigger.setAttribute('aria-expanded', 'true');
+    }
+}
+
+const triggerMotivos = document.getElementById('dropdown-motivo-trigger');
+if (triggerMotivos) {
+    triggerMotivos.addEventListener('click', function(e) {
+        e.stopPropagation();
+        alternarDropdownMotivos();
+    });
+}
+
+document.querySelectorAll('input[name="motivo-chamado"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        atualizarTextoMotivosSelecionados();
+        const campoOutros = document.getElementById('campo-outros-motivo');
+        const selecionouOutros = Boolean(document.querySelector('input[name="motivo-chamado"][value="OUTROS"]:checked'));
+        if (selecionouOutros) {
+            campoOutros.classList.remove('oculto');
+        } else {
+            campoOutros.classList.add('oculto');
+            document.getElementById('outro-motivo').value = '';
+        }
+    });
+});
+
+document.addEventListener('click', function(e) {
+    const container = document.getElementById('container-motivo-chamado');
+    if (container && !container.contains(e.target)) {
+        fecharDropdownMotivos();
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        fecharDropdownMotivos();
     }
 });
 
@@ -854,6 +912,8 @@ document.getElementById('botao-registrar-chamado').addEventListener('click', asy
     }
     document.getElementById('numero-chamado').value = '';
     document.querySelectorAll('input[name="motivo-chamado"]').forEach(campo => { campo.checked = false; });
+    atualizarTextoMotivosSelecionados();
+    fecharDropdownMotivos();
     document.getElementById('descricao-chamado').value = '';
     document.getElementById('campo-outros-motivo').classList.add('oculto');
     document.getElementById('outro-motivo').value = '';

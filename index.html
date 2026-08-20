@@ -165,18 +165,41 @@
                         <label class="label-moderno" for="numero-chamado">Número do chamado</label>
                         <input type="text" id="numero-chamado" class="input-moderno" placeholder="Ex: INC123456">
                     </div>
-                    <fieldset class="form-group-moderno" id="motivo-chamado">
-                        <legend class="label-moderno">Motivo</legend>
-                        <div class="checkbox-group">
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="SIR"> SIR</label>
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="TOA"> TOA</label>
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="OSS"> OSS</label>
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="VPN"> VPN</label>
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="SGO"> SGO</label>
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="INDISPONIBILIDADE"> Indisponibilidade</label>
-                            <label class="checkbox-label"><input type="checkbox" name="motivo-chamado" value="OUTROS"> Outros</label>
+                    <div class="form-group-moderno">
+                        <label class="label-moderno" id="label-motivo-chamado" for="dropdown-motivo-trigger">Motivo</label>
+                        <div class="multiselect-dropdown" id="container-motivo-chamado">
+                            <button type="button" class="select-moderno multiselect-trigger" id="dropdown-motivo-trigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="multiselect-placeholder is-empty" id="texto-motivo-selecionado">Selecione o motivo</span>
+                                <i class="fas fa-chevron-down multiselect-icone" aria-hidden="true"></i>
+                            </button>
+                            <div class="multiselect-menu oculto" id="menu-motivos-chamado" role="listbox" aria-multiselectable="true">
+                                <label class="multiselect-opcao">
+                                    <input type="checkbox" name="motivo-chamado" value="SIR">
+                                    <span>SIR</span>
+                                </label>
+                                <label class="multiselect-opcao">
+                                    <input type="checkbox" name="motivo-chamado" value="TOA">
+                                    <span>TOA</span>
+                                </label>
+                                <label class="multiselect-opcao">
+                                    <input type="checkbox" name="motivo-chamado" value="OSS">
+                                    <span>OSS</span>
+                                </label>
+                                <label class="multiselect-opcao">
+                                    <input type="checkbox" name="motivo-chamado" value="VPN">
+                                    <span>VPN</span>
+                                </label>
+                                <label class="multiselect-opcao">
+                                    <input type="checkbox" name="motivo-chamado" value="SGO">
+                                    <span>SGO</span>
+                                </label>
+                                <label class="multiselect-opcao">
+                                    <input type="checkbox" name="motivo-chamado" value="OUTROS">
+                                    <span>OUTROS</span>
+                                </label>
+                            </div>
                         </div>
-                    </fieldset>
+                    </div>
                     <div class="form-group-moderno">
                         <label class="label-moderno" for="descricao-chamado">Descrição</label>
                         <select id="descricao-chamado" class="select-moderno">
@@ -191,7 +214,7 @@
                     </button>
                 </div>
                 <div id="campo-outros-motivo" class="campo-outros-motivo oculto">
-                    <input type="text" id="outro-motivo" class="input-moderno" placeholder="Descreva o motivo.">
+                    <input type="text" id="outro-motivo" class="input-moderno" placeholder="">
                 </div>
                 <div id="campo-outra-descricao-chamado" class="campo-outros-motivo oculto">
                     <input type="text" id="outra-descricao-chamado" class="input-moderno" placeholder="Descreva a condição do chamado.">
