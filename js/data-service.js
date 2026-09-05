@@ -1,8 +1,8 @@
 (function criarDataService(global) {
     'use strict';
 
-    const defaultSupabaseUrl = 'https://aaxdcpftynjphzitigrv.supabase.co';
-    const defaultSupabasePublishableKey = 'sb_publishable_qJaICKj1Ro-tO3DPqtr9TA_9cFFccCS';
+    const defaultSupabaseUrl = 'https://htxlzznodyxwipbobzqm.supabase.co';
+    const defaultSupabasePublishableKey = 'sb_publishable_02uigoWVy_5JuN9-T5M9BQ_BJiP7jyn';
 
     function obterConfig() {
         if (global.APP_CONFIG && typeof global.APP_CONFIG === 'object') {

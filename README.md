@@ -6,9 +6,9 @@ Portal estático integrado ao Supabase para centralizar falhas e chamados. Os da
 
 - GitHub Pages (ou qualquer servidor estático) hospeda `index.html`, `css/` e `js/`.
 - Supabase Auth autentica cada usuário por e-mail e senha.
-- Postgres/Supabase armazena `failure_portal_reports`, `failure_portal_tickets` e `failure_portal_profiles`, isoladas por prefixo das tabelas de outros sistemas no mesmo projeto gratuito.
+- Um projeto Supabase gratuito e dedicado ao Comunicador armazena `failure_portal_reports`, `failure_portal_tickets` e `failure_portal_profiles`.
 - Supabase Storage mantém imagens de falhas em bucket privado, limitado a 5 MB e acessível somente por membros autenticados do Comunicador.
-- RLS permite leitura compartilhada somente entre membros do Comunicador, inserção em nome próprio e exclusão somente para administradores; usuários de outros sistemas do mesmo Supabase permanecem isolados.
+- RLS permite leitura compartilhada somente entre membros do Comunicador, inserção em nome próprio e exclusão somente para administradores.
 - A `service_role`/secret key nunca é enviada ao navegador.
 
 ## Configuração
@@ -17,8 +17,8 @@ Portal estático integrado ao Supabase para centralizar falhas e chamados. Os da
 2. Aplique a migration em `supabase/migrations`.
 3. Copie a URL do projeto e uma **publishable key** ativa para `js/config.js`.
 4. O cadastro público foi desativado. As contas são provisionadas no servidor e a autorização é registrada em `failure_portal_memberships`, nunca em metadados editáveis do usuário.
-5. Existem apenas dois papéis: `admin` e `team`. Kelly, Marley e Nelson pertencem a `admin`; a conta compartilhada Madrugada pertence a `team`. Os e-mails de Marley e Madrugada precisam ser incluídos em `failure_portal_private.allowed_accounts` antes do provisionamento.
-6. Contas administrativas devem ser criadas pela Admin API do Supabase com `email_confirm: true`; não desligue a confirmação global, pois o projeto também atende o Férias Inteligentes.
+5. Existem apenas dois papéis: `admin` e `team`. Kelly e Nelson pertencem a `admin`; a conta compartilhada Madrugada pertence a `team`. Marley deve ser incluído assim que seu e-mail exato for informado.
+6. Contas administrativas devem ser criadas pela Admin API do Supabase com `email_confirm: true`, dispensando confirmação por link sem reduzir a segurança global do projeto.
 7. O identificador real do autor permanece apenas no banco para auditoria. Consultas do navegador recebem somente o nome do administrador ou `EQUIPE MADRUGADA (ANÔNIMO)`.
 8. No GitHub, configure **Settings > Pages > Deploy from a branch**, usando `main` e a pasta `/ (root)`. Esse modo hospeda o site gratuitamente sem depender de runners do GitHub Actions.
 
