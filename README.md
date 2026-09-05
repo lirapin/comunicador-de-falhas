@@ -8,6 +8,7 @@ Portal estático integrado ao Supabase para centralizar falhas e chamados. Os da
 - Supabase Auth autentica cada usuário por e-mail e senha.
 - Um projeto Supabase gratuito e dedicado ao Comunicador armazena `failure_portal_reports`, `failure_portal_tickets` e `failure_portal_profiles`.
 - Supabase Storage mantém imagens de falhas em bucket privado, limitado a 5 MB e acessível somente por membros autenticados do Comunicador.
+- Uma Edge Function executada diariamente exclui imagens com mais de 30 dias e remove do histórico apenas a referência ao anexo; o registro da falha é preservado.
 - RLS permite leitura compartilhada somente entre membros do Comunicador, inserção em nome próprio e exclusão somente para administradores.
 - A `service_role`/secret key nunca é enviada ao navegador.
 
